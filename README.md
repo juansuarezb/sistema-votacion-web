@@ -25,6 +25,7 @@ Aplicación web para la gestión de votaciones electrónicas, con autenticación
 - Nombre 1
 - Nombre 2
 - Nombre 3
+- Álvaro Zumbana
 
 ---
 
