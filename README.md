@@ -4,6 +4,13 @@
 Aplicación web para la gestión de votaciones electrónicas, con autenticación de usuarios y visualización de resultados en tiempo real.
 
 ---
+
+## Planteamiento del problema
+En la actualidad, muchos procesos de votación aún dependen de métodos tradicionales que pueden resultar ineficientes, lentos y propensos a errores humanos o manipulación. Además, la falta de acceso remoto y de resultados en tiempo real limita la participación de los usuarios y dificulta la transparencia del proceso. Ante esta problemática, surge la necesidad de desarrollar un sistema de votación web que permita gestionar elecciones de manera segura, accesible y confiable, garantizando la autenticación de los usuarios, la integridad de los votos y la visualización inmediata de los resultados.
+
+---
+
+---
 >[!NOTE]
 >
 >El objetivo es desarrollar un sistema.....
