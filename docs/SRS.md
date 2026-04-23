@@ -1,11 +1,40 @@
-# Especificación de Requerimientos de Software (SRS)
+<div align="right">
+
+## VotoSeguro
+## Especificación de Requerimientos de Software (SRS)
+## v1.0
+
+</div>
 
 ---
+<div align="center" style="margin-top: 50px; margin-bottom: 50px;">
+    <p style="font-size: 24px; font-weight: bold;">Historial de versiones</p>
+    <table>
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Versión</th>
+      <th>Descripción</th>
+      <th>Autor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>2026-04-23</td>
+      <td>v1.0.0</td>
+      <td>Emisión inicial del documento</td>
+      <td>Lingtin</td>
+    </tr>
+    <tr>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+</div>
 
-## Prefacio
-- Audiencia del documento
-- Historial de versiones
-- Resumen de cambios
 
 ---
 
