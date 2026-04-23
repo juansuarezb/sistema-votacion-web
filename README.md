@@ -24,10 +24,10 @@
 > [!NOTE]
 > [![May-CR](https://img.shields.io/badge/May--CR-Emilia_Guachamin-black?style=flat-square&logo=github)](https://github.com/May-CR)
 > [![P4bloMaldonado](https://img.shields.io/badge/P4bloMaldonado-Pablo_Maldonado-black?style=flat-square&logo=github)](https://github.com/P4bloMaldonado)
-> [![XLex71](https://img.shields.io/badge/XLex71-AlexRedes-black?style=flat-square&logo=github)](https://github.com/XLex71)
+> [![XLex0](https://img.shields.io/badge/XLex0-AlexRedes-black?style=flat-square&logo=github)](https://github.com/XLex0)
 > [![kpenafiel](https://img.shields.io/badge/kpenafiel-Kevin_Peñafiel-black?style=flat-square&logo=github)](https://github.com/kpenafiel)
 > [![juansuarezb](https://img.shields.io/badge/juansuarezb-Juan_Suárez-black?style=flat-square&logo=github)](https://github.com/juansuarezb)
-> [![Dsmcamilia](https://img.shields.io/badge/Dsmcamilia-Domenica_Sánchez-black?style=flat-square&logo=github)](https://github.com/Dsmcamilia)
+> [![Dsmcamila](https://img.shields.io/badge/Dsmcamila-Domenica_Sánchez-black?style=flat-square&logo=github)](https://github.com/Dsmcamila)
 > [![greyhatbat](https://img.shields.io/badge/greyhatbat-Álvaro_Zumbana-black?style=flat-square&logo=github)](https://github.com/greyhatbat)
 ---
 
