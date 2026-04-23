@@ -1,8 +1,8 @@
 # Sistema de Votación Web
 
 ## Descripción
-Aplicación web para la gestión de votaciones electrónicas, con autenticación de usuarios y visualización de resultados en tiempo real.
-
+>[!NOTE]
+>Aplicación web para la gestión de votaciones electrónicas, con autenticación de usuarios y visualización de resultados en tiempo real.
 ---
 ## Planteamiento del problema
 >[!NOTE]
@@ -13,23 +13,22 @@ Aplicación web para la gestión de votaciones electrónicas, con autenticación
 >
 >Desarrollar una aplicación web de votación electrónica que permita a usuarios autenticados emitir votos de forma segura, mientras que los administradores puedan gestionar las votaciones y visualizar los resultados en tiempo real.
 ---
-
 ## Alcance
 >[!NOTE]
 >Incluye:
 >
 >
 >No incluye:
-
-
 ---
-
-## Integrantes
-- Nombre 1
-- Nombre 2
-- Nombre 3
-- Álvaro Zumbana
-
+## Contribuidores
+> [!NOTE]
+> [![May-CR](https://img.shields.io/badge/May--CR-Emilia_Guachamin-black?style=flat-square&logo=github)](https://github.com/May-CR)
+> [![P4bloMaldonado](https://img.shields.io/badge/P4bloMaldonado-Pablo_Maldonado-black?style=flat-square&logo=github)](https://github.com/P4bloMaldonado)
+> [![XLex71](https://img.shields.io/badge/XLex71-AlexRedes-black?style=flat-square&logo=github)](https://github.com/XLex71)
+> [![kpenafiel](https://img.shields.io/badge/kpenafiel-Kevin_Peñafiel-black?style=flat-square&logo=github)](https://github.com/kpenafiel)
+> [![juansuarezb](https://img.shields.io/badge/juansuarezb-Juan_Suárez-black?style=flat-square&logo=github)](https://github.com/juansuarezb)
+> [![Dsmcamilia](https://img.shields.io/badge/Dsmcamilia-Domenica_Sánchez-black?style=flat-square&logo=github)](https://github.com/Dsmcamilia)
+> [![greyhatbat](https://img.shields.io/badge/greyhatbat-Álvaro_Zumbana-black?style=flat-square&logo=github)](https://github.com/greyhatbat)
 ---
 
 ## Tecnologías (tentativo)
@@ -57,4 +56,4 @@ Flujo de trabajo:
 
 
 ## Notas
-Este proyecto se desarrolla como parte de la materia Aplicaciones Web Avanzadas.
+Este proyecto se desarrolla como parte de las materias de Aplicaciones Web Avanzadas  y Desarrollo de Software Seguro.
