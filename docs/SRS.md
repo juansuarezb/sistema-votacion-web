@@ -1,14 +1,12 @@
 <div align="right">
-
-## VotoSeguro
-## Especificación de Requerimientos de Software (SRS)
-## v1.0
-
+<h1>VotoSeguro</h1>
+<h2>Especificación de Requerimientos de Software (SRS)</h2>
+<h2>Versión 1.0</h2>
 </div>
 
 ---
 <div align="center" style="margin-top: 50px; margin-bottom: 50px;">
-    <p style="font-size: 24px; font-weight: bold;">Historial de versiones</p>
+    <h2>Historial de versiones</h2>
     <table>
   <thead>
     <tr>
@@ -40,7 +38,9 @@
 
 ## 1. Introducción
 ### 1.1 Propósito
+Este documento S.R.S. describe el comportamiento y las funcionalidades del sistema "VotoSeguro".
 ### 1.2 Alcance
+El documento aplica a la primera versión (v1.0) del sistema "VotoSeguro".
 ### 1.3 Definiciones, acrónimos y abreviaturas
 
 ---
