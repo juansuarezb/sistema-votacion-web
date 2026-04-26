@@ -4,6 +4,7 @@ skinparam packageStyle rectangle
 
 actor "Votante" as Votante
 actor "Administrador" as Admin
+actor "Soporte al Cliente" as Soporte
 
 rectangle "Sistema de Votación Web" {
     usecase "CU01 - Iniciar sesión única" as CU01
@@ -13,6 +14,7 @@ rectangle "Sistema de Votación Web" {
     usecase "CU05 - Contactar servicio al cliente" as CU05
     usecase "CU06 - Gestionar votaciones y tráfico" as CU06
     usecase "CU07 - Visualizar resultados en tiempo real" as CU07
+    usecase "CU08 - Gestionar soporte al cliente" as CU08
 }
 
 Votante -down- CU01
@@ -30,5 +32,10 @@ Admin -up- CU07
 
 CU06 ..> CU01 : <<include>>
 CU07 ..> CU01 : <<include>>
+
+Soporte -up- CU01
+Soporte -up- CU08
+
+CU08 ..> CU01 : <<include>>
 
 @enduml
