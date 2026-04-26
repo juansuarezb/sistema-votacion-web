@@ -7,7 +7,7 @@ Permite a los usuarios autenticarse en el sistema mediante un mecanismo de inici
 ## 2. Actores
 
 * **Principal:** Votante / Administrador
-* **Secundario(s):** Sistema de autenticación externo (si aplica)
+* **Secundario(s):** Ninguno
 
 ## 3. Precondiciones
 
