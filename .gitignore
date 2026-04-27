@@ -1,0 +1,14 @@
+# Visual Paradigm backup files
+*.bak
+*.bak.*
+
+# Visual Paradigm lock files
+*.lck
+
+# Visual Paradigm temp files
+.vptmp/
+~*.vpp
+
+# OS
+.DS_Store
+Thumbs.db
