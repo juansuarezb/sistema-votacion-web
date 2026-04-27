@@ -86,10 +86,20 @@ Auditor:<br>Usuario encargado de supervisar y verificar la transparencia e integ
 Servicio de correo(actor externo):<br>Sistema externo que colabora con la aplicación enviando códigos de verificación (OTP) y notificaciones necesarias para procesos como autenticación y recuperación de contraseña.<br>
 
 ## 6.3. Casos de uso:
- 
+- **Autenticarse:**<br>Permite al usuario acceder al sistema mediante el ingreso de credenciales y la confirmación mediante OTP (correo eletrónico).
+- **Emitir Voto:**<br>Permite al votante seleccionar una opción en una votación activa y registrar su elección de forma segura.<br>
+- **Recuperar contraseña**<br>Permite al usuario restablecer su contraseña en caso de haberla olvidado, para recuperar el acceso al sistema.<br>
+- **Gestionar votaciones:**<br>Permite al administrador crear, modificar, eliminar y controlar el estado de las votaciones disponibles en el sistema.<br>
+- **Visualizar resultados:**<br>Permite al administrador consultar los resultados de las votaciones de manera actualizada.<br>
+- **Generar reporte de auditoria:**<br>Permite al auditor revisar los registros del sistema para analizar la actividad y garantizar la integridad del proceso.<br>
 ## 6.4. Descripción de casos de uso:
 Las descripciones detalladas de los casos de uso se encuentran en los siguientes documentos:
-- [CU-01: Autenticacion de usuario](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU01-inicio-de-sesion-unico.md)
+- [CU-01: Autenticacion de usuario](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU-01%E2%80%93Autenticarse.md)<br>
+- [CU-02: Emitir Voto](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU-02%E2%80%93EmitirVoto.md)<br>
+- [CU-03: Gestionar votaciones](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU-03%E2%80%93GestionarVotaciones.md)<br>
+- [CU-04: Visualizar resultados](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU-04%E2%80%93VisualizarResultados.md)<br>
+- [CU-05: Recuperar contraseña](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU-05%E2%80%93RecuperarContrase%C3%B1a.md)<br>
+- [CU-06: Auditar actividad](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU-06%E2%80%93Auditar%20actividad.md)<br>
 ---
 
 ## 7. Evolución del sistema
