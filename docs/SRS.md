@@ -75,7 +75,20 @@ El sistema de votación electrónica permitirá a los auditores acceder a regist
 ---
 
 ## 6. Modelos del sistema
+## 6.1. Diagrama de casos de uso
+Se presenta el diagrama de casos de uso que describen las interacciones entre los usuarios y el sistema.<br>
+![Diagrama](https://raw.githubusercontent.com/juansuarezb/sistema-votacion-web/main/docs/Casos%20de%20Uso/CasosDeUso.png)
 
+## 6.2. Actores:
+Votante
+Administrador
+Auditor
+Base de Datos
+Servicio de correo
+
+## 6.3. Descripción de casos de uso:
+Las descripciones detalladas de los casos de uso se encuentran en los siguientes documentos:
+- [CU-01: Autenticacion de usuario](./casos-uso/CU-01.md)
 ---
 
 ## 7. Evolución del sistema
