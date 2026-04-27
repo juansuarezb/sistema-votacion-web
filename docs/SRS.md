@@ -80,13 +80,21 @@ Se presenta el diagrama de casos de uso que describen las interacciones entre lo
 ![Diagrama](https://raw.githubusercontent.com/juansuarezb/sistema-votacion-web/main/docs/Casos%20de%20Uso/CasosDeUso.png)
 
 ## 6.2. Actores:
-Votante
-Administrador
-Auditor
-Base de Datos
-Servicio de correo
+Votante: Usuario del sistema que participa en las votaciones. Su principal objetivo es emitir su voto en procesos activos de forma segura y confiable. Tiene acceso limitado únicamente a las funcionalidades necesarias para autenticarse y votar.<br> 
+Administrador:Usuario responsable de la gestión y control del sistema de votaciones. Se encarga de crear, modificar y administrar las votaciones, así como de supervisar su funcionamiento y consultar los resultados.<br>
+Auditor:Usuario encargado de supervisar y verificar la transparencia e integridad del sistema. Su función es revisar los resultados de las votaciones y analizar los registros de actividad, sin intervenir en la gestión ni en la emisión de votos.<br>
+Servicio de correo(actor externo):Sistema externo que colabora con la aplicación enviando códigos de verificación (OTP) y notificaciones necesarias para procesos como autenticación y recuperación de contraseña.<br>
 
-## 6.3. Descripción de casos de uso:
+## 6.3. Casos de uso:
+| C.U.       | Descripción              |
+|--------------|--------------------------|
+|            | CU-01                    |
+| Nombre       | Registrar votante        |
+| Actor        | Administrador            |
+| Precondición | Sistema iniciado         |
+| Flujo normal | 1. Actor hace X...       |
+| Postcondición| Votante registrado       |
+## 6.4. Descripción de casos de uso:
 Las descripciones detalladas de los casos de uso se encuentran en los siguientes documentos:
 - [CU-01: Autenticacion de usuario](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU01-inicio-de-sesion-unico.md)
 ---

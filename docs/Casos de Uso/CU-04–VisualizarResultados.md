@@ -25,3 +25,6 @@ Permite al votante visualizar una confirmación de que su voto fue registrado co
 ## 6. Postcondiciones
 
 * El usuario queda informado del registro exitoso de su voto.
+
+Nota:
+Este caso de uso incluye la actualización automática de resultados en tiempo real.
