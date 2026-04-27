@@ -88,7 +88,7 @@ Servicio de correo
 
 ## 6.3. Descripción de casos de uso:
 Las descripciones detalladas de los casos de uso se encuentran en los siguientes documentos:
-- [CU-01: Autenticacion de usuario](./casos-uso/CU-01.md)
+- [CU-01: Autenticacion de usuario](./casos-uso/CU01-inicio-de-sesion-unico.md)
 ---
 
 ## 7. Evolución del sistema
