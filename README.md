@@ -15,21 +15,13 @@
 ---
 ## Alcance
 >[!NOTE]
->**Incluye**:
-> Módulo de inicio de sesión único.
-> Pantalla de acuerdo de usuario.
-> Módulo de Votación.
-> Pantalla de registro de votación exitoso.
-> Cifrado, protección y privatización total del voto.
-> Limitación del tráfico al habilitar a cierta porción de la población votar en cierta hora del día.
-> Pantalla de resultados de votación general en tiempo real.
-> Módulo de servicio al cliente o quejas del sistema.<br>
->**No incluye**:
-> Muestreo de datos de quien realizo el voto.
-> Modificación de los resultados de votación una vez se haya confirmado la selección de las opciones.
-> Habilitación del sistema antes o después del procesode votacion general.
-> Envío de resultados de votación al correo electrónico.
-> Realizar más de un voto por usuario.
+>**Incluye**:<br>
+> - Módulo de inicio de sesión único.
+> - Pantalla de acuerdo de usuario.
+> - Módulo de Votación.
+> - Pantalla de registro de votación exitoso.
+> - Cifrado, protección y privatización total del voto.
+> - Pantalla de resultados de votación general en tiempo real.<br>
 
 ---
 ## Contribuidores
