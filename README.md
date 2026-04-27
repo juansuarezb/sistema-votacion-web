@@ -23,7 +23,7 @@
 > Cifrado, protección y privatización total del voto.
 > Limitación del tráfico al habilitar a cierta porción de la población votar en cierta hora del día.
 > Pantalla de resultados de votación general en tiempo real.
-> Módulo de servicio al cliente o quejas del sistema.
+> Módulo de servicio al cliente o quejas del sistema.<br>
 >**No incluye**:
 > Muestreo de datos de quien realizo el voto.
 > Modificación de los resultados de votación una vez se haya confirmado la selección de las opciones.
