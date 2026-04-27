@@ -1,0 +1,41 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Votante" as Votante
+actor "Administrador" as Admin
+actor "Soporte al Cliente" as Soporte
+
+rectangle "Sistema de Votación Web" {
+    usecase "CU01 - Iniciar sesión única" as CU01
+    usecase "CU02 - Aceptar acuerdo de usuario" as CU02
+    usecase "CU03 - Emitir voto" as CU03
+    usecase "CU04 - Ver confirmación de voto" as CU04
+    usecase "CU05 - Contactar servicio al cliente" as CU05
+    usecase "CU06 - Gestionar votaciones y tráfico" as CU06
+    usecase "CU07 - Visualizar resultados en tiempo real" as CU07
+    usecase "CU08 - Gestionar soporte al cliente" as CU08
+}
+
+Votante -down- CU01
+Votante -down- CU02
+Votante -down- CU03
+Votante -down- CU05
+
+CU03 ..> CU01 : <<include>>
+CU03 ..> CU02 : <<include>>
+CU03 ..> CU04 : <<include>>
+
+Admin -up- CU01
+Admin -up- CU06
+Admin -up- CU07
+
+CU06 ..> CU01 : <<include>>
+CU07 ..> CU01 : <<include>>
+
+Soporte -up- CU01
+Soporte -up- CU08
+
+CU08 ..> CU01 : <<include>>
+
+@enduml
