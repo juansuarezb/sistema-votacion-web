@@ -1,14 +1,35 @@
-# Visual Paradigm backup files
-*.bak
-*.bak.*
+# === Visual Paradigm ===
+# Esto buscará archivos .bak en cualquier subcarpeta (como docs/)
+**/*.bak
+**/*.bak.*
+**/*.lck
+**/.vptmp/
+**/~*.vpp
 
-# Visual Paradigm lock files
-*.lck
-
-# Visual Paradigm temp files
-.vptmp/
-~*.vpp
-
-# OS
+# === OS (Sistema Operativo) ===
 .DS_Store
 Thumbs.db
+
+# === Java & Maven (Jakarta EE) ===
+# Ignorar la carpeta donde Maven construye el .war
+target/
+# Ignorar archivos compilados de Java
+*.class
+# Archivos temporales de logs
+*.log
+
+# === Eclipse IDE ===
+# Archivos de configuración local del proyecto en Eclipse
+.settings/
+.project
+.classpath
+# Carpeta de metadatos de Eclipse (si llegara a crearse en la raíz)
+.metadata/
+# Archivos de configuración de servidores (Tomcat/Glassfish)
+Servers/
+.recommenders/
+
+# === Web Apps (Jakarta) ===
+# Ignorar carpetas de compilación dinámicas si no usas Maven
+build/
+bin/
