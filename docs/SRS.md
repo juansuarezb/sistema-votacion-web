@@ -60,7 +60,7 @@ El sistema de votación electrónica mostrará a los usuarios las votaciones dis
 El sistema de votación electrónica permitirá a cada usuario autenticado emitir un único voto en cada proceso de votación activo.<br><br>
 El sistema permitirá únicamente votaciones de tipo cerrado con opciones predefinidas: "Sí", "No", "Blanco" y "Nulo".
 - **Administrador del sistema:**<br>
-El sistema de votación electrónica permitirá a los administradores configurar y gestionar los procesos de votación, incluyendo la creación de nuevas votaciones, la definición de opciones de voto y la asignación de permisos a los usuarios.<br>
+El sistema de votación electrónica permitirá a los administradores configurar y gestionar los procesos de votación, incluyendo la creación de nuevas votaciones y la asignación de permisos a los usuarios.<br>
 El sistema de votación electrónica proporcionará a los administradores la visualización de los resultados de las votaciones en tiempo real.<br><br>
 - **Auditor:**<br>
 El sistema de votación electrónica permitirá a los auditores acceder a registros detallados de las votaciones, incluyendo información sobre los votos emitidos y los resultados, para garantizar la transparencia y la integridad del proceso de votación.<br>
