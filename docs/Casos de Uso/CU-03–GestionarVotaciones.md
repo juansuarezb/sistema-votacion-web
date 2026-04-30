@@ -13,7 +13,7 @@ Permite al administrador crear, modificar, eliminar y controlar el estado de las
 ## 4. Flujo Principal (Escenario de éxito)
 1. El administrador accede al módulo de gestión.
 2. El sistema muestra las votaciones existentes.
-3. El administrador selecciona una acción (crear, editar, eliminar, publicar o cerrar).
+3. El administrador selecciona una acción (crear, editar y eliminar).
 4. El sistema solicita los datos necesarios.
 5. El administrador ingresa o modifica la información.
 6. El sistema valida y guarda los cambios.
