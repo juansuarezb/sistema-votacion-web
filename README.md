@@ -17,7 +17,6 @@
 >[!NOTE]
 >**Incluye**:<br>
 > - Módulo de inicio de sesión único.
-> - Pantalla de acuerdo de usuario.
 > - Módulo de Votación.
 > - Pantalla de registro de votación exitoso.
 > - Cifrado, protección y privatización total del voto.
