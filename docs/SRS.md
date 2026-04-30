@@ -84,7 +84,7 @@ Se presenta el diagrama de casos de uso que describen las interacciones entre lo
 - **Votante:**<br>Usuario del sistema que participa en las votaciones. Su principal objetivo es emitir su voto en procesos activos de forma segura y confiable. Tiene acceso limitado únicamente a las funcionalidades necesarias para autenticarse y votar.<br> 
 - **Administrador:**<br>Usuario responsable de la gestión y control del sistema de votaciones. Se encarga de crear, modificar y administrar las votaciones, así como de supervisar su funcionamiento y consultar los resultados.<br>
 - **Auditor:**<br>Usuario encargado de supervisar y verificar la transparencia e integridad del sistema. Su función es revisar los resultados de las votaciones y analizar los registros de actividad, sin intervenir en la gestión ni en la emisión de votos.<br>
-- **Servicio de correo(actor externo):**<br>Sistema externo que colabora con la aplicación enviando códigos de verificación (OTP) y notificaciones necesarias para procesos como autenticación y recuperación de contraseña.<br>
+- **Servicio de correo (actor externo):**<br>Sistema externo que colabora con la aplicación enviando códigos de verificación (OTP) y notificaciones necesarias para procesos como autenticación y recuperación de contraseña.<br>
 
 ## 6.3. Casos de uso:
 - **Autenticarse:**<br>Permite al usuario acceder al sistema mediante el ingreso de credenciales y la confirmación mediante OTP (correo eletrónico).
