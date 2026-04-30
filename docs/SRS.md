@@ -58,6 +58,7 @@ En esta sección se describen los servicios que el sistema proporciona a cada ti
 El sistema de votación electrónica permitirá a los usuarios autenticarse mediante credenciales válidas antes de acceder a sus funcionalidades.<br>
 El sistema de votación electrónica mostrará a los usuarios las votaciones disponibles en las que pueden participar.<br>
 El sistema de votación electrónica permitirá a cada usuario autenticado emitir un único voto en cada proceso de votación activo.<br><br>
+El sistema permitirá únicamente votaciones de tipo cerrado con opciones predefinidas: "Sí", "No", "Blanco" y "Nulo".
 - **Administrador del sistema:**<br>
 El sistema de votación electrónica permitirá a los administradores configurar y gestionar los procesos de votación, incluyendo la creación de nuevas votaciones, la definición de opciones de voto y la asignación de permisos a los usuarios.<br>
 El sistema de votación electrónica proporcionará a los administradores la visualización de los resultados de las votaciones en tiempo real.<br><br>
