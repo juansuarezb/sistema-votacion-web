@@ -92,7 +92,7 @@ Se presenta el diagrama de casos de uso que describen las interacciones entre lo
 - **Recuperar contraseña**<br>Permite al usuario restablecer su contraseña en caso de haberla olvidado, para recuperar el acceso al sistema.<br>
 - **Gestionar votaciones:**<br>Permite al administrador crear, modificar, eliminar y controlar el estado de las votaciones disponibles en el sistema.<br>
 - **Visualizar resultados:**<br>Permite al administrador consultar los resultados de las votaciones de manera actualizada.<br>
-- **Generar reporte de auditoria:**<br>Permite al auditor revisar los registros del sistema para analizar la actividad y garantizar la integridad del proceso.<br>
+- **Auditar actividad:**<br>Permite al auditor revisar los registros del sistema para analizar la actividad y garantizar la integridad del proceso.<br>
 ## 6.4. Descripción de casos de uso:
 Las descripciones detalladas de los casos de uso se encuentran en los siguientes documentos:
 - [CU-01: Autenticacion de usuario](https://github.com/juansuarezb/sistema-votacion-web/blob/main/docs/Casos%20de%20Uso/CU-01%E2%80%93Autenticarse.md)<br>
