@@ -8,7 +8,7 @@
 <title>Login</title>
 </head>
 <body>
-	<form method="POST" action="../AutenticarController">
+	<form method="POST" action="${pageContext.request.contextPath}/AutenticarController?ruta=ingresar">
 		<fieldset>
 			<legend>Login</legend>
 			<label>Usuario:<br></label> <input type="text" name="correo" /><br>

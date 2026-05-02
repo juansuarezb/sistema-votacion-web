@@ -1,10 +1,10 @@
-package modelo;
+package modelo.Entities;
 
-import java.io.Serializable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Votante extends Usuario implements Serializable {
+public class Votante extends Usuario {
     private static final long serialVersionUID = 1L;
     private boolean haVotado;
     
@@ -67,7 +67,12 @@ public class Votante extends Usuario implements Serializable {
     
     @Override
     public Usuario authenticate(String correoElectronico, String contraseña) {
-        // Aquí implementarás la lógica de login más adelante
+        for (Votante votante : getListaVotantes()) {
+            if (votante.getCorreoElectronico().equals(correoElectronico) &&
+                votante.getContraseña().equals(contraseña)) {
+                return votante;
+            }
+        }
         return null;
     }
 
@@ -77,26 +82,47 @@ public class Votante extends Usuario implements Serializable {
         if(votantes == null) {
         	votantes = new ArrayList<Votante>();
         	votantes.add(new Votante(1, "Juan", "juan@gmail.com", true, "1234"));
-        	votantes.add(new Votante(1, "Abi", "abi@gmail.com", false, "1234"));
-        	votantes.add(new Votante(1, "Michi", "Michi@gmail.com", false, "1234"));
-        	votantes.add(new Votante(1, "Gipsi", "gipsi@gmail.com", false, "1234"));
+        	votantes.add(new Votante(2, "Abi", "abi@gmail.com", false, "1234"));
+        	votantes.add(new Votante(3, "Michi", "Michi@gmail.com", false, "1234"));
+        	votantes.add(new Votante(4, "Gipsi", "gipsi@gmail.com", false, "1234"));
         }
     	return votantes; 
     }
 
     public static Votante getVotanteById(int idUsuario) {
+        for(Votante votante : getListaVotantes()) {
+        	if(votante.getIdUsuario() == idUsuario) {
+        		return votante;
+        	}
+        }
         return null;
     }
 
     public static boolean create(Votante v) {
-        return true;
+        int max = 0;
+        for(Votante votante: getListaVotantes()) {
+        	if(max<votante.getIdUsuario()) {
+        		max = votante.getIdUsuario();
+        	}
+        }
+        
+        v.setIdUsuario(max + 1);
+        getListaVotantes().add(v);
+    	return true;
     }
-
     public static boolean update(Votante v) {
+        List<Votante> lista = getListaVotantes();
+
+        for (int i = 0; i < lista.size(); i++) {
+            if (lista.get(i).getIdUsuario() == v.getIdUsuario()) {
+                lista.set(i, v);
+                return true;
+            }
+        }
         return false;
     }
 
     public static boolean delete(int idUsuario) {
-        return true;
+        return getListaVotantes().removeIf(v -> v.getIdUsuario() == idUsuario);
     }
 }

@@ -23,13 +23,15 @@
 			</tr>
 		</thead>
 		<tbody>
+		<c:forEach items="${votantes}" var="votante">
 			<tr>
-				<td>1</td>
-				<td>Juan</td>
-				<td>juan@gmail.com</td>
-				<td>false</td>
+				<td>${votante.idUsuario }</td>
+				<td>${votante.nombre }</td>
+				<td>${votante.correoElectronico}</td>
+				<td>${votante.haVotado}</td>
 				<td><a href="">Actualizar</a> / <a href="">Eliminar</a></td>
 			</tr>
+		</c:forEach>
 		</tbody>
 	</table>
 </body>
