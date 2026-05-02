@@ -6,6 +6,13 @@
 **/.vptmp/
 **/~*.vpp
 
+# === Specific: docs/ folder ===
+# Asegurar que NINGÚN archivo .bak en docs/ sea versionado
+docs/*.bak
+docs/**/*.bak
+docs/*.bak.*
+docs/**/*.bak.*
+
 # === OS (Sistema Operativo) ===
 .DS_Store
 Thumbs.db
