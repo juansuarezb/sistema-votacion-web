@@ -9,7 +9,7 @@ RUN rm -rf ROOT
 
 # 4. Copiamos el archivo WAR que exportaste desde Eclipse
 # Asegúrate de que el nombre coincida con el que generaste en la carpeta target
-COPY target/VotoSeguro.war ./ROOT.war
+COPY target/sistema-votacion-web-0.0.1-SNAPSHOT.war ./ROOT.war
 
 # 5. Exponemos el puerto 8080
 EXPOSE 8080

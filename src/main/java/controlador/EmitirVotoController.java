@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import modelo.Entities.Usuario;
 import modelo.Entities.Votacion;
 import modelo.Entities.Votante;
 import modelo.Entities.Voto;
@@ -51,9 +53,18 @@ public class EmitirVotoController extends HttpServlet {
 
     private void listar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        HttpSession sesion = req.getSession(false);
-        Votante votante = (Votante) sesion.getAttribute("autorizado");
-        
+    	HttpSession sesion = req.getSession(false);
+    	if (sesion == null) {
+    	    resp.sendRedirect("jsp/Login.jsp");
+    	    return;
+    	}
+    	Usuario usuario = (Usuario) sesion.getAttribute("autorizado");
+    	if (!(usuario instanceof Votante)) {
+    	    // El usuario no es un Votante; redirigir a Login
+    		resp.sendRedirect("jsp/Login.jsp");
+    	    return;
+    	}
+    	Votante votante = (Votante) usuario;
         // Solo votaciones donde el votante está asignado
         List<Votacion> todasVotaciones = Votacion.getListaVotaciones();
         List<Votacion> votacionesAsignadas = new ArrayList<>();
@@ -70,9 +81,17 @@ public class EmitirVotoController extends HttpServlet {
 
     private void votar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        // 1. Obtener votante de la sesión
         HttpSession sesion = req.getSession(false);
-        Votante votante = (Votante) sesion.getAttribute("autorizado");
+        if (sesion == null) {
+            resp.sendRedirect("jsp/Login.jsp");
+            return;
+        }
+        Usuario usuario = (Usuario) sesion.getAttribute("autorizado");
+        if (!(usuario instanceof Votante)) {
+            resp.sendRedirect("jsp/Login.jsp");
+            return;
+        }
+        Votante votante = (Votante) usuario;
         // 2. Obtener votación
         int idVotacion = Integer.parseInt(req.getParameter("id"));
         Votacion votacion = Votacion.getVotacionById(idVotacion);
@@ -91,7 +110,16 @@ public class EmitirVotoController extends HttpServlet {
             throws ServletException, IOException {
         // 1. Obtener votante de la sesión
         HttpSession sesion = req.getSession(false);
-        Votante votante = (Votante) sesion.getAttribute("autorizado");
+        if (sesion == null) {
+            resp.sendRedirect("jsp/Login.jsp");
+            return;
+        }
+        Usuario usuario = (Usuario) sesion.getAttribute("autorizado");
+        if (!(usuario instanceof Votante)) {
+            resp.sendRedirect("jsp/Login.jsp");
+            return;
+        }
+        Votante votante = (Votante) usuario;
         // 2. Obtener parámetros
         int idVotacion = Integer.parseInt(req.getParameter("idVotacion"));
         String opcionStr = req.getParameter("opcion");

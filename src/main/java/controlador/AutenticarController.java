@@ -72,7 +72,7 @@ public class AutenticarController extends HttpServlet {
 	        if (resultado instanceof Administrador) {
 	            resp.sendRedirect("GestionarVotacionesController?ruta=listarVotaciones");
 	        } else if (resultado instanceof Votante) {
-	            resp.sendRedirect("");
+	            resp.sendRedirect("EmitirVotoController?ruta=listar");
 	        } else if (resultado instanceof Auditor) {
 	            resp.sendRedirect("PanelAuditoriaController");
 	        }
