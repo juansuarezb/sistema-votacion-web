@@ -1,4 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%
     if (session.getAttribute("autorizado") == null) {
         response.sendRedirect(request.getContextPath() + "/jsp/Login.jsp");
@@ -9,7 +10,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>VotoSeguro - Crear Votante</title>
+    <title>VotoSeguro - Modificar Votante</title>
 </head>
 <body>
 
@@ -20,17 +21,19 @@
         </a>
     </nav>
 
-    <h2>Nuevo Votante</h2>
+    <h2>Modificar Votante</h2>
 
-<form action="${pageContext.request.contextPath}/GestionarVotantesController?ruta=guardarnuevo" method="post">
+    <form action="${pageContext.request.contextPath}/GestionarVotantesController?ruta=guardarExistente" method="post">
+
+        <input type="hidden" name="idUsuario" value="${votante.idUsuario}"/>
 
         <label>Nombre:</label>
-        <input type="text" name="nombre" required/>
+        <input type="text" name="nombre" value="${votante.nombre}" required/>
 
         <br/>
 
         <label>Correo electrónico:</label>
-        <input type="email" name="correo" required/>
+        <input type="email" name="correo" value="${votante.correoElectronico}" required/>
 
         <br/>
 

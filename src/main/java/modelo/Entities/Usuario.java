@@ -10,9 +10,10 @@ public abstract class Usuario implements Serializable{
 	protected String contraseña;
 	// Contrato: Obliga a Admin y Votante a implementar su propia validación
     public abstract Usuario authenticate(String correoElectronico, String contraseña);
+    public abstract void cerrarSesion();
     // 1. Constructor vacío (necesario para que los hijos sean JavaBeans)
     public Usuario() {
-    	
+
     }
     // 2. Constructor con parámetro
     public Usuario(int idUsuario, String nombre, String correoElectronico, String contraseña) {

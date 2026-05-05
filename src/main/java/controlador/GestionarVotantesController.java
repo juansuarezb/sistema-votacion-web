@@ -23,7 +23,7 @@ public class GestionarVotantesController extends HttpServlet{
 		this.ruteador(req, resp);
 	}
 
-	private void ruteador(HttpServletRequest req, HttpServletResponse resp) 
+	private void ruteador(HttpServletRequest req, HttpServletResponse resp)
 	        throws ServletException, IOException {
 
 	    String ruta = req.getParameter("ruta");
@@ -48,12 +48,15 @@ public class GestionarVotantesController extends HttpServlet{
 	        case "guardarExistente":
 	        	this.guardarExistente(req, resp);
 	        	break;
+	        case "eliminar":
+	            this.eliminar(req, resp);
+	            break;
 	        default:
 	            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
 	            break;
 	    }
 	}
-	
+
 	private void listar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		//1. Obtener parametros
 		//2. Hablar con el modelo
@@ -63,28 +66,55 @@ public class GestionarVotantesController extends HttpServlet{
 		req.getRequestDispatcher("jsp/ListarVotantes.jsp").forward(req, resp);
 	}
 	private void nuevo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//1. Obtener parametros
-		//2. Hablar con el modelo
-		//3. LLamar a la vista
+		 req.getRequestDispatcher("jsp/CrearVotante.jsp").forward(req, resp);
 	}
 	private void guardarNuevo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//1. Obtener parametros
-		//2. Hablar con el modelo
-		//3. LLamar a la vista
+        // 1. Obtener parámetros
+        String nombre = req.getParameter("nombre");
+        String correo = req.getParameter("correo");
+        String contraseña = req.getParameter("contraseña");
+        // 2. Crear votante
+        Votante v = new Votante(0, nombre, correo, contraseña);
+        boolean resultado = Votante.create(v);
+        // 3. Redirigir
+        if (resultado) {
+            resp.sendRedirect("GestionarVotantesController?ruta=listar");
+        } else {
+            req.setAttribute("error", "Error al crear el votante.");
+            req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
+        }
 	}
 	private void actualizar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//1. Obtener parametros
-		//2. Hablar con el modelo
-		//3. LLamar a la vista
+        int id = Integer.parseInt(req.getParameter("id"));
+        Votante v = Votante.getVotanteById(id);
+        req.setAttribute("votante", v);
+        req.getRequestDispatcher("jsp/modificarVotante.jsp").forward(req, resp);
 	}
 	private void guardarExistente(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//1. Obtener parametros
-		//2. Hablar con el modelo
-		//3. LLamar a la vista
+        // 1. Obtener parámetros
+        int id = Integer.parseInt(req.getParameter("idUsuario"));
+        String nombre = req.getParameter("nombre");
+        String correo = req.getParameter("correo");
+        String contraseña = req.getParameter("contraseña");
+        // 2. Actualizar
+        Votante v = new Votante(0, nombre, correo, contraseña);
+        boolean resultado = Votante.update(v);
+        // 3. Redirigir
+        if (resultado) {
+            resp.sendRedirect("GestionarVotantesController?ruta=listar");
+        } else {
+            req.setAttribute("error", "Error al modificar el votante.");
+            req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
+        }
 	}
 	private void eliminar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//1. Obtener parametros
-		//2. Hablar con el modelo
-		//3. LLamar a la vista
+        int id = Integer.parseInt(req.getParameter("id"));
+        boolean resultado = Votante.delete(id);
+        if (resultado) {
+            resp.sendRedirect("GestionarVotantesController?ruta=listar");
+        } else {
+            req.setAttribute("error", "Error al eliminar el votante.");
+            req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
+        }
 	}
 }
