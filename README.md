@@ -15,21 +15,65 @@
 ---
 ## Alcance
 >[!NOTE]
->Incluye:
->
->
->No incluye:
+>**Incluye**:<br>
+> - Módulo de inicio de sesión único.
+> - Módulo de Votación.
+> - Pantalla de registro de votación exitoso.
+> - Cifrado, protección y privatización total del voto.
+> - Pantalla de resultados de votación general en tiempo real.<br>
+
 ---
 ## Contribuidores
 > [!NOTE]
 > [![May-CR](https://img.shields.io/badge/May--CR-Emilia_Guachamin-black?style=flat-square&logo=github)](https://github.com/May-CR)
 > [![P4bloMaldonado](https://img.shields.io/badge/P4bloMaldonado-Pablo_Maldonado-black?style=flat-square&logo=github)](https://github.com/P4bloMaldonado)
 > [![XLex0](https://img.shields.io/badge/XLex0-AlexRedes-black?style=flat-square&logo=github)](https://github.com/XLex0)
-> [![kpenafiel](https://img.shields.io/badge/kpenafiel-Kevin_Peñafiel-black?style=flat-square&logo=github)](https://github.com/kpenafiel)
+> [![KealPetu](https://img.shields.io/badge/KealPetu-Kevin_Peñafiel-black?style=flat-square&logo=github)](https://github.com/KealPetu)
 > [![juansuarezb](https://img.shields.io/badge/juansuarezb-Juan_Suárez-black?style=flat-square&logo=github)](https://github.com/juansuarezb)
 > [![Dsmcamila](https://img.shields.io/badge/Dsmcamila-Domenica_Sánchez-black?style=flat-square&logo=github)](https://github.com/DomenicaSanchez)
 > [![greyhatbat](https://img.shields.io/badge/greyhatbat-Álvaro_Zumbana-black?style=flat-square&logo=github)](https://github.com/greyhatbat)
 ---
+
+## 🐳 Despliegue con Docker (Manual)
+
+>[!IMPORTANT]
+> Requisitos Previos:<br>
+> - Clonar este repositorio: git clone [https://github.com/tu-usuario/VotoSeguro.git](https://github.com/tu-usuario/VotoSeguro.git)
+> - Docker Desktop instalado y en ejecución.<br>
+> - Java JDK 21 y Maven (para compilar el proyecto).<br>
+> - **Preparación del Artefacto:**<br>
+> Antes de construir la imagen de Docker, es necesario generar el archivo ejecutable (.war) que contiene toda la lógica del sistema, incluyendo las dependencias de EclipseLink.
+> 
+> ``` Bash
+> # En la raíz del proyecto
+> mvn clean package
+> 
+> ```
+> Verifica que el archivo VotoSeguro.war se haya generado correctamente en la carpeta /target.
+
+
+### 1. Construir la Imagen
+Este comando crea una imagen local llamada `votoseguro-app` basada en **Tomcat 10.1** y **JDK 21**, empaquetando el archivo `.war` generado previamente.
+
+```bash
+docker build -t votoseguro-app .  
+```
+
+### 2. Ejecutar el Contenedor
+Este comando instancia el contenedor, mapea el puerto 8080 y le asigna un nombre para facilitar su gestión.
+
+```Bash
+docker run -d -p 8080:8080 --name contenedor-voto-seguro votoseguro-app
+```
+
+### 3. Verificación
+URL de acceso: http://localhost:8080/
+
+Logs: Para revisar que el despliegue de Tomcat fue exitoso, usa:
+
+```Bash
+docker logs -f contenedor-voto-seguro
+```
 
 ## Tecnologías (tentativo)
 
