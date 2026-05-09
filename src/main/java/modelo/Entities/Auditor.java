@@ -28,16 +28,6 @@ public class Auditor extends Usuario {
     public String getContraseña() { return contraseña; }
     public void setContraseña(String contraseña) { this.contraseña = contraseña; }
 
-    // Lista en memoria
-    public static List<Auditor> getListaAuditores() {
-        if (auditores == null) {
-            auditores = new ArrayList<>();
-            auditores.add(new Auditor(1, "Auditor Principal",
-                "auditor@votoseguro.com", "auditor123"));
-        }
-        return auditores;
-    }
-
     @Override
     public Usuario authenticate(String correoElectronico, String contraseña) {
         for (Auditor auditor : getListaAuditores()) {
@@ -48,10 +38,27 @@ public class Auditor extends Usuario {
         }
         return null;
     }
-
+    
 	@Override
 	public void cerrarSesion() {
 		// TODO Auto-generated method stub
 
 	}
+    // Lista en memoria
+    public static List<Auditor> getListaAuditores() {
+        if (auditores == null) {
+            auditores = new ArrayList<>();
+            auditores.add(new Auditor(1, "Auditor Principal",
+                "auditor@votoseguro.com", "auditor123"));
+        }
+        return auditores;
+    }
+    public void generarReporte(){
+    	
+    }
+    public void verLog() {
+    	
+    }
+
+
 }

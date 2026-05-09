@@ -29,15 +29,6 @@ public class Votante extends Usuario {
     public void setContraseña(String contraseña) { this.contraseña = contraseña; }
     public List<Integer> getVotacionesVotadas() { return votacionesVotadas; }
 
-    // Métodos de negocio
-    public boolean puedeVotar(int idVotacion) {
-        return !votacionesVotadas.contains(idVotacion);
-    }
-
-    public void marcarComoVotado(int idVotacion) {
-        votacionesVotadas.add(idVotacion);
-    }
-
     @Override
     public Usuario authenticate(String correoElectronico, String contraseña) {
         for (Votante votante : getListaVotantes()) {
@@ -48,9 +39,18 @@ public class Votante extends Usuario {
         }
         return null;
     }
-
+    
     @Override
     public void cerrarSesion() {}
+    
+    // Métodos de negocio
+    public boolean puedeVotar(int idVotacion) {
+        return !votacionesVotadas.contains(idVotacion);
+    }
+
+    public void marcarComoVotado(int idVotacion) {
+        votacionesVotadas.add(idVotacion);
+    }
 
     // Lista en memoria
     public static List<Votante> getListaVotantes() {

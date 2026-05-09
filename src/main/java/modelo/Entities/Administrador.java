@@ -33,6 +33,26 @@ public class Administrador extends Usuario {
     public String getNivelAcceso() { return nivelAcceso; }
     public void setNivelAcceso(String nivelAcceso) { this.nivelAcceso = nivelAcceso; }
 
+   
+    @Override
+    public Usuario authenticate(String correoElectronico, String contraseña) {
+        for (Administrador admin : getListaAdministradores()) {
+            if (admin.getCorreoElectronico().equals(correoElectronico) &&
+                admin.getContraseña().equals(contraseña)) {
+                return admin;
+            }
+        }
+        return null;
+    }
+	@Override
+	public void cerrarSesion() {
+
+	}
+	
+    public boolean validarPermisos(String claveMaestra) {
+        return CLAVE_MAESTRA.equals(claveMaestra);
+    }
+    
     // Lista en memoria
     public static List<Administrador> getListaAdministradores() {
         if (administradores == null) {
@@ -41,10 +61,6 @@ public class Administrador extends Usuario {
                 "admin@votoseguro.com", "admin123", "SUPER"));
         }
         return administradores;
-    }
-
-    public boolean validarPermisos(String claveMaestra) {
-        return CLAVE_MAESTRA.equals(claveMaestra);
     }
 
     // Registrar nuevo Admin
@@ -60,20 +76,4 @@ public class Administrador extends Usuario {
         return true;
     }
 
-    @Override
-    public Usuario authenticate(String correoElectronico, String contraseña) {
-        for (Administrador admin : getListaAdministradores()) {
-            if (admin.getCorreoElectronico().equals(correoElectronico) &&
-                admin.getContraseña().equals(contraseña)) {
-                return admin;
-            }
-        }
-        return null;
-    }
-
-	@Override
-	public void cerrarSesion() {
-		// TODO Auto-generated method stub
-
-	}
 }
