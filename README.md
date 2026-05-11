@@ -34,45 +34,85 @@
 > [![greyhatbat](https://img.shields.io/badge/greyhatbat-Álvaro_Zumbana-black?style=flat-square&logo=github)](https://github.com/greyhatbat)
 ---
 
-## 🐳 Despliegue con Docker (Manual)
+## 🐳 Despliegue con Docker
 
 >[!IMPORTANT]
-> Requisitos Previos:<br>
-> - Clonar este repositorio: git clone [https://github.com/tu-usuario/VotoSeguro.git](https://github.com/tu-usuario/VotoSeguro.git)
-> - Docker Desktop instalado y en ejecución.<br>
-> - Java JDK 21 y Maven (para compilar el proyecto).<br>
-> - **Preparación del Artefacto:**<br>
-> Antes de construir la imagen de Docker, es necesario generar el archivo ejecutable (.war) que contiene toda la lógica del sistema, incluyendo las dependencias de EclipseLink.
-> 
-> ``` Bash
-> # En la raíz del proyecto
-> mvn clean package
-> 
+> Requisitos previos:
+> - Docker Desktop instalado y en ejecución.
+> - Java JDK 21
+> - Maven
+> - Clonar el repositorio:
+>
+> ```bash
+> git clone https://github.com/tu-usuario/VotoSeguro.git
 > ```
-> Verifica que el archivo VotoSeguro.war se haya generado correctamente en la carpeta /target.
 
+---
 
-### 1. Construir la Imagen
-Este comando crea una imagen local llamada `votoseguro-app` basada en **Tomcat 10.1** y **JDK 21**, empaquetando el archivo `.war` generado previamente.
+### 1. Generar el artefacto `.war`
+
+Desde la raíz del proyecto:
 
 ```bash
-docker build -t votoseguro-app .  
+mvn clean package
 ```
 
-### 2. Ejecutar el Contenedor
-Este comando instancia el contenedor, mapea el puerto 8080 y le asigna un nombre para facilitar su gestión.
+El archivo generado se encontrará en:
 
-```Bash
-docker run -d -p 8080:8080 --name contenedor-voto-seguro votoseguro-app
+```txt
+target/VotoSeguro.war
 ```
 
-### 3. Verificación
-URL de acceso: http://localhost:8080/
+---
 
-Logs: Para revisar que el despliegue de Tomcat fue exitoso, usa:
+### 2. Construir la imagen Docker
 
-```Bash
+```bash
+docker build -t votoseguro-app:v1 .
+```
+
+> [!TIP]
+> Se recomienda utilizar tags/versiones para identificar cada despliegue estable del sistema.
+
+Ejemplos:
+
+```bash
+docker build -t votoseguro-app:v0.1 .
+docker build -t votoseguro-app:v0.2-dashboard .
+docker build -t votoseguro-app:v1.0 .
+```
+
+---
+
+### 3. Ejecutar el contenedor
+
+```bash
+docker run -d -p 8080:8080 --name contenedor-voto-seguro votoseguro-app:v1
+```
+
+---
+
+### 4. Verificar ejecución
+
+Acceso:
+
+```txt
+http://localhost:8080/
+```
+
+Logs:
+
+```bash
 docker logs -f contenedor-voto-seguro
+```
+
+---
+
+### 5. Detener y eliminar contenedor
+
+```bash
+docker stop contenedor-voto-seguro
+docker rm contenedor-voto-seguro
 ```
 
 ## Tecnologías (tentativo)
