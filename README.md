@@ -13,6 +13,7 @@
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
 ![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)
 ![Visual Paradigm](https://img.shields.io/badge/Visual_Paradigm-18.0-FF6B35?style=flat-square&logoColor=white)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/juansuarezb/sistema-votacion-web)
 
 ## Descripción
 >[!NOTE]
