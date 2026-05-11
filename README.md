@@ -1,4 +1,18 @@
 # Sistema de Votación Web
+## Tecnologías
+
+![Java](https://img.shields.io/badge/Java-21-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
+![Jakarta EE](https://img.shields.io/badge/Jakarta_EE-10-4E9BCD?style=flat-square&logo=jakarta&logoColor=white)
+![Apache Tomcat](https://img.shields.io/badge/Apache_Tomcat-10.1-F8DC75?style=flat-square&logo=apachetomcat&logoColor=black)
+![Maven](https://img.shields.io/badge/Maven-3.9-C71A36?style=flat-square&logo=apachemaven&logoColor=white)
+![JSP](https://img.shields.io/badge/JSP-3.1-007396?style=flat-square&logo=java&logoColor=white)
+![JSTL](https://img.shields.io/badge/JSTL-3.0-6DB33F?style=flat-square&logo=java&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-24-2496ED?style=flat-square&logo=docker&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-5-E34F26?style=flat-square&logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-3-1572B6?style=flat-square&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6-F7DF1E?style=flat-square&logo=javascript&logoColor=black)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)
+![Visual Paradigm](https://img.shields.io/badge/Visual_Paradigm-18.0-FF6B35?style=flat-square&logoColor=white)
 
 ## Descripción
 >[!NOTE]
@@ -115,10 +129,6 @@ docker stop contenedor-voto-seguro
 docker rm contenedor-voto-seguro
 ```
 
-## Tecnologías (tentativo)
-
-
----
 
 ## Metodología de trabajo
 Se utiliza Kanban mediante GitHub Projects para la gestión de tareas.
