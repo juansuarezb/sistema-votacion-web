@@ -133,19 +133,27 @@ docker rm contenedor-voto-seguro
 ## Metodología de trabajo
 Se utiliza Kanban mediante GitHub Projects para la gestión de tareas.
 
-Flujo de trabajo:
-- Issues para tareas
-- Ramas `feature/*`
-- Pull Requests para integración
+## Flujo de Trabajo
 
----
+Se utiliza una estrategia basada en Git Flow simplificado.
 
-## Estructura de ramas
-- `main`: versión estable
-- `develop`: integración
-- `feature/*`: desarrollo de funcionalidades
+### Ramas principales
+- `main` → versión estable
+- `develop` → integración de desarrollo
 
----
+### Ramas de funcionalidades
+- `feature/login`
+- `feature/dashboard`
+- `feature/votacion`
+
+### Flujo de desarrollo
+1. Crear Issue.
+2. Crear rama `feature/*`.
+3. Desarrollar funcionalidad.
+4. Crear Pull Request hacia `develop`.
+5. Realizar revisión.
+6. Integrar cambios.
+7. Generar nueva imagen Docker estable si aplica.
 
 
 
