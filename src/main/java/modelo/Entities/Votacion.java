@@ -86,8 +86,8 @@ public class Votacion implements Serializable {
     public static boolean delete(int idVotacion) {
         return getListaVotaciones().removeIf(v -> v.getIdVotacion() == idVotacion);
     }
-    public List<Integer> getVotantesAsignados() { 
-        return votantesAsignados; 
+    public List<Integer> getVotantesAsignados() {
+        return votantesAsignados;
     }
 
     public void asignarVotante(int idVotante) {

@@ -38,7 +38,7 @@ public class Auditor extends Usuario {
         }
         return null;
     }
-    
+
 	@Override
 	public void cerrarSesion() {
 		// TODO Auto-generated method stub
@@ -54,10 +54,10 @@ public class Auditor extends Usuario {
         return auditores;
     }
     public void generarReporte(){
-    	
+
     }
     public void verLog() {
-    	
+
     }
 
 

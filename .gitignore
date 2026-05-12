@@ -46,11 +46,8 @@ build/
 bin/
 
 # Credenciales
-docker-compose.yml
 persistence.xml
 application.properties
-compose.yml
-docker-compose.yml
 .env
 
 # OS
