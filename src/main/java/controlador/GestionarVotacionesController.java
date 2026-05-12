@@ -148,7 +148,7 @@ public class GestionarVotacionesController extends HttpServlet {
             request.getRequestDispatcher("jsp/errorLogin.jsp").forward(request, response);
         }
     }
-    
+
     private void verResultados(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // 1. Obtener id de votación

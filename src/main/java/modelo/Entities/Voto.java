@@ -39,14 +39,18 @@ public class Voto implements Serializable {
 
     // Lista en memoria
     public static List<Voto> getListaVotos() {
-        if (votos == null) votos = new ArrayList<>();
+        if (votos == null) {
+			votos = new ArrayList<>();
+		}
         return votos;
     }
 
     public static boolean create(Voto v) {
         int max = 0;
         for (Voto voto : getListaVotos()) {
-            if (max < voto.getIdVoto()) max = voto.getIdVoto();
+            if (max < voto.getIdVoto()) {
+				max = voto.getIdVoto();
+			}
         }
         v.setIdVoto(max + 1);
         v.setFecha(LocalDateTime.now());

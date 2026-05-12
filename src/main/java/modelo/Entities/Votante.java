@@ -39,10 +39,10 @@ public class Votante extends Usuario {
         }
         return null;
     }
-    
+
     @Override
     public void cerrarSesion() {}
-    
+
     // Métodos de negocio
     public boolean puedeVotar(int idVotacion) {
         return !votacionesVotadas.contains(idVotacion);
@@ -66,7 +66,9 @@ public class Votante extends Usuario {
 
     public static Votante getVotanteById(int idUsuario) {
         for (Votante votante : getListaVotantes()) {
-            if (votante.getIdUsuario() == idUsuario) return votante;
+            if (votante.getIdUsuario() == idUsuario) {
+				return votante;
+			}
         }
         return null;
     }
@@ -74,7 +76,9 @@ public class Votante extends Usuario {
     public static boolean create(Votante v) {
         int max = 0;
         for (Votante votante : getListaVotantes()) {
-            if (max < votante.getIdUsuario()) max = votante.getIdUsuario();
+            if (max < votante.getIdUsuario()) {
+				max = votante.getIdUsuario();
+			}
         }
         v.setIdUsuario(max + 1);
         getListaVotantes().add(v);

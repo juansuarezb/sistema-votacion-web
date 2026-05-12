@@ -1,7 +1,12 @@
 package modelo.Entities;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import Conexion.ConexionBD;
 
 public class Administrador extends Usuario {
     private static final long serialVersionUID = 1L;
@@ -33,34 +38,89 @@ public class Administrador extends Usuario {
     public String getNivelAcceso() { return nivelAcceso; }
     public void setNivelAcceso(String nivelAcceso) { this.nivelAcceso = nivelAcceso; }
 
-   
+
     @Override
     public Usuario authenticate(String correoElectronico, String contraseña) {
-        for (Administrador admin : getListaAdministradores()) {
+    	String SQL = """
+    	        SELECT u.id_usuario, u.nombre, u.correo_electronico,
+    	               u.contrasena, a.nivel_acceso
+    	        FROM administrador a
+    	        JOIN usuario u ON a.id_usuario = u.id_usuario
+    	        WHERE u.correo_electronico = ? AND u.contrasena = ?
+    	    """;
+    	    try {
+    	        PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+    	        pstmt.setString(1, correoElectronico);
+    	        pstmt.setString(2, contraseña);
+    	        ResultSet rs = pstmt.executeQuery();
+    	        if (rs.next()) {
+    	            return new Administrador(
+    	                rs.getInt("id_usuario"),
+    	                rs.getString("nombre"),
+    	                rs.getString("correo_electronico"),
+    	                rs.getString("contrasena"),
+    	                rs.getString("nivel_acceso")
+    	            );
+    	        }
+    	    } catch (SQLException e) {
+    	        e.printStackTrace();
+    	    }
+    	    return null;
+    	/*for (Administrador admin : getListaAdministradores()) {
             if (admin.getCorreoElectronico().equals(correoElectronico) &&
                 admin.getContraseña().equals(contraseña)) {
                 return admin;
             }
         }
         return null;
+        */
     }
 	@Override
 	public void cerrarSesion() {
 
 	}
-	
+
     public boolean validarPermisos(String claveMaestra) {
         return CLAVE_MAESTRA.equals(claveMaestra);
     }
-    
+
     // Lista en memoria
     public static List<Administrador> getListaAdministradores() {
-        if (administradores == null) {
+        String SQL = """
+                SELECT u.id_usuario, u.nombre, u.correo_electronico,
+                       u.contrasena, a.nivel_acceso
+                FROM administrador a
+                JOIN usuario u ON a.id_usuario = u.id_usuario
+            """;
+            List<Administrador> administradores = new ArrayList<>();
+            try {
+                PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    administradores.add(new Administrador(
+                        rs.getInt("id_usuario"),
+                        rs.getString("nombre"),
+                        rs.getString("correo_electronico"),
+                        rs.getString("contrasena"),
+                        rs.getString("nivel_acceso")
+                    ));
+                }
+                ConexionBD.cerrar(rs);
+                ConexionBD.cerrar(pstmt);
+                ConexionBD.cerrar();
+                return administradores;
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+    	/*if (administradores == null) {
             administradores = new ArrayList<>();
             administradores.add(new Administrador(1, "Admin Principal",
                 "admin@votoseguro.com", "admin123", "SUPER"));
         }
         return administradores;
+        */
     }
 
     // Registrar nuevo Admin
