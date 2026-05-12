@@ -5,6 +5,7 @@
 **/*.lck
 **/.vptmp/
 **/~*.vpp
+*.vpp.bak*
 
 # === Specific: docs/ folder ===
 # Asegurar que NINGÚN archivo .bak en docs/ sea versionado
@@ -43,3 +44,15 @@ Servers/
 # Ignorar carpetas de compilación dinámicas si no usas Maven
 build/
 bin/
+
+# Credenciales
+docker-compose.yml
+persistence.xml
+application.properties
+compose.yml
+docker-compose.yml
+.env
+
+# OS
+.DS_Store
+Thumbs.db
