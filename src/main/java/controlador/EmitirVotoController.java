@@ -131,10 +131,7 @@ public class EmitirVotoController extends HttpServlet {
         }
         // 4. Crear voto
         OpcionVoto opcion = OpcionVoto.valueOf(opcionStr);
-        Voto voto = new Voto(0, null, opcion, idVotacion);
-        Voto.create(voto);
-        // 5. Marcar votante como votado
-        votante.marcarComoVotado(idVotacion);
+        Voto voto = new Voto(0, null, opcion, idVotacion, 1);
         // 6. Redirigir a confirmación
         req.getRequestDispatcher("jsp/confirmacionVoto.jsp").forward(req, resp);
     }

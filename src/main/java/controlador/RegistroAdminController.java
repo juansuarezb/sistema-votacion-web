@@ -61,11 +61,11 @@ public class RegistroAdminController extends HttpServlet {
         	req.setAttribute("error", "Clave de autorización incorrecta.");
         	req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
         }
-
+        /*
         // 3. Crear y registrar el Admin
         Administrador nuevoAdmin = new Administrador(0, nombre, correo, contraseña, nivelAcceso);
         Administrador.create(nuevoAdmin);
-
+         */
         // 4. Redirigir al Login
         resp.sendRedirect("jsp/Login.jsp");
     }

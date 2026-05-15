@@ -4,13 +4,10 @@ import java.io.Serializable;
 
 public abstract class Usuario implements Serializable{
 	private static final long serialVersionUID = 1L;
-	protected int idUsuario;
-	protected String nombre;
-	protected String correoElectronico;
-	protected String contraseña;
-	// Contrato: Obliga a Admin y Votante a implementar su propia validación
-    public abstract Usuario authenticate(String correoElectronico, String contraseña);
-    public abstract void cerrarSesion();
+	private int idUsuario;
+	private String nombre;
+	private String correoElectronico;
+	private String contraseña;
     // 1. Constructor vacío (necesario para que los hijos sean JavaBeans)
     public Usuario() {
 
@@ -22,4 +19,29 @@ public abstract class Usuario implements Serializable{
         this.correoElectronico = correoElectronico;
         this.contraseña = contraseña;
     }
+	public int getIdUsuario() {
+		return idUsuario;
+	}
+	public void setIdUsuario(int idUsuario) {
+		this.idUsuario = idUsuario;
+	}
+	public String getNombre() {
+		return nombre;
+	}
+	public void setNombre(String nombre) {
+		this.nombre = nombre;
+	}
+	public String getCorreoElectronico() {
+		return correoElectronico;
+	}
+	public void setCorreoElectronico(String correoElectronico) {
+		this.correoElectronico = correoElectronico;
+	}
+	public String getContraseña() {
+		return contraseña;
+	}
+	public void setContraseña(String contraseña) {
+		this.contraseña = contraseña;
+	}
+
 }
