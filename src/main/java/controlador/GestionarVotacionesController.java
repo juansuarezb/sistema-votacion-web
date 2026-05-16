@@ -22,317 +22,232 @@ import modelo.Entities.Voto;
 @WebServlet("/GestionarVotacionesController")
 public class GestionarVotacionesController extends HttpServlet {
 
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    private IVotacionDAO votacionDAO =
-            new JDBCVotacionDAOImpl();
+	private IVotacionDAO votacionDAO = new JDBCVotacionDAOImpl();
 
-    private IVotanteDAO votanteDAO =
-            new JDBCVotanteDAOImpl();
+	private IVotanteDAO votanteDAO = new JDBCVotanteDAOImpl();
 
-    private IVotoDAO votoDAO =
-            new JDBCVotoDAOImpl();
-    @Override
-    protected void doGet(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
+	private IVotoDAO votoDAO = new JDBCVotoDAOImpl();
 
-        ruteador(request, response);
-    }
+	@Override
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-    @Override
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
+		ruteador(request, response);
+	}
 
-        ruteador(request, response);
-    }
+	@Override
+	protected void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-    private void ruteador(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
+		ruteador(request, response);
+	}
 
-        String ruta = request.getParameter("ruta");
+	private void ruteador(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        if (ruta == null) {
-            ruta = "";
-        }
+		String ruta = request.getParameter("ruta");
 
-        switch (ruta) {
+		if (ruta == null) {
+			ruta = "";
+		}
 
-            case "listarVotaciones":
-                listarVotaciones(request, response);
-                break;
+		switch (ruta) {
 
-            case "nuevo":
-                nuevo(request, response);
-                break;
+		case "listarVotaciones":
+			listarVotaciones(request, response);
+			break;
 
-            case "guardar":
-                guardar(request, response);
-                break;
+		case "nuevo":
+			nuevo(request, response);
+			break;
 
-            case "modificar":
-                modificar(request, response);
-                break;
+		case "guardar":
+			guardar(request, response);
+			break;
 
-            case "guardarExistente":
-                guardarExistente(request, response);
-                break;
+		case "modificar":
+			modificar(request, response);
+			break;
 
-            case "eliminar":
-                eliminar(request, response);
-                break;
+		case "guardarExistente":
+			guardarExistente(request, response);
+			break;
 
-            case "verResultados":
-                verResultados(request, response);
-                break;
+		case "eliminar":
+			eliminar(request, response);
+			break;
 
-            case "asignar":
-                asignar(request, response);
-                break;
+		case "verResultados":
+			verResultados(request, response);
+			break;
 
-            case "guardarAsignacion":
-                guardarAsignacion(request, response);
-                break;
+		case "asignar":
+			asignar(request, response);
+			break;
 
-            default:
-                listarVotaciones(request, response);
-                break;
-        }
-    }
+		case "guardarAsignacion":
+			guardarAsignacion(request, response);
+			break;
 
-    private void listarVotaciones(HttpServletRequest request,
-                                  HttpServletResponse response)
-            throws ServletException, IOException {
-        List<Votacion> votaciones = votacionDAO.listar();
+		default:
+			listarVotaciones(request, response);
+			break;
+		}
+	}
 
-        request.setAttribute("votaciones", votaciones);
+	private void listarVotaciones(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		List<Votacion> votaciones = votacionDAO.listar();
 
-        request.getRequestDispatcher("jsp/ListarVotaciones.jsp")
-                .forward(request, response);
-    }
+		request.setAttribute("votaciones", votaciones);
 
-    private void nuevo(HttpServletRequest request,
-                       HttpServletResponse response)
-            throws ServletException, IOException {
+		request.getRequestDispatcher("jsp/ListarVotaciones.jsp").forward(request, response);
+	}
 
-        request.getRequestDispatcher("jsp/crearVotacion.jsp")
-                .forward(request, response);
-    }
+	private void nuevo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    private void guardar(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
+		request.getRequestDispatcher("jsp/crearVotacion.jsp").forward(request, response);
+	}
 
-        String titulo = request.getParameter("titulo");
+	private void guardar(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        String descripcion =
-                request.getParameter("descripcion");
+		String titulo = request.getParameter("titulo");
 
-        String fechaInicio =
-                request.getParameter("fechaInicio");
+		String descripcion = request.getParameter("descripcion");
 
-        String fechaCierre =
-                request.getParameter("fechaCierre");
-        Votacion votacion =
-                new Votacion(
-                        0,
-                        titulo,
-                        descripcion,
-                        fechaInicio,
-                        fechaCierre
-                );
+		String fechaInicio = request.getParameter("fechaInicio");
 
-        boolean resultado =
-                votacionDAO.create(votacion);
+		String fechaCierre = request.getParameter("fechaCierre");
+		Votacion votacion = new Votacion(0, titulo, descripcion, fechaInicio, fechaCierre);
 
-        if (resultado) {
+		boolean resultado = votacionDAO.create(votacion);
 
-            response.sendRedirect(
-                    "GestionarVotacionesController?ruta=listarVotaciones");
+		if (resultado) {
 
-        } else {
+			response.sendRedirect("GestionarVotacionesController?ruta=listarVotaciones");
 
-            request.setAttribute(
-                    "error",
-                    "Error al crear la votación."
-            );
+		} else {
 
-            request.getRequestDispatcher("jsp/errorLogin.jsp")
-                    .forward(request, response);
-            }
+			request.setAttribute("error", "Error al crear la votación.");
 
-    }
+			request.getRequestDispatcher("jsp/errorLogin.jsp").forward(request, response);
+		}
 
-    private void modificar(HttpServletRequest request,
-                           HttpServletResponse response)
-            throws ServletException, IOException {
-        int id =
-                Integer.parseInt(request.getParameter("id"));
+	}
 
-        Votacion votacion =
-                votacionDAO.getById(id);
+	private void modificar(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
 
-        request.setAttribute("votacion", votacion);
+		Votacion votacion = votacionDAO.getById(id);
 
-        request.getRequestDispatcher("jsp/modificarVotacion.jsp")
-                .forward(request, response);
-    }
+		request.setAttribute("votacion", votacion);
 
-    private void guardarExistente(HttpServletRequest request,
-                                  HttpServletResponse response)
-            throws ServletException, IOException {
-        int id =
-                Integer.parseInt(
-                        request.getParameter("idVotacion")
-                );
+		request.getRequestDispatcher("jsp/modificarVotacion.jsp").forward(request, response);
+	}
 
-        String titulo =
-                request.getParameter("titulo");
+	private void guardarExistente(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("idVotacion"));
 
-        String descripcion =
-                request.getParameter("descripcion");
+		String titulo = request.getParameter("titulo");
 
-        String fechaInicio =
-                request.getParameter("fechaInicio");
+		String descripcion = request.getParameter("descripcion");
 
-        String fechaCierre =
-                request.getParameter("fechaCierre");
+		String fechaInicio = request.getParameter("fechaInicio");
 
-        Votacion votacion =
-                new Votacion(
-                        id,
-                        titulo,
-                        descripcion,
-                        fechaInicio,
-                        fechaCierre
-                );
+		String fechaCierre = request.getParameter("fechaCierre");
 
-        boolean resultado =
-                votacionDAO.update(votacion);
+		Votacion votacion = new Votacion(id, titulo, descripcion, fechaInicio, fechaCierre);
 
-        if (resultado) {
+		boolean resultado = votacionDAO.update(votacion);
 
-            response.sendRedirect(
-                    "GestionarVotacionesController?ruta=listarVotaciones");
+		if (resultado) {
 
-        } else {
+			response.sendRedirect("GestionarVotacionesController?ruta=listarVotaciones");
 
-            request.setAttribute(
-                    "error",
-                    "Error al modificar la votación."
-            );
+		} else {
 
-            request.getRequestDispatcher("jsp/errorLogin.jsp")
-                    .forward(request, response);
-        }
-    }
+			request.setAttribute("error", "Error al modificar la votación.");
 
-    private void eliminar(HttpServletRequest request,
-                          HttpServletResponse response)
-            throws ServletException, IOException {
-        int id =
-                Integer.parseInt(request.getParameter("id"));
+			request.getRequestDispatcher("jsp/errorLogin.jsp").forward(request, response);
+		}
+	}
 
-        boolean resultado =
-                votacionDAO.delete(id);
+	private void eliminar(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
 
-        if (resultado) {
+		boolean resultado = votacionDAO.delete(id);
 
-            response.sendRedirect(
-                    "GestionarVotacionesController?ruta=listarVotaciones");
+		if (resultado) {
 
-        } else {
+			response.sendRedirect("GestionarVotacionesController?ruta=listarVotaciones");
 
-            request.setAttribute(
-                    "error",
-                    "Error al eliminar la votación."
-            );
+		} else {
 
-            request.getRequestDispatcher("jsp/errorLogin.jsp")
-                    .forward(request, response);
-        }
-    }
+			request.setAttribute("error", "Error al eliminar la votación.");
 
-    private void verResultados(HttpServletRequest request,
-                               HttpServletResponse response)
-            throws ServletException, IOException {
-        int id =
-                Integer.parseInt(request.getParameter("id"));
+			request.getRequestDispatcher("jsp/errorLogin.jsp").forward(request, response);
+		}
+	}
 
-        Votacion votacion =
-                votacionDAO.getById(id);
+	private void verResultados(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
 
-        List<Voto> votos =
-                votoDAO.getByVotacion(id);
+		Votacion votacion = votacionDAO.getById(id);
 
-        List<Votante> votantes =
-                votanteDAO.listar();
+		List<Voto> votos = votoDAO.getByVotacion(id);
 
-        Escrutinio escrutinio =
-                new Escrutinio(id);
+		List<Votante> votantes = votanteDAO.listar();
 
-        escrutinio.calcularResultados(votos, votantes);
+		Escrutinio escrutinio = new Escrutinio(id);
 
-        request.setAttribute("escrutinio", escrutinio);
+		escrutinio.calcularResultados(votos, votantes);
 
-        request.setAttribute("votacion", votacion);
+		request.setAttribute("escrutinio", escrutinio);
 
-        request.getRequestDispatcher("jsp/verResultados.jsp")
-                .forward(request, response);
-    }
+		request.setAttribute("votacion", votacion);
 
-    private void asignar(HttpServletRequest request,
-                         HttpServletResponse response)
-            throws ServletException, IOException {
-        int id =
-                Integer.parseInt(request.getParameter("id"));
+		request.getRequestDispatcher("jsp/verResultados.jsp").forward(request, response);
+	}
 
-        Votacion votacion =
-                votacionDAO.getById(id);
+	private void asignar(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		int id = Integer.parseInt(request.getParameter("id"));
+		Votacion votacion = votacionDAO.getById(id);
+		List<Votante> votantes = votanteDAO.listar();
+		List<Votante> asignados = votacionDAO.getVotantesAsignados(id);
 
-        List<Votante> votantes =
-                votanteDAO.listar();
+// IDs de votantes ya asignados para marcar checkboxes
+		List<Integer> idsAsignados = asignados.stream().map(v -> v.getIdUsuario()).toList();
 
-        request.setAttribute("votacion", votacion);
+		request.setAttribute("votacion", votacion);
+		request.setAttribute("votantes", votantes);
+		request.setAttribute("idsAsignados", idsAsignados);
+		request.getRequestDispatcher("jsp/asignarVotantes.jsp").forward(request, response);
+	}
 
-        request.setAttribute("votantes", votantes);
+	private void guardarAsignacion(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 
-        request.getRequestDispatcher("jsp/asignarVotantes.jsp")
-                .forward(request, response);
-    }
+		int idVotacion = Integer.parseInt(request.getParameter("idVotacion"));
+		String[] idsSeleccionados = request.getParameterValues("votantes");
 
-    private void guardarAsignacion(HttpServletRequest request,
-                                   HttpServletResponse response)
-            throws ServletException, IOException {
-        int idVotacion =
-                Integer.parseInt(
-                        request.getParameter("idVotacion")
-                );
+// 1. Eliminar asignaciones previas
+		votacionDAO.eliminarAsignaciones(idVotacion);
 
-        Votacion votacion =
-                votacionDAO.getById(idVotacion);
+// 2. Insertar nuevas asignaciones
+		if (idsSeleccionados != null) {
+			for (String id : idsSeleccionados) {
+				votacionDAO.asignarVotante(idVotacion, Integer.parseInt(id));
+			}
+		}
 
-        String[] idsSeleccionados =
-                request.getParameterValues("votantes");
-
-        votacion.getVotantesAsignados().clear();
-
-        if (idsSeleccionados != null) {
-
-            for (String id : idsSeleccionados) {
-
-                votacion.asignarVotante(
-                        Integer.parseInt(id)
-                );
-            }
-        }
-
-        votacionDAO.update(votacion);
-
-        response.sendRedirect(
-                "GestionarVotacionesController?ruta=listarVotaciones"
-        );
-    }
+		response.sendRedirect("GestionarVotacionesController?ruta=listarVotaciones");
+	}
 }

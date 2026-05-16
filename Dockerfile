@@ -1,18 +1,34 @@
-# 1. Usamos la imagen oficial de Tomcat con JDK 21
+# ==========================================
+# ETAPA 1 - BUILD CON MAVEN
+# ==========================================
+FROM maven:3.9.6-eclipse-temurin-21 AS build
+
+WORKDIR /app
+
+# Copiamos pom.xml
+COPY pom.xml .
+
+# Copiamos código fuente
+COPY src ./src
+
+# Compilamos y generamos WAR
+RUN mvn clean package -DskipTests
+
+# ==========================================
+# ETAPA 2 - TOMCAT
+# ==========================================
 FROM tomcat:10.1-jdk21-openjdk-slim
 
-# 2. Definimos el directorio de despliegue de Tomcat
 WORKDIR /usr/local/tomcat/webapps/
 
-# 3. Borramos las apps por defecto para evitar conflictos (opcional)
-RUN rm -rf ROOT
+# Eliminamos aplicaciones por defecto
+RUN rm -rf ROOT *
 
-# 4. Copiamos el archivo WAR que exportaste desde Eclipse
-# Asegúrate de que el nombre coincida con el que generaste en la carpeta target
-COPY target/sistema-votacion-web-0.0.1-SNAPSHOT.war ./ROOT.war
+# Copiamos el WAR generado
+COPY --from=build /app/target/*.war ROOT.war
 
-# 5. Exponemos el puerto 8080
+# Puerto de Tomcat
 EXPOSE 8080
 
-# 6. Ejecutamos Tomcat
+# Ejecutar Tomcat
 CMD ["catalina.sh", "run"]
