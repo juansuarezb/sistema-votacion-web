@@ -83,18 +83,6 @@ O crear manualmente el archivo:
 .env
 ```
 
-Ejemplo:
-
-```env
-MYSQL_ROOT_PASSWORD=root
-DB_NAME=votoseguro
-DB_USER=voto_user
-DB_PASSWORD=123456
-
-DB_HOST=db
-DB_PORT=3306
-```
-
 ---
 
 ### 3. Levantar el entorno completo
