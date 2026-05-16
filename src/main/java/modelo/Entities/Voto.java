@@ -6,16 +6,10 @@ import java.time.LocalDateTime;
 public class Voto implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
     private int idVoto;
-
     private LocalDateTime fecha;
-
     private OpcionVoto opcionSeleccionada;
-
     private int idVotacion;
-
-    private int idVotante;
 
     public enum OpcionVoto {
         SI,
@@ -24,19 +18,11 @@ public class Voto implements Serializable {
         NULO
     }
 
-    public Voto(
-            int idVoto,
-            LocalDateTime fecha,
-            OpcionVoto opcionSeleccionada,
-            int idVotacion,
-            int idVotante
-    ) {
-
+    public Voto(int idVoto, LocalDateTime fecha, OpcionVoto opcionSeleccionada, int idVotacion) {
         this.idVoto = idVoto;
         this.fecha = fecha;
         this.opcionSeleccionada = opcionSeleccionada;
         this.idVotacion = idVotacion;
-        this.idVotante = idVotante;
     }
 
     public Voto() {
@@ -75,11 +61,4 @@ public class Voto implements Serializable {
         this.idVotacion = idVotacion;
     }
 
-    public int getIdVotante() {
-        return idVotante;
-    }
-
-    public void setIdVotante(int idVotante) {
-        this.idVotante = idVotante;
-    }
 }

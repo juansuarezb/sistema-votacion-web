@@ -275,4 +275,71 @@ public class JDBCVotacionDAOImpl implements IVotacionDAO {
 
         return lista;
     }
+    @Override
+    public boolean marcarVotoEmitido(int idVotacion, int idVotante) {
+        String SQL = """
+            UPDATE votacion_votante
+            SET ha_votado = TRUE
+            WHERE id_votacion = ? AND id_votante = ?
+        """;
+        try {
+            PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+            pstmt.setInt(1, idVotacion);
+            pstmt.setInt(2, idVotante);
+            boolean resultado = pstmt.executeUpdate() > 0;
+            ConexionBD.cerrar(pstmt);
+            return resultado;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    @Override
+    public List<Votacion> getVotacionesByVotante(int idVotante) {
+        List<Votacion> lista = new ArrayList<>();
+        String SQL = """
+            SELECT v.*
+            FROM votacion v
+            JOIN votacion_votante vv ON v.id_votacion = vv.id_votacion
+            WHERE vv.id_votante = ?
+        """;
+        try {
+            PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+            pstmt.setInt(1, idVotante);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                lista.add(new Votacion(
+                    rs.getInt("id_votacion"),
+                    rs.getString("titulo"),
+                    rs.getString("descripcion"),
+                    rs.getString("fecha_inicio"),
+                    rs.getString("fecha_cierre")
+                ));
+            }
+            ConexionBD.cerrar(rs);
+            ConexionBD.cerrar(pstmt);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return lista;
+    }
+    @Override
+    public boolean eliminarAsignaciones(int idVotacion) {
+        String SQL = """
+            DELETE FROM votacion_votante
+            WHERE id_votacion = ?
+        """;
+        try {
+            PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+            pstmt.setInt(1, idVotacion);
+            pstmt.executeUpdate();
+            ConexionBD.cerrar(pstmt);
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    
 }
