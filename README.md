@@ -51,84 +51,158 @@
 
 ## 🐳 Despliegue con Docker
 
->[!IMPORTANT]
+> [!IMPORTANT]
 > Requisitos previos:
-> - Docker Desktop instalado y en ejecución.
-> - Java JDK 21
-> - Maven
-> - Clonar el repositorio:
 >
-> ```bash
-> git clone https://github.com/tu-usuario/VotoSeguro.git
-> ```
+> * Docker Desktop instalado y en ejecución.
+> * Git instalado.
+> * Puertos `8080` y `3306` disponibles.
 
 ---
 
-### 1. Generar el artefacto `.war`
-
-Desde la raíz del proyecto:
+### 1. Clonar el repositorio
 
 ```bash
-mvn clean package
-```
-
-El archivo generado se encontrará en:
-
-```txt
-target/VotoSeguro.war
+git clone https://github.com/juansuarezb/sistema-votacion-web.git
+cd sistema-votacion-web
 ```
 
 ---
 
-### 2. Construir la imagen Docker
+### 2. Configurar variables de entorno
+
+Copiar el archivo `.env.example`:
 
 ```bash
-docker build -t votoseguro-app:v1 .
+cp .env.example .env
 ```
 
-> [!TIP]
-> Se recomienda utilizar tags/versiones para identificar cada despliegue estable del sistema.
+O crear manualmente el archivo:
 
-Ejemplos:
+```plaintext
+.env
+```
 
-```bash
-docker build -t votoseguro-app:v0.1 .
-docker build -t votoseguro-app:v0.2-dashboard .
-docker build -t votoseguro-app:v1.0 .
+Ejemplo:
+
+```env
+MYSQL_ROOT_PASSWORD=root
+DB_NAME=votoseguro
+DB_USER=voto_user
+DB_PASSWORD=123456
+
+DB_HOST=db
+DB_PORT=3306
 ```
 
 ---
 
-### 3. Ejecutar el contenedor
+### 3. Levantar el entorno completo
 
 ```bash
-docker run -d -p 8080:8080 --name contenedor-voto-seguro votoseguro-app:v1
+docker compose up -d --build
 ```
+
+Este comando automáticamente:
+
+* Compila el proyecto con Maven.
+* Genera el archivo `.war`.
+* Construye la imagen Docker.
+* Levanta el contenedor MySQL.
+* Ejecuta el script SQL de inicialización.
+* Despliega la aplicación en Apache Tomcat.
 
 ---
 
-### 4. Verificar ejecución
+### 4. Acceder a la aplicación
 
-Acceso:
+Aplicación web:
 
 ```txt
 http://localhost:8080/
 ```
 
-Logs:
+---
+
+### 5. Ver logs
+
+Aplicación:
 
 ```bash
-docker logs -f contenedor-voto-seguro
+docker logs -f votoseguro-app
+```
+
+Base de datos:
+
+```bash
+docker logs -f votoseguro-db
 ```
 
 ---
 
-### 5. Detener y eliminar contenedor
+### 6. Detener el entorno
 
 ```bash
-docker stop contenedor-voto-seguro
-docker rm contenedor-voto-seguro
+docker compose down
 ```
+
+Eliminar también el volumen de MySQL:
+
+```bash
+docker compose down -v
+```
+
+---
+
+### 7. Reinicio limpio de la base de datos
+
+> [!WARNING]
+> Esto eliminará todos los datos almacenados.
+
+```bash
+docker compose down -v
+docker compose up -d --build
+```
+
+---
+
+## 📁 Estructura Docker
+
+```plaintext
+.
+├── Dockerfile
+├── compose.yml
+├── .env
+├── init/
+│   └── votoseguro.sql
+```
+
+---
+
+## 🗄 Inicialización automática de MySQL
+
+El contenedor MySQL ejecuta automáticamente los scripts SQL ubicados en:
+
+```plaintext
+init/
+```
+
+Esto permite:
+
+* Crear tablas.
+* Insertar datos semilla.
+* Configurar usuarios iniciales.
+* Preparar el entorno automáticamente.
+
+---
+
+## 👤 Usuarios de prueba
+
+| Rol           | Correo                                                  | Contraseña |
+| ------------- | ------------------------------------------------------- | ---------- |
+| Administrador | [admin@votoseguro.com](mailto:admin@votoseguro.com)     | admin123   |
+| Votante       | [juan@gmail.com](mailto:juan@gmail.com)                 | 1234       |
+| Auditor       | [auditor@votoseguro.com](mailto:auditor@votoseguro.com) | auditor123 |
 
 
 ## Metodología de trabajo
