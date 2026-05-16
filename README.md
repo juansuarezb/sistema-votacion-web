@@ -154,7 +154,7 @@ docker compose up -d --build
 
 ---
 
-## 📁 Estructura Docker
+## Estructura Docker
 
 ```plaintext
 .
@@ -167,7 +167,7 @@ docker compose up -d --build
 
 ---
 
-## 🗄 Inicialización automática de MySQL
+## Inicialización automática de MySQL
 
 El contenedor MySQL ejecuta automáticamente los scripts SQL ubicados en:
 
@@ -184,7 +184,7 @@ Esto permite:
 
 ---
 
-## 👤 Usuarios de prueba
+##  Usuarios de prueba
 
 | Rol           | Correo                                                  | Contraseña |
 | ------------- | ------------------------------------------------------- | ---------- |
