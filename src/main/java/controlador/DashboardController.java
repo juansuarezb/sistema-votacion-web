@@ -22,7 +22,7 @@ public class DashboardController extends HttpServlet{
 	    this.ruteador(req, resp);
 	}
 
-	private void ruteador(HttpServletRequest req, HttpServletResponse resp) 
+	private void ruteador(HttpServletRequest req, HttpServletResponse resp)
 	        throws ServletException, IOException {
 		String ruta = (req.getParameter("ruta")==null)?"iniciar": req.getParameter("ruta");
 	    switch (ruta) {
@@ -37,7 +37,7 @@ public class DashboardController extends HttpServlet{
 	        	break;
 	    }
 	}
-	
+
 	private void iniciar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		renderDashboardInicial(req, resp);
 	}

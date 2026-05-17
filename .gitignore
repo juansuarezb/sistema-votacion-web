@@ -22,8 +22,11 @@ Thumbs.db
 target/
 # Ignorar archivos compilados de Java
 *.class
+*.war
+*.jar
 # Archivos temporales de logs
 *.log
+
 
 # === Eclipse IDE ===
 # Archivos de configuración local del proyecto en Eclipse
@@ -40,3 +43,4 @@ Servers/
 # Ignorar carpetas de compilación dinámicas si no usas Maven
 build/
 bin/
+.idea/
