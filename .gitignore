@@ -43,3 +43,4 @@ Servers/
 # Ignorar carpetas de compilación dinámicas si no usas Maven
 build/
 bin/
+.idea/
