@@ -137,7 +137,7 @@
             <a href="#">System Settings</a>
             <a href="#">Help Center</a>
         </div>
-        <a href="login.jsp" class="logout">Logout Accout</a>
+        <a href="../publicas/login.jsp" class="logout">Logout Accout</a>
     </div>
 
     <div class="content">

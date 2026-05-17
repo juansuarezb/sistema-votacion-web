@@ -113,7 +113,7 @@
 			<div class="form-group">
 				<input type="password" placeholder="Contraseña">
 			</div>
-			<button class="btn-submit" onclick="window.location.href='lista_votaciones_activas.jsp'">Iniciar
+			<button class="btn-submit" onclick="window.location.href='../votante/lista_votaciones_activas.jsp'">Iniciar
 				sesión</button>
 		</div>
 	</div>
