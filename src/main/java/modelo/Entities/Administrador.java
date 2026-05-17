@@ -23,7 +23,7 @@ public class Administrador extends Usuario {
 	public static String getClaveMaestra() {
 		return CLAVE_MAESTRA;
 	}
-    
+
     public boolean validarPermisos(String claveMaestra) {
         return CLAVE_MAESTRA.equals(claveMaestra);
     }

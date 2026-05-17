@@ -36,6 +36,7 @@ public class AutenticarController extends HttpServlet {
 			this.ingresar(req, resp);
 			break;
 		case "cerrarSesion":
+			this.cerrarSesion(req, resp);
 			break;
 		default:
 			resp.sendRedirect("jsp/Login.jsp");
@@ -79,5 +80,12 @@ public class AutenticarController extends HttpServlet {
 		}
 	}
 
+	private void cerrarSesion(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession sesion = req.getSession(false);
+		if (sesion != null) {
+			sesion.invalidate();
+		}
+		resp.sendRedirect(req.getContextPath() + "/jsp/Login.jsp");
+	}
 
 }

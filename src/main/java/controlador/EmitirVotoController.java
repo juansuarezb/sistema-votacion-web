@@ -18,6 +18,7 @@ import modelo.Entities.Votacion;
 import modelo.Entities.Votante;
 import modelo.Entities.Voto;
 import modelo.Entities.Voto.OpcionVoto;
+import websocket.ResultadosWebSocket;
 
 @WebServlet("/EmitirVotoController")
 public class EmitirVotoController extends HttpServlet {
@@ -75,7 +76,9 @@ public class EmitirVotoController extends HttpServlet {
     private void listar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Votante votante = getVotanteFromSession(req, resp);
-        if (votante == null) return;
+        if (votante == null) {
+			return;
+		}
 
         List<Votacion> asignadas = votacionDAO.getVotacionesByVotante(votante.getIdUsuario());
 
@@ -87,7 +90,9 @@ public class EmitirVotoController extends HttpServlet {
     private void votar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Votante votante = getVotanteFromSession(req, resp);
-        if (votante == null) return;
+        if (votante == null) {
+			return;
+		}
 
         int idVotacion = Integer.parseInt(req.getParameter("id"));
         Votacion votacion = votacionDAO.getById(idVotacion);
@@ -109,7 +114,9 @@ public class EmitirVotoController extends HttpServlet {
     private void confirmar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Votante votante = getVotanteFromSession(req, resp);
-        if (votante == null) return;
+        if (votante == null) {
+			return;
+		}
 
         int idVotacion = Integer.parseInt(req.getParameter("idVotacion"));
         String opcionStr = req.getParameter("opcion");
@@ -129,7 +136,8 @@ public class EmitirVotoController extends HttpServlet {
         if (resultado) {
             // Marcar en sesión que ya votó
             votante.marcarComoVotado(idVotacion);
-
+         // Notificar a todos los que están viendo resultados de esta votación
+            ResultadosWebSocket.notificarNuevoVoto(idVotacion);
             // Actualizar ha_votado en BD
             votacionDAO.marcarVotoEmitido(idVotacion, votante.getIdUsuario());
 

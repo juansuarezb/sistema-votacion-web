@@ -33,7 +33,9 @@ public class GestionarVotantesController extends HttpServlet {
     private void ruteador(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         String ruta = req.getParameter("ruta");
-        if (ruta == null || ruta.isEmpty()) ruta = "listar";
+        if (ruta == null || ruta.isEmpty()) {
+			ruta = "listar";
+		}
         switch (ruta) {
             case "listar":
                 this.listar(req, resp);

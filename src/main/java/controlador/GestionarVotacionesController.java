@@ -1,6 +1,7 @@
 package controlador;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 import jakarta.servlet.ServletException;
@@ -14,6 +15,7 @@ import modelo.DAO.IVotoDAO;
 import modelo.DAO.JDBC.JDBCVotacionDAOImpl;
 import modelo.DAO.JDBC.JDBCVotanteDAOImpl;
 import modelo.DAO.JDBC.JDBCVotoDAOImpl;
+import modelo.Entities.Administrador;
 import modelo.Entities.Escrutinio;
 import modelo.Entities.Votacion;
 import modelo.Entities.Votante;
@@ -115,27 +117,55 @@ public class GestionarVotacionesController extends HttpServlet {
 			throws ServletException, IOException {
 
 		String titulo = request.getParameter("titulo");
-
 		String descripcion = request.getParameter("descripcion");
+		String fechaInicioStr = request.getParameter("fechaInicio");
+		String fechaCierreStr = request.getParameter("fechaCierre");
 
-		String fechaInicio = request.getParameter("fechaInicio");
+		try {
 
-		String fechaCierre = request.getParameter("fechaCierre");
-		Votacion votacion = new Votacion(0, titulo, descripcion, fechaInicio, fechaCierre);
+			// Convertir String -> LocalDate para validar fechas
+			LocalDate fechaInicio = LocalDate.parse(fechaInicioStr);
+			LocalDate fechaCierre = LocalDate.parse(fechaCierreStr);
 
-		boolean resultado = votacionDAO.create(votacion);
+			// Validación de fechas
+			if (fechaCierre.isBefore(fechaInicio) || fechaCierre.equals(fechaInicio)) {
 
-		if (resultado) {
+				request.setAttribute("error", "La fecha de cierre debe ser mayor que la fecha de inicio.");
 
-			response.sendRedirect("GestionarVotacionesController?ruta=listarVotaciones");
+				request.getRequestDispatcher("/jsp/error.jsp").forward(request, response);
 
-		} else {
+				return;
+			}
 
-			request.setAttribute("error", "Error al crear la votación.");
+			// Crear objeto usando Strings
+			Votacion votacion = new Votacion(0, titulo, descripcion, fechaInicioStr, fechaCierreStr);
 
-			request.getRequestDispatcher("jsp/errorLogin.jsp").forward(request, response);
+			// Obtener admin de la sesión
+			Administrador admin = (Administrador) request.getSession().getAttribute("autorizado");
+
+			votacion.setIdAdmin(admin.getIdUsuario());
+
+			boolean resultado = votacionDAO.create(votacion);
+
+			if (resultado) {
+
+				response.sendRedirect("GestionarVotacionesController?ruta=listarVotaciones");
+
+			} else {
+
+				request.setAttribute("error", "Error al crear la votación.");
+
+				request.getRequestDispatcher("/jsp/error.jsp").forward(request, response);
+			}
+
+		} catch (Exception e) {
+
+			e.printStackTrace();
+
+			request.setAttribute("error", "Formato de fecha inválido.");
+
+			request.getRequestDispatcher("/jsp/error.jsp").forward(request, response);
 		}
-
 	}
 
 	private void modificar(HttpServletRequest request, HttpServletResponse response)

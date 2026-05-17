@@ -13,333 +13,288 @@ import modelo.Entities.Votante;
 
 public class JDBCVotacionDAOImpl implements IVotacionDAO {
 
-    @Override
-    public List<Votacion> listar() {
+	@Override
+	public List<Votacion> listar() {
+
+		List<Votacion> lista = new ArrayList<>();
 
-        List<Votacion> lista = new ArrayList<>();
+		String SQL = """
+				    SELECT *
+				    FROM votacion
+				""";
 
-        String SQL = """
-            SELECT *
-            FROM votacion
-        """;
+		try {
 
-        try {
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
 
-            PreparedStatement pstmt =
-                    ConexionBD.getConexion()
-                            .prepareStatement(SQL);
+			ResultSet rs = pstmt.executeQuery();
 
-            ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
 
-            while (rs.next()) {
+				Votacion v = new Votacion(rs.getInt("id_votacion"), rs.getString("titulo"), rs.getString("descripcion"),
+						rs.getString("fecha_inicio"), rs.getString("fecha_cierre"));
 
-                Votacion v = new Votacion(
-                        rs.getInt("id_votacion"),
-                        rs.getString("titulo"),
-                        rs.getString("descripcion"),
-                        rs.getString("fecha_inicio"),
-                        rs.getString("fecha_cierre")
-                );
+				lista.add(v);
+			}
 
-                lista.add(v);
-            }
+			ConexionBD.cerrar(rs);
+			ConexionBD.cerrar(pstmt);
 
-            ConexionBD.cerrar(rs);
-            ConexionBD.cerrar(pstmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+		return lista;
+	}
 
-        return lista;
-    }
+	@Override
+	public Votacion getById(int idVotacion) {
 
-    @Override
-    public Votacion getById(int idVotacion) {
+		String SQL = """
+				    SELECT *
+				    FROM votacion
+				    WHERE id_votacion = ?
+				""";
 
-        String SQL = """
-            SELECT *
-            FROM votacion
-            WHERE id_votacion = ?
-        """;
+		try {
 
-        try {
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
 
-            PreparedStatement pstmt =
-                    ConexionBD.getConexion()
-                            .prepareStatement(SQL);
+			pstmt.setInt(1, idVotacion);
 
-            pstmt.setInt(1, idVotacion);
+			ResultSet rs = pstmt.executeQuery();
 
-            ResultSet rs = pstmt.executeQuery();
+			if (rs.next()) {
 
-            if (rs.next()) {
+				return new Votacion(rs.getInt("id_votacion"), rs.getString("titulo"), rs.getString("descripcion"),
+						rs.getString("fecha_inicio"), rs.getString("fecha_cierre"));
+			}
 
-                return new Votacion(
-                        rs.getInt("id_votacion"),
-                        rs.getString("titulo"),
-                        rs.getString("descripcion"),
-                        rs.getString("fecha_inicio"),
-                        rs.getString("fecha_cierre")
-                );
-            }
+			ConexionBD.cerrar(rs);
+			ConexionBD.cerrar(pstmt);
 
-            ConexionBD.cerrar(rs);
-            ConexionBD.cerrar(pstmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+		return null;
+	}
 
-        return null;
-    }
+	@Override
+	public boolean create(Votacion v) {
+		String SQL = """
+				    INSERT INTO votacion
+				    (titulo, descripcion, fecha_inicio, fecha_cierre, id_admin)
+				    VALUES (?, ?, ?, ?, ?)
+				""";
+		try {
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+			pstmt.setString(1, v.getTitulo());
+			pstmt.setString(2, v.getDescripcion());
+			pstmt.setString(3, v.getFechaInicio());
+			pstmt.setString(4, v.getFechaCierre());
+			pstmt.setInt(5, v.getIdAdmin());
+			boolean resultado = pstmt.executeUpdate() > 0;
+			ConexionBD.cerrar(pstmt);
+			return resultado;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
-    @Override
-    public boolean create(Votacion v) {
+	@Override
+	public boolean update(Votacion v) {
 
-        String SQL = """
-            INSERT INTO votacion
-            (
-                titulo,
-                descripcion,
-                fecha_inicio,
-                fecha_cierre
-            )
-            VALUES (?, ?, ?, ?)
-        """;
+		String SQL = """
+				    UPDATE votacion
+				    SET
+				        titulo = ?,
+				        descripcion = ?,
+				        fecha_inicio = ?,
+				        fecha_cierre = ?
+				    WHERE id_votacion = ?
+				""";
 
-        try {
+		try {
 
-            PreparedStatement pstmt =
-                    ConexionBD.getConexion()
-                            .prepareStatement(SQL);
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
 
-            pstmt.setString(1, v.getTitulo());
-            pstmt.setString(2, v.getDescripcion());
-            pstmt.setString(3, v.getFechaInicio());
-            pstmt.setString(4, v.getFechaCierre());
+			pstmt.setString(1, v.getTitulo());
+			pstmt.setString(2, v.getDescripcion());
+			pstmt.setString(3, v.getFechaInicio());
+			pstmt.setString(4, v.getFechaCierre());
+			pstmt.setInt(5, v.getIdVotacion());
 
-            return pstmt.executeUpdate() > 0;
+			return pstmt.executeUpdate() > 0;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public boolean update(Votacion v) {
+	@Override
+	public boolean delete(int idVotacion) {
 
-        String SQL = """
-            UPDATE votacion
-            SET
-                titulo = ?,
-                descripcion = ?,
-                fecha_inicio = ?,
-                fecha_cierre = ?
-            WHERE id_votacion = ?
-        """;
+		String SQL = """
+				    DELETE FROM votacion
+				    WHERE id_votacion = ?
+				""";
 
-        try {
+		try {
 
-            PreparedStatement pstmt =
-                    ConexionBD.getConexion()
-                            .prepareStatement(SQL);
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
 
-            pstmt.setString(1, v.getTitulo());
-            pstmt.setString(2, v.getDescripcion());
-            pstmt.setString(3, v.getFechaInicio());
-            pstmt.setString(4, v.getFechaCierre());
-            pstmt.setInt(5, v.getIdVotacion());
+			pstmt.setInt(1, idVotacion);
 
-            return pstmt.executeUpdate() > 0;
+			return pstmt.executeUpdate() > 0;
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    @Override
-    public boolean delete(int idVotacion) {
+	@Override
+	public boolean asignarVotante(int idVotacion, int idVotante) {
 
-        String SQL = """
-            DELETE FROM votacion
-            WHERE id_votacion = ?
-        """;
+		String SQL = """
+				    INSERT INTO votacion_votante
+				    (
+				        id_votacion,
+				        id_votante
+				    )
+				    VALUES (?, ?)
+				""";
 
-        try {
+		try {
 
-            PreparedStatement pstmt =
-                    ConexionBD.getConexion()
-                            .prepareStatement(SQL);
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
 
-            pstmt.setInt(1, idVotacion);
+			pstmt.setInt(1, idVotacion);
+			pstmt.setInt(2, idVotante);
+
+			return pstmt.executeUpdate() > 0;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
+	@Override
+	public List<Votante> getVotantesAsignados(int idVotacion) {
+
+		List<Votante> lista = new ArrayList<>();
+
+		String SQL = """
+				    SELECT
+				        u.id_usuario,
+				        u.nombre,
+				        u.correo_electronico,
+				        u.contrasena
+				    FROM votacion_votante vv
+
+				    JOIN votante v
+				        ON vv.id_votante = v.id_usuario
+
+				    JOIN usuario u
+				        ON u.id_usuario = v.id_usuario
+
+				    WHERE vv.id_votacion = ?
+				""";
+
+		try {
+
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+
+			pstmt.setInt(1, idVotacion);
+
+			ResultSet rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+
+				Votante votante = new Votante(rs.getInt("id_usuario"), rs.getString("nombre"),
+						rs.getString("correo_electronico"), rs.getString("contrasena"));
+
+				lista.add(votante);
+			}
+
+			ConexionBD.cerrar(rs);
+			ConexionBD.cerrar(pstmt);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return lista;
+	}
+
+	@Override
+	public boolean marcarVotoEmitido(int idVotacion, int idVotante) {
+		String SQL = """
+				    UPDATE votacion_votante
+				    SET ha_votado = TRUE
+				    WHERE id_votacion = ? AND id_votante = ?
+				""";
+		try {
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+			pstmt.setInt(1, idVotacion);
+			pstmt.setInt(2, idVotante);
+			boolean resultado = pstmt.executeUpdate() > 0;
+			ConexionBD.cerrar(pstmt);
+			return resultado;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
+	@Override
+	public List<Votacion> getVotacionesByVotante(int idVotante) {
+		List<Votacion> lista = new ArrayList<>();
+		String SQL = """
+				    SELECT v.*
+				    FROM votacion v
+				    JOIN votacion_votante vv ON v.id_votacion = vv.id_votacion
+				    WHERE vv.id_votante = ?
+				""";
+		try {
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+			pstmt.setInt(1, idVotante);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				lista.add(new Votacion(rs.getInt("id_votacion"), rs.getString("titulo"), rs.getString("descripcion"),
+						rs.getString("fecha_inicio"), rs.getString("fecha_cierre")));
+			}
+			ConexionBD.cerrar(rs);
+			ConexionBD.cerrar(pstmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
+
+	@Override
+	public boolean eliminarAsignaciones(int idVotacion) {
+		String SQL = """
+				    DELETE FROM votacion_votante
+				    WHERE id_votacion = ?
+				""";
+		try {
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+			pstmt.setInt(1, idVotacion);
+			pstmt.executeUpdate();
+			ConexionBD.cerrar(pstmt);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
 
-            return pstmt.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean asignarVotante(
-            int idVotacion,
-            int idVotante
-    ) {
-
-        String SQL = """
-            INSERT INTO votacion_votante
-            (
-                id_votacion,
-                id_votante
-            )
-            VALUES (?, ?)
-        """;
-
-        try {
-
-            PreparedStatement pstmt =
-                    ConexionBD.getConexion()
-                            .prepareStatement(SQL);
-
-            pstmt.setInt(1, idVotacion);
-            pstmt.setInt(2, idVotante);
-
-            return pstmt.executeUpdate() > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    @Override
-    public List<Votante> getVotantesAsignados(
-            int idVotacion
-    ) {
-
-        List<Votante> lista = new ArrayList<>();
-
-        String SQL = """
-            SELECT
-                u.id_usuario,
-                u.nombre,
-                u.correo_electronico,
-                u.contrasena
-            FROM votacion_votante vv
-
-            JOIN votante v
-                ON vv.id_votante = v.id_usuario
-
-            JOIN usuario u
-                ON u.id_usuario = v.id_usuario
-
-            WHERE vv.id_votacion = ?
-        """;
-
-        try {
-
-            PreparedStatement pstmt =
-                    ConexionBD.getConexion()
-                            .prepareStatement(SQL);
-
-            pstmt.setInt(1, idVotacion);
-
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-
-                Votante votante = new Votante(
-                        rs.getInt("id_usuario"),
-                        rs.getString("nombre"),
-                        rs.getString("correo_electronico"),
-                        rs.getString("contrasena")
-                );
-
-                lista.add(votante);
-            }
-
-            ConexionBD.cerrar(rs);
-            ConexionBD.cerrar(pstmt);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return lista;
-    }
-    @Override
-    public boolean marcarVotoEmitido(int idVotacion, int idVotante) {
-        String SQL = """
-            UPDATE votacion_votante
-            SET ha_votado = TRUE
-            WHERE id_votacion = ? AND id_votante = ?
-        """;
-        try {
-            PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
-            pstmt.setInt(1, idVotacion);
-            pstmt.setInt(2, idVotante);
-            boolean resultado = pstmt.executeUpdate() > 0;
-            ConexionBD.cerrar(pstmt);
-            return resultado;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    @Override
-    public List<Votacion> getVotacionesByVotante(int idVotante) {
-        List<Votacion> lista = new ArrayList<>();
-        String SQL = """
-            SELECT v.*
-            FROM votacion v
-            JOIN votacion_votante vv ON v.id_votacion = vv.id_votacion
-            WHERE vv.id_votante = ?
-        """;
-        try {
-            PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
-            pstmt.setInt(1, idVotante);
-            ResultSet rs = pstmt.executeQuery();
-            while (rs.next()) {
-                lista.add(new Votacion(
-                    rs.getInt("id_votacion"),
-                    rs.getString("titulo"),
-                    rs.getString("descripcion"),
-                    rs.getString("fecha_inicio"),
-                    rs.getString("fecha_cierre")
-                ));
-            }
-            ConexionBD.cerrar(rs);
-            ConexionBD.cerrar(pstmt);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return lista;
-    }
-    @Override
-    public boolean eliminarAsignaciones(int idVotacion) {
-        String SQL = """
-            DELETE FROM votacion_votante
-            WHERE id_votacion = ?
-        """;
-        try {
-            PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
-            pstmt.setInt(1, idVotacion);
-            pstmt.executeUpdate();
-            ConexionBD.cerrar(pstmt);
-            return true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    
-    
 }

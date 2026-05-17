@@ -16,7 +16,7 @@ public class Votante extends Usuario {
     public Votante() {
         super();
     }
-    
+
 	public List<Integer> getVotacionesVotadas() {
 		return votacionesVotadas;
 	}

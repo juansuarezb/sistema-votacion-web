@@ -16,7 +16,7 @@
     <h2>Error de autenticación</h2>
     <p><c:out value="${error}"/></p>
 
-    <a href="jsp/Login.jsp">Regresar</a>
+	<a href="${pageContext.request.contextPath}/jsp/Login.jsp">Regresar</a>
 
 </body>
 </html>
