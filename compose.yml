@@ -24,7 +24,7 @@ services:
       - votoseguro-network
 
   app:
-    image: juan273/sistema-votacion-web-app:latest
+    image: juan273/votoseguro:latest
     container_name: votoseguro-app
 
     env_file:
