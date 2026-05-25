@@ -1,0 +1,122 @@
+/* ==========================================================================
+   PAGES: VISTA ESPECÍFICA DE VOTACIÓN
+   ========================================================================== */
+
+/* Contenedor principal desplazado a la derecha por el ancho del sidebar */
+.main-layout-container {
+    margin-left: 379px;
+    margin-top: 90px;
+    min-height: calc(100vh - 90px);
+    background-color: #FFFFFF; /* Fondo blanco según Figma */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+}
+
+/* VISTA DE CONTENIDO */
+.page-content {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+}
+
+.page-content__welcome {
+    font-family: 'AR One Sans', sans-serif;
+    font-size: 40px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 40px;
+}
+
+/* Componente de la Tarjeta */
+.card-election {
+    border: 1px solid var(--color-secondary);
+    border-radius: 8px;
+    padding: 45px;
+    max-width: 900px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+.card-election__title {
+    font-family: 'AR One Sans', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 8px;
+}
+
+.card-election__subtitle {
+    font-family: 'AR One Sans', sans-serif;
+    font-size: 20px;
+    color: #555555;
+    margin-bottom: 35px;
+}
+
+/* Contenedor Gris del Reloj */
+.card-election__countdown {
+    background-color: var(--color-light);
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.card-election__countdown-label {
+    font-family: 'AR One Sans', sans-serif;
+    font-size: 20px;
+    color: #333333;
+}
+
+.card-election__timer {
+    font-family: 'AR One Sans', sans-serif;
+    font-size: 54px;
+    font-weight: 700;
+    color: var(--color-primary);
+    letter-spacing: 4px;
+    margin-top: 15px;
+}
+
+/* Botón de acción azul corporativo */
+.btn-primary-action {
+    width: 100%;
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+    border: none;
+    padding: 22px;
+    border-radius: 6px;
+    font-family: 'AR One Sans', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary-action:hover {
+    background-color: var(--color-primary-dark);
+}
+
+/* Botón flotante (?) */
+.btn-help-floating {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 65px;
+    height: 65px;
+    background-color: var(--color-secondary);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.btn-help-floating img {
+    width: 35px;
+    height: 35px;
+}

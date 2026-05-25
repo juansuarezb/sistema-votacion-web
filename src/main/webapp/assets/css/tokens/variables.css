@@ -9,6 +9,7 @@
     --color-card-white: #FEFEFD;       /* Frame 5 - Blanco de contenedores / Cards */
     --color-dark: #000000;             /* Frame 6 - Negro para textos principales */
     --color-muted: #727373;            /* Frame 7 - Gris para textos secundarios */
+    --color-primary-dark: #1A3A5F;     /* Frame 2 - Azul Oscuro para hover y active */
     
     --color-border-input: var(--color-primary);
     --color-spacer-visual: #E8E8E8;    /* Color gris de los bloques de espaciado */

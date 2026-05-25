@@ -16,6 +16,8 @@
 
 /* 4. ORGANISMOS (Estructuras complejas del sistema) */
 @import url('./organisms/sidebar.css');
+@import url('./organisms/header.css');
 
 /* 5. VISTAS / PÁGINAS (Layouts específicos de tus archivos .jsp) */
-@import url('./pages/login.css');   /* Cambiado de 'components' a 'pages' para seguir el estándar */
+@import url('./pages/login.css');
+@import url('./pages/votacion.css');

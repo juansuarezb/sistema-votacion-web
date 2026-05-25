@@ -1,0 +1,54 @@
+/* ==========================================================================
+   ORGANISMS: HEADER / BARRA SUPERIOR GLOBAL (CON LOGO INTEGRADO)
+   ========================================================================== */
+
+.o-header {
+    height: 90px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 120; 
+    background-color: #FFFFFF;
+    display: flex;
+    justify-content: space-between; 
+    align-items: center;
+    padding-right: 60px; 
+    border-bottom: 2px solid var(--color-secondary);
+    box-sizing: border-box;
+}
+
+/* Contenedor del Logo alineado simétricamente con el ancho del Sidebar */
+.o-header__brand {
+    width: 375px; 
+    display: flex;
+    align-items: center;
+    padding-left: 75px; 
+    box-sizing: border-box;
+}
+
+/* Ajuste de escala para el escudo del logo */
+.o-header__logo {
+    height: 70px; /* Tamaño ideal para que no sature las márgenes del header */
+    width: auto;
+    object-fit: contain;
+}
+
+/* Estado derecho */
+.o-header__status {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.o-header__icon {
+    width: 32px;
+    height: 32px;
+}
+
+.o-header__text {
+    font-family: 'AR One Sans', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #000000;
+}
