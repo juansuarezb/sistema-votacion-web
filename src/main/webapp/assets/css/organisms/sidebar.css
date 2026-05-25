@@ -1,0 +1,51 @@
+/* ==========================================================================
+   ORGANISMS: SIDEBAR DE NAVEGACIÓN (MENU LEFT)
+   ========================================================================== */
+
+.o-sidebar {
+    width: 379px;
+    height: 100vh;
+    background-color: #D5D7DB;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+}
+
+/* Ítem individual del menú (Molécula interna) */
+.o-sidebar__item {
+    width: 100%;
+    height: 83px;
+    display: flex;
+    align-items: center;
+    padding-left: 26px;
+    background-color: #D5D7DB; /* Por defecto */
+    text-decoration: none;
+    position: relative;
+}
+
+/* Estado Activo / Seleccionado de la pestaña */
+.o-sidebar__item--active {
+    background-color: #FFFFFF;
+}
+
+/* El indicador de color gris en el extremo izquierdo */
+.o-sidebar__item--active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 10px;
+    height: 100%;
+    background-color: #727373;
+}
+
+.o-sidebar__text {
+    font-family: 'AR One Sans', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    color: #000000;
+    margin-left: 16px;
+}

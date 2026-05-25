@@ -1,0 +1,39 @@
+/* ==========================================================================
+   MOLECULES: CUADRO PERSONAL / CANDIDATO
+   ========================================================================== */
+
+.m-card-voter {
+    box-sizing: border-box;
+    width: 205px;
+    height: 190px;
+    background: #F4F7F8;
+    border: 1px solid #D5D7DB;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+}
+
+.m-card-voter__title {
+    font-family: 'AR One Sans', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: #000000;
+    margin: 0;
+}
+
+.m-card-voter__avatar {
+    width: var(--avatar-person-w); /* 86px */
+    height: var(--avatar-person-h); /* 110px */
+    object-fit: cover;
+}
+
+.m-card-voter__name {
+    font-family: 'AR One Sans', sans-serif;
+    font-weight: 400;
+    font-size: 18px;
+    color: #000000;
+    margin: 0;
+}

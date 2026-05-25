@@ -1,0 +1,21 @@
+/* ==========================================================================
+   MAIN STYLESHEET - SISTEMA DE VOTACIÓN WEB (ARQUITECTURA ATÓMICA)
+   ========================================================================== */
+
+/* 1. CONFIGURACIÓN GLOBAL (Siempre al principio) */
+@import url('./tokens/variables.css');
+@import url('./base/reset.css');
+
+/* 2. ÁTOMOS (Componentes puros e indivisibles) */
+@import url('./atoms/icons.css');   /* Los íconos suelen usarse dentro de inputs/botones */
+@import url('./atoms/input.css');
+@import url('./atoms/button.css');
+
+/* 3. MOLÉCULAS (Combinaciones de átomos) */
+@import url('./molecules/card-voter.css');
+
+/* 4. ORGANISMOS (Estructuras complejas del sistema) */
+@import url('./organisms/sidebar.css');
+
+/* 5. VISTAS / PÁGINAS (Layouts específicos de tus archivos .jsp) */
+@import url('./pages/login.css');   /* Cambiado de 'components' a 'pages' para seguir el estándar */

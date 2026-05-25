@@ -1,0 +1,83 @@
+:root {
+    /* ==========================================================================
+       1. COLORES (Mapeados de tus Frames 2 al 7)
+       ========================================================================== */
+    --color-primary: #254A77;          /* Frame 2 - Azul Principal VSE */
+    --color-secondary: #ECECEC;        /* Frame 2 - Gris Secundario VSE */
+    --color-bg-page: #D5D7DB;          /* Frame 3 - Gris de fondo de pantallas */
+    --color-bg-light: #F4F7F8;         /* Frame 4 - Fondo claro secundario */
+    --color-card-white: #FEFEFD;       /* Frame 5 - Blanco de contenedores / Cards */
+    --color-dark: #000000;             /* Frame 6 - Negro para textos principales */
+    --color-muted: #727373;            /* Frame 7 - Gris para textos secundarios */
+    
+    --color-border-input: var(--color-primary);
+    --color-spacer-visual: #E8E8E8;    /* Color gris de los bloques de espaciado */
+
+    /* ==========================================================================
+       2. TIPOGRAFÍA (AR One Sans para UI e Inter para guías/medidas)
+       ========================================================================== */
+    --font-primary: 'AR One Sans', sans-serif;
+    --font-secondary: 'Inter', sans-serif;
+
+    /* Pesos de Fuente (Font Weights) */
+    --weight-bold: 700;
+    --weight-medium: 500;
+    --weight-regular: 400;
+    --weight-light: 300;
+
+    /* Tamaños de Fuente (Font Sizes) */
+    --size-title-1: 40px;       /* Titulo 1 */
+    --size-title-2: 30px;       /* Titulo 2 */
+    --size-body-large: 25px;    /* Body */
+    --size-title-3: 24px;       /* Titulo 3 y Texto de Espaciados (10px, 13px...) */
+    --size-body-1: 20px;        /* Body 1, Body 2, Subtitulo 1, Colores, Tipografía */
+    --size-body-2: 18px;        /* Body 3 */
+    --size-body-3: 16px;        /* Body 4, Subtitulo 2, Subtitulo 3 */
+
+    /* Alturas de Línea (Line Heights exactos de Figma) */
+    --lh-title-1: 54px;
+    --lh-title-2: 41px;
+    --lh-body-large: 34px;
+    --lh-title-3: 33px;
+    --lh-body-1: 27px;
+    --lh-body-2: 24px;
+    --lh-body-3: 22px;
+
+    /* ==========================================================================
+       3. ESPACIADOS (Extraídos de tus bloques de píxeles)
+       ========================================================================== */
+    --spacing-10: 10px;         /* Frame 8 y Frame 5 de espaciado */
+    --spacing-13: 13px;         /* Frame 9 */
+    --spacing-15: 15px;         /* Frame 11 */
+    --spacing-20: 20px;         /* Frame 10 */
+
+    /* ==========================================================================
+       4. DIMENSIONES DE ICONOS (Mapeados por sus cajas de colisión)
+       ========================================================================== */
+    --icon-size-qr: 100px;      /* icon/qr */
+    --icon-size-help-w: 87px;   /* icon/help ancho */
+    --icon-size-help-h: 75px;   /* icon/help alto */
+    --icon-size-cne-w: 105px;   /* icon/cne ancho */
+    --icon-size-cne-h: 70px;    /* icon/cne alto */
+    --icon-size-flag: 75px;     /* icon/bandera */
+    --icon-size-vse: 70px;      /* icon/votoSeguro estándar */
+    
+    /* Tamaño Estándar de Navegación / Modos (Home, Votar, Registro, Person, Exit) */
+    --icon-size-medium: 60px;   
+    
+    /* Tamaño de Alerta (Alarm) */
+    --icon-size-alarm: 50px;    
+    
+    /* Tamaño de Controles de Barra (Left, Right, Reset, House2) */
+    --icon-size-small: 40px;    
+    
+    /* Tamaño de Input Utilitario (Eye) */
+    --icon-size-xs: 30px;       
+
+    /* ==========================================================================
+       5. IMÁGENES Y AVATARES
+       ========================================================================== */
+    --avatar-party-size: 80px;  /* imagen/partido1 y partido2 */
+    --avatar-person-w: 86px;    /* imagen/persona1, 2, 3, 4 ancho */
+    --avatar-person-h: 110px;   /* imagen/persona1, 2, 3, 4 alto */
+}
