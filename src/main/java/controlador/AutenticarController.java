@@ -32,26 +32,26 @@ public class AutenticarController extends HttpServlet {
 	private void ruteador(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String ruta = (req.getParameter("ruta") == null) ? "iniciar" : req.getParameter("ruta");
 		switch (ruta) {
-		case "ingresar":
-			this.ingresar(req, resp);
-			break;
-		case "cerrarSesion":
-			this.cerrarSesion(req, resp);
-			break;
-		default:
-			resp.sendRedirect("jsp/Login.jsp");
-			break;
+			case "ingresar":
+				this.ingresar(req, resp);
+				break;
+			case "cerrarSesion":
+				this.cerrarSesion(req, resp);
+				break;
+			default:
+				resp.sendRedirect("jsp/publicas/login.jsp");
+				break;
 		}
 	}
 
 	private void ingresar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
 		String correo = req.getParameter("correo");
-		String contraseña = req.getParameter("contraseña");
+		String contrasena = req.getParameter("contrasena");
 
 		IUsuarioDAO usuarioDAO = new JDBCUsuarioDAOImpl();
 
-		Usuario resultado = usuarioDAO.authenticate(correo, contraseña);
+		Usuario resultado = usuarioDAO.authenticate(correo, contrasena);
 
 		if (resultado == null) {
 
@@ -85,7 +85,7 @@ public class AutenticarController extends HttpServlet {
 		if (sesion != null) {
 			sesion.invalidate();
 		}
-		resp.sendRedirect(req.getContextPath() + "/jsp/Login.jsp");
+		resp.sendRedirect(req.getContextPath() + "/jsp/publicas/login.jsp");
 	}
 
 }

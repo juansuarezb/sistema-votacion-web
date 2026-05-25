@@ -62,12 +62,12 @@ public class EmitirVotoController extends HttpServlet {
             throws IOException {
         HttpSession sesion = req.getSession(false);
         if (sesion == null) {
-            resp.sendRedirect("jsp/Login.jsp");
+            resp.sendRedirect("jsp/publicas/login.jsp");
             return null;
         }
         Usuario usuario = (Usuario) sesion.getAttribute("autorizado");
         if (!(usuario instanceof Votante)) {
-            resp.sendRedirect("jsp/Login.jsp");
+            resp.sendRedirect("jsp/publicas/login.jsp");
             return null;
         }
         return (Votante) usuario;
@@ -86,7 +86,7 @@ public class EmitirVotoController extends HttpServlet {
         List<Votacion> asignadas = votacionDAO.getVotacionesByVotante(votante.getIdUsuario());
         req.setAttribute("votaciones", asignadas);
         req.setAttribute("votante", votante);
-        req.getRequestDispatcher("jsp/listarVotacionesActivas.jsp").forward(req, resp);
+        req.getRequestDispatcher("jsp/votante/lista_votaciones_activas.jsp").forward(req, resp);
     }
 
     private void votar(HttpServletRequest req, HttpServletResponse resp)
@@ -105,12 +105,12 @@ public class EmitirVotoController extends HttpServlet {
 
         if (yaVoto) {
             req.setAttribute("error", "Ya has emitido tu voto en esta votación.");
-            req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
+            req.getRequestDispatcher("jsp/error_login.jsp").forward(req, resp);
             return;
         }
 
         req.setAttribute("votacion", votacion);
-        req.getRequestDispatcher("jsp/votacion.jsp").forward(req, resp);
+        req.getRequestDispatcher("jsp/votante/voto.jsp").forward(req, resp);
     }
 
     private void confirmar(HttpServletRequest req, HttpServletResponse resp)
@@ -126,7 +126,7 @@ public class EmitirVotoController extends HttpServlet {
         // Verificar si ya votó
         if (!votante.puedeVotar(idVotacion)) {
             req.setAttribute("error", "Ya has emitido tu voto en esta votación.");
-            req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
+            req.getRequestDispatcher("jsp/error_login.jsp").forward(req, resp);
             return;
         }
 
@@ -143,10 +143,10 @@ public class EmitirVotoController extends HttpServlet {
             // Actualizar ha_votado en BD
             votacionDAO.marcarVotoEmitido(idVotacion, votante.getIdUsuario());
 
-            req.getRequestDispatcher("jsp/confirmacionVoto.jsp").forward(req, resp);
+            req.getRequestDispatcher("jsp/votante/confirmacion_voto.jsp").forward(req, resp);
         } else {
             req.setAttribute("error", "Error al registrar el voto.");
-            req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
+            req.getRequestDispatcher("jsp/error_login.jsp").forward(req, resp);
         }
     }
 }
