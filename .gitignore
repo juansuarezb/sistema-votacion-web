@@ -5,6 +5,7 @@
 **/*.lck
 **/.vptmp/
 **/~*.vpp
+*.vpp.bak*
 
 # === Specific: docs/ folder ===
 # Asegurar que NINGÚN archivo .bak en docs/ sea versionado
@@ -22,8 +23,11 @@ Thumbs.db
 target/
 # Ignorar archivos compilados de Java
 *.class
+*.war
+*.jar
 # Archivos temporales de logs
 *.log
+
 
 # === Eclipse IDE ===
 # Archivos de configuración local del proyecto en Eclipse
@@ -40,3 +44,16 @@ Servers/
 # Ignorar carpetas de compilación dinámicas si no usas Maven
 build/
 bin/
+
+.idea/
+
+
+# Credenciales
+persistence.xml
+application.properties
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
