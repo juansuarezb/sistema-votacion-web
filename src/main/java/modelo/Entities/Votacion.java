@@ -5,15 +5,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Votacion implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
     private int idVotacion;
     private String titulo;
     private String descripcion;
     private String fechaInicio;
     private String fechaCierre;
-
-    private static List<Votacion> votaciones = null;
+    private int idAdmin;
     private List<Integer> votantesAsignados = new ArrayList<>();
+
     // Constructor para lógica de negocio
     public Votacion(int idVotacion, String titulo, String descripcion,
                     String fechaInicio, String fechaCierre) {
@@ -38,58 +38,11 @@ public class Votacion implements Serializable {
     public void setFechaInicio(String fechaInicio) { this.fechaInicio = fechaInicio; }
     public String getFechaCierre() { return fechaCierre; }
     public void setFechaCierre(String fechaCierre) { this.fechaCierre = fechaCierre; }
+    public int getIdAdmin() { return idAdmin; }
+    public void setIdAdmin(int idAdmin) { this.idAdmin = idAdmin; }
+    public List<Integer> getVotantesAsignados() { return votantesAsignados; }
 
-    // Lista en memoria
-    public static List<Votacion> getListaVotaciones() {
-        if (votaciones == null) {
-            votaciones = new ArrayList<>();
-            votaciones.add(new Votacion(1, "Elección Presidencial",
-                "Vota por tu candidato", "2025-01-01", "2025-01-31"));
-            votaciones.add(new Votacion(2, "Reforma Estatutaria",
-                "Aprueba o rechaza la reforma", "2025-02-01", "2025-02-28"));
-            votaciones.add(new Votacion(3, "Elección Representantes",
-                "Elige tus representantes", "2025-03-01", "2025-03-31"));
-        }
-        return votaciones;
-    }
-
-    public static Votacion getVotacionById(int idVotacion) {
-        for (Votacion v : getListaVotaciones()) {
-            if (v.getIdVotacion() == idVotacion) {
-				return v;
-			}
-        }
-        return null;
-    }
-    public static boolean create(Votacion v) {
-        int max = 0;
-        for (Votacion votacion : getListaVotaciones()) {
-            if (max < votacion.getIdVotacion()) {
-                max = votacion.getIdVotacion();
-            }
-        }
-        v.setIdVotacion(max + 1);
-        getListaVotaciones().add(v);
-        return true;
-    }
-    public static boolean update(Votacion v) {
-        List<Votacion> lista = getListaVotaciones();
-        for (int i = 0; i < lista.size(); i++) {
-            if (lista.get(i).getIdVotacion() == v.getIdVotacion()) {
-                lista.set(i, v);
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public static boolean delete(int idVotacion) {
-        return getListaVotaciones().removeIf(v -> v.getIdVotacion() == idVotacion);
-    }
-    public List<Integer> getVotantesAsignados() { 
-        return votantesAsignados; 
-    }
-
+    // Lógica de negocio pura — no toca BD
     public void asignarVotante(int idVotante) {
         if (!votantesAsignados.contains(idVotante)) {
             votantesAsignados.add(idVotante);

@@ -8,113 +8,119 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import modelo.DAO.IVotanteDAO;
+import modelo.DAO.JDBC.JDBCVotanteDAOImpl;
 import modelo.Entities.Votante;
 
 @WebServlet("/GestionarVotantesController")
-public class GestionarVotantesController extends HttpServlet{
-	private static final long serialVersionUID = 1L;
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		this.ruteador(req, resp);
-	}
+public class GestionarVotantesController extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		this.ruteador(req, resp);
-	}
+    private IVotanteDAO votanteDAO = new JDBCVotanteDAOImpl();
 
-	private void ruteador(HttpServletRequest req, HttpServletResponse resp)
-	        throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        this.ruteador(req, resp);
+    }
 
-	    String ruta = req.getParameter("ruta");
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        this.ruteador(req, resp);
+    }
 
-	    if (ruta == null || ruta.isEmpty()) {
-	        ruta = "listar";
-	    }
+    private void ruteador(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        String ruta = req.getParameter("ruta");
+        if (ruta == null || ruta.isEmpty()) {
+			ruta = "listar";
+		}
+        switch (ruta) {
+            case "listar":
+                this.listar(req, resp);
+                break;
+            case "nuevo":
+                this.nuevo(req, resp);
+                break;
+            case "guardarnuevo":
+                this.guardarNuevo(req, resp);
+                break;
+            case "actualizar":
+                this.actualizar(req, resp);
+                break;
+            case "guardarExistente":
+                this.guardarExistente(req, resp);
+                break;
+            case "eliminar":
+                this.eliminar(req, resp);
+                break;
+            default:
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                break;
+        }
+    }
 
-	    switch (ruta) {
-	        case "listar":
-	            this.listar(req, resp);
-	            break;
-	        case "nuevo":
-	            this.nuevo(req, resp);
-	            break;
-	        case "guardarnuevo":
-	        	this.guardarNuevo(req, resp);
-	        	break;
-	        case "actualizar":
-	        	this.actualizar(req, resp);
-	        	break;
-	        case "guardarExistente":
-	        	this.guardarExistente(req, resp);
-	        	break;
-	        case "eliminar":
-	            this.eliminar(req, resp);
-	            break;
-	        default:
-	            resp.sendError(HttpServletResponse.SC_NOT_FOUND);
-	            break;
-	    }
-	}
+    private void listar(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        List<Votante> votantes = votanteDAO.listar();
+        req.setAttribute("votantes", votantes);
+        req.getRequestDispatcher("jsp/ListarVotantes.jsp").forward(req, resp);
+    }
 
-	private void listar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		//1. Obtener parametros
-		//2. Hablar con el modelo
-		List<Votante> votantes= Votante.getListaVotantes();
-		//3. LLamar a la vista
-		req.setAttribute("votantes", votantes);
-		req.getRequestDispatcher("jsp/ListarVotantes.jsp").forward(req, resp);
-	}
-	private void nuevo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		 req.getRequestDispatcher("jsp/CrearVotante.jsp").forward(req, resp);
-	}
-	private void guardarNuevo(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 1. Obtener parámetros
+    private void nuevo(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
+        req.getRequestDispatcher("jsp/CrearVotante.jsp").forward(req, resp);
+    }
+
+    private void guardarNuevo(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         String nombre = req.getParameter("nombre");
         String correo = req.getParameter("correo");
         String contraseña = req.getParameter("contraseña");
-        // 2. Crear votante
         Votante v = new Votante(0, nombre, correo, contraseña);
-        boolean resultado = Votante.create(v);
-        // 3. Redirigir
+        boolean resultado = votanteDAO.create(v);
         if (resultado) {
             resp.sendRedirect("GestionarVotantesController?ruta=listar");
         } else {
             req.setAttribute("error", "Error al crear el votante.");
             req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
         }
-	}
-	private void actualizar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    private void actualizar(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));
-        Votante v = Votante.getVotanteById(id);
+        Votante v = votanteDAO.getById(id);
         req.setAttribute("votante", v);
         req.getRequestDispatcher("jsp/modificarVotante.jsp").forward(req, resp);
-	}
-	private void guardarExistente(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // 1. Obtener parámetros
+    }
+
+    private void guardarExistente(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("idUsuario"));
         String nombre = req.getParameter("nombre");
         String correo = req.getParameter("correo");
         String contraseña = req.getParameter("contraseña");
-        // 2. Actualizar
-        Votante v = new Votante(0, nombre, correo, contraseña);
-        boolean resultado = Votante.update(v);
-        // 3. Redirigir
+        Votante v = new Votante(id, nombre, correo, contraseña);
+        boolean resultado = votanteDAO.update(v);
         if (resultado) {
             resp.sendRedirect("GestionarVotantesController?ruta=listar");
         } else {
             req.setAttribute("error", "Error al modificar el votante.");
             req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
         }
-	}
-	private void eliminar(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    }
+
+    private void eliminar(HttpServletRequest req, HttpServletResponse resp)
+            throws ServletException, IOException {
         int id = Integer.parseInt(req.getParameter("id"));
-        boolean resultado = Votante.delete(id);
+        boolean resultado = votanteDAO.delete(id);
         if (resultado) {
             resp.sendRedirect("GestionarVotantesController?ruta=listar");
         } else {
             req.setAttribute("error", "Error al eliminar el votante.");
             req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
         }
-	}
+    }
 }

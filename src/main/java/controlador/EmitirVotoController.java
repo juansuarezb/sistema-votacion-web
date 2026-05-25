@@ -1,24 +1,31 @@
 package controlador;
 
+import java.io.IOException;
+import java.util.List;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
+import modelo.DAO.IVotacionDAO;
+import modelo.DAO.IVotoDAO;
+import modelo.DAO.JDBC.JDBCVotacionDAOImpl;
+import modelo.DAO.JDBC.JDBCVotoDAOImpl;
 import modelo.Entities.Usuario;
 import modelo.Entities.Votacion;
 import modelo.Entities.Votante;
 import modelo.Entities.Voto;
 import modelo.Entities.Voto.OpcionVoto;
+import websocket.ResultadosWebSocket;
 
 @WebServlet("/EmitirVotoController")
 public class EmitirVotoController extends HttpServlet {
     private static final long serialVersionUID = 1L;
+
+    private IVotacionDAO votacionDAO = new JDBCVotacionDAOImpl();
+    private IVotoDAO votoDAO = new JDBCVotoDAOImpl();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -51,91 +58,93 @@ public class EmitirVotoController extends HttpServlet {
         }
     }
 
+    private Votante getVotanteFromSession(HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
+        HttpSession sesion = req.getSession(false);
+        if (sesion == null) {
+            resp.sendRedirect("jsp/Login.jsp");
+            return null;
+        }
+        Usuario usuario = (Usuario) sesion.getAttribute("autorizado");
+        if (!(usuario instanceof Votante)) {
+            resp.sendRedirect("jsp/Login.jsp");
+            return null;
+        }
+        return (Votante) usuario;
+    }
+
     private void listar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-    	HttpSession sesion = req.getSession(false);
-    	if (sesion == null) {
-    	    resp.sendRedirect("jsp/Login.jsp");
-    	    return;
-    	}
-    	Usuario usuario = (Usuario) sesion.getAttribute("autorizado");
-    	if (!(usuario instanceof Votante)) {
-    	    // El usuario no es un Votante; redirigir a Login
-    		resp.sendRedirect("jsp/Login.jsp");
-    	    return;
-    	}
-    	Votante votante = (Votante) usuario;
-        // Solo votaciones donde el votante está asignado
-        List<Votacion> todasVotaciones = Votacion.getListaVotaciones();
-        List<Votacion> votacionesAsignadas = new ArrayList<>();
-        for (Votacion v : todasVotaciones) {
-            if (v.votanteAsignado(votante.getIdUsuario())) {
-                votacionesAsignadas.add(v);
-            }
-        }
-        
-        req.setAttribute("votaciones", votacionesAsignadas);
+        Votante votante = getVotanteFromSession(req, resp);
+        if (votante == null) {
+			return;
+		}
+
+        List<Votacion> asignadas = votacionDAO.getVotacionesByVotante(votante.getIdUsuario());
+
+        req.setAttribute("votaciones", asignadas);
         req.setAttribute("votante", votante);
         req.getRequestDispatcher("jsp/listarVotacionesActivas.jsp").forward(req, resp);
     }
 
     private void votar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        HttpSession sesion = req.getSession(false);
-        if (sesion == null) {
-            resp.sendRedirect("jsp/Login.jsp");
-            return;
-        }
-        Usuario usuario = (Usuario) sesion.getAttribute("autorizado");
-        if (!(usuario instanceof Votante)) {
-            resp.sendRedirect("jsp/Login.jsp");
-            return;
-        }
-        Votante votante = (Votante) usuario;
-        // 2. Obtener votación
+        Votante votante = getVotanteFromSession(req, resp);
+        if (votante == null) {
+			return;
+		}
+
         int idVotacion = Integer.parseInt(req.getParameter("id"));
-        Votacion votacion = Votacion.getVotacionById(idVotacion);
-        // 3. Verificar si puede votar
-        if (!votante.puedeVotar(idVotacion)) {
+        Votacion votacion = votacionDAO.getById(idVotacion);
+
+        // Verificar si ya votó — consultar BD
+        List<Voto> votosExistentes = votoDAO.getByVotacion(idVotacion);
+        boolean yaVoto = !votante.puedeVotar(idVotacion);
+
+        if (yaVoto) {
             req.setAttribute("error", "Ya has emitido tu voto en esta votación.");
             req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
             return;
         }
-        // 4. Mandar a la vista
+
         req.setAttribute("votacion", votacion);
         req.getRequestDispatcher("jsp/votacion.jsp").forward(req, resp);
     }
 
     private void confirmar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        // 1. Obtener votante de la sesión
-        HttpSession sesion = req.getSession(false);
-        if (sesion == null) {
-            resp.sendRedirect("jsp/Login.jsp");
-            return;
-        }
-        Usuario usuario = (Usuario) sesion.getAttribute("autorizado");
-        if (!(usuario instanceof Votante)) {
-            resp.sendRedirect("jsp/Login.jsp");
-            return;
-        }
-        Votante votante = (Votante) usuario;
-        // 2. Obtener parámetros
+        Votante votante = getVotanteFromSession(req, resp);
+        if (votante == null) {
+			return;
+		}
+
         int idVotacion = Integer.parseInt(req.getParameter("idVotacion"));
         String opcionStr = req.getParameter("opcion");
-        // 3. Verificar si puede votar
+
+        // Verificar si ya votó
         if (!votante.puedeVotar(idVotacion)) {
             req.setAttribute("error", "Ya has emitido tu voto en esta votación.");
             req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
             return;
         }
-        // 4. Crear voto
+
+        // Registrar voto en BD
         OpcionVoto opcion = OpcionVoto.valueOf(opcionStr);
         Voto voto = new Voto(0, null, opcion, idVotacion);
-        Voto.create(voto);
-        // 5. Marcar votante como votado
-        votante.marcarComoVotado(idVotacion);
-        // 6. Redirigir a confirmación
-        req.getRequestDispatcher("jsp/confirmacionVoto.jsp").forward(req, resp);
+        boolean resultado = votoDAO.create(voto);
+
+        if (resultado) {
+            // Marcar en sesión que ya votó
+            votante.marcarComoVotado(idVotacion);
+         // Notificar a todos los que están viendo resultados de esta votación
+            ResultadosWebSocket.notificarNuevoVoto(idVotacion);
+            // Actualizar ha_votado en BD
+            votacionDAO.marcarVotoEmitido(idVotacion, votante.getIdUsuario());
+
+            req.getRequestDispatcher("jsp/confirmacionVoto.jsp").forward(req, resp);
+        } else {
+            req.setAttribute("error", "Error al registrar el voto.");
+            req.getRequestDispatcher("jsp/errorLogin.jsp").forward(req, resp);
+        }
     }
 }
