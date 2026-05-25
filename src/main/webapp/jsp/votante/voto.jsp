@@ -1,177 +1,191 @@
-<!DOCTYPE html>
-<html lang="es">
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+    <%-- JSTL actualizado para Jakarta EE 10 --%>
+        <%@ taglib uri="jakarta.tags.core" prefix="c" %>
+            <!DOCTYPE html>
+            <html lang="es">
 
-<head>
-    <meta charset="UTF-8">
-    <title>VotoSeguro - Emitir Voto</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-        }
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Voto Seguro Ecuador - Selección de Candidatos</title>
 
-        body {
-            display: flex;
-            min-height: 100vh;
-            background-color: #fff;
-        }
+                <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/main.css">
+            </head>
 
-        /* Sidebar Layout - Reutilizado para consistencia de la plataforma */
-        .sidebar {
-            width: 300px;
-            background-color: #000;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-        }
+            <body>
 
-        .sidebar-header {
-            padding: 30px;
-            font-size: 28px;
-            font-weight: bold;
-        }
+                <aside class="o-sidebar">
+                    <div class="o-sidebar__menu">
+                        <a href="${pageContext.request.contextPath}/dashboard" class="o-sidebar__item">
+                            <img src="${pageContext.request.contextPath}/assets/icons/icon-home.svg" alt="Inicio"
+                                style="width: 40px; height: 40px;">
+                            <span class="o-sidebar__text">Inicio</span>
+                        </a>
+                        <a href="#" class="o-sidebar__item o-sidebar__item--active">
+                            <img src="${pageContext.request.contextPath}/assets/icons/icon-votar.svg" alt="Votar"
+                                style="width: 40px; height: 40px;">
+                            <span class="o-sidebar__text">Votar</span>
+                        </a>
+                        <a href="${pageContext.request.contextPath}/comprobantes" class="o-sidebar__item">
+                            <img src="${pageContext.request.contextPath}/assets/icons/icon-registro.svg"
+                                alt="Comprobantes" style="width: 40px; height: 40px;">
+                            <span class="o-sidebar__text">Comprobantes</span>
+                        </a>
+                    </div>
 
-        .user-profile {
-            padding: 20px 30px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            border-bottom: 1px solid #333;
-        }
+                    <div class="o-sidebar__footer">
+                        <a href="${pageContext.request.contextPath}/LogoutController" class="o-sidebar__item">
+                            <img src="${pageContext.request.contextPath}/assets/icons/icon-exit.svg" alt="Cerrar Sesión"
+                                style="width: 40px; height: 40px;">
+                            <span class="o-sidebar__text">Cerrar Sesión</span>
+                        </a>
+                    </div>
+                </aside>
 
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            border: 1px solid #fff;
-        }
+                <header class="o-header">
+                    <div class="o-header__brand">
+                        <img src="${pageContext.request.contextPath}/assets/icons/icon-votoSeguro.svg"
+                            alt="Logo Voto Seguro Ecuador" class="o-header__logo">
+                    </div>
 
-        .user-info {
-            font-size: 16px;
-            font-weight: bold;
-        }
+                    <div class="o-header__status">
+                        <img src="${pageContext.request.contextPath}/assets/icons/icon-alarm.svg" alt="Campana"
+                            class="o-header__icon">
+                        <span class="o-header__text">Verificado por CNE</span>
+                    </div>
+                </header>
 
-        .menu-group {
-            margin-top: 30px;
-            flex: 1;
-        }
+                <div class="main-layout-container">
 
-        .menu-item {
-            padding: 15px 30px;
-            display: block;
-            color: #fff;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-        }
+                    <main class="page-content">
 
-        .menu-item.active {
-            background-color: #444;
-        }
+                        <!-- Contenedor de Dignidades -->
+                        <div class="dignity-tabs">
+                            <button type="button" class="dignity-tab active" data-dignity="1">Dignidad 1</button>
+                            <button type="button" class="dignity-tab" data-dignity="2">Dignidad 2</button>
+                            <button type="button" class="dignity-tab" data-dignity="3">Dignidad 3</button>
+                        </div>
 
-        .logout {
-            border-top: 1px solid #333;
-            padding: 25px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            color: #fff;
-            text-decoration: none;
-            display: block;
-        }
+                        <!-- Contenedor de Candidatos -->
+                        <form id="candidatosForm" action="${pageContext.request.contextPath}/ConfirmarVotoController"
+                            method="POST">
 
-        /* Box Content (Wireframe Votación) */
-        .content {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 40px;
-        }
+                            <div class="candidates-container" id="candidatesContainer">
+                                <!-- Opción 1: Unión Europea -->
+                                <div class="candidate-card">
+                                    <input type="checkbox" name="candidato" value="1" class="candidate-card__checkbox">
+                                    <div class="candidate-card__content">
+                                        <div class="candidate-card__party">
+                                            <p class="candidate-card__party-label">Partido</p>
+                                            <img src="${pageContext.request.contextPath}/assets/icons/icon-bandera.svg"
+                                                alt="Unión Europea" class="candidate-card__party-logo">
+                                            <p class="candidate-card__party-name">Unión Europea</p>
+                                        </div>
+                                        <div class="candidate-card__positions">
+                                            <div class="position">
+                                                <p class="position__title">Presidente</p>
+                                                <img src="${pageContext.request.contextPath}/assets/icons/icon-person.svg"
+                                                    alt="Leo Cruz" class="position__image">
+                                                <p class="position__name">Leo Cruz</p>
+                                            </div>
+                                            <div class="position">
+                                                <p class="position__title">Vicepresidenta</p>
+                                                <img src="${pageContext.request.contextPath}/assets/icons/icon-person.svg"
+                                                    alt="Mía Solís" class="position__image">
+                                                <p class="position__name">Mía Solís</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-        .vote-box {
-            border: 1px solid #000;
-            width: 100%;
-            max-width: 700px;
-            padding: 50px;
-            position: relative;
-            border-radius: 4px;
-        }
+                                <!-- Opción 2: Construye -->
+                                <div class="candidate-card">
+                                    <input type="checkbox" name="candidato" value="2" class="candidate-card__checkbox">
+                                    <div class="candidate-card__content">
+                                        <div class="candidate-card__party">
+                                            <p class="candidate-card__party-label">Partido</p>
+                                            <div
+                                                style="width: 80px; height: 80px; background-color: #254A77; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 15px; color: white; font-weight: bold; font-size: 24px;">
+                                                25
+                                            </div>
+                                            <p class="candidate-card__party-name">Construye</p>
+                                        </div>
+                                        <div class="candidate-card__positions">
+                                            <div class="position">
+                                                <p class="position__title">Presidente</p>
+                                                <img src="${pageContext.request.contextPath}/assets/icons/icon-person.svg"
+                                                    alt="Enzo Vidal" class="position__image">
+                                                <p class="position__name">Enzo Vidal</p>
+                                            </div>
+                                            <div class="position">
+                                                <p class="position__title">Vicepresidenta</p>
+                                                <img src="${pageContext.request.contextPath}/assets/icons/icon-person.svg"
+                                                    alt="Sara León" class="position__image">
+                                                <p class="position__name">Sara León</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
-        h2 {
-            font-size: 20px;
-            font-weight: normal;
-            margin-bottom: 40px;
-        }
+                            <!-- Botones de Navegación -->
+                            <div class="navigation-buttons">
+                                <button type="button" class="nav-btn" onclick="volver()">VOLVER</button>
+                                <button type="submit" class="nav-btn">SIGUIENTE</button>
+                            </div>
 
-        .radio-group {
-            display: flex;
-            flex-direction: column;
-            gap: 30px;
-            margin-bottom: 80px;
-            margin-left: 20px;
-        }
+                        </form>
 
-        .radio-label {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            font-size: 20px;
-            cursor: pointer;
-        }
+                    </main>
 
-        input[type="radio"] {
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            accent-color: #000;
-        }
+                    <button class="btn-help-floating" aria-label="Ayuda">
+                        <img src="${pageContext.request.contextPath}/assets/icons/icon-help.svg" alt="Ayuda">
+                    </button>
 
-        .btn-next {
-            position: absolute;
-            bottom: 50px;
-            right: 50px;
-            padding: 10px 40px;
-            border: 1px solid #000;
-            background: transparent;
-            font-size: 18px;
-            cursor: pointer;
-        }
-
-        .btn-next:hover {
-            background: #f0f0f0;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="sidebar">
-        <div class="sidebar-header">VOTOSEGURO</div>
-        <div class="user-profile">
-            <div class="avatar"></div>
-            <div class="user-info">correo<br>nombre</div>
-        </div>
-        <div class="menu-group"><a href="#" class="menu-item active">Votación Activa</a></div>
-        <a href="login.jsp" class="logout">Logout</a>
-    </div>
-
-    <div class="content">
-        <div class="vote-box">
-            <h2>Question 1.</h2>
-            <form action="confirmacion_voto.jsp">
-                <div class="radio-group">
-                    <label class="radio-label">
-                        <input type="radio" name="vote" value="yes"> Yes
-                    </label>
-                    <label class="radio-label">
-                        <input type="radio" name="vote" value="no"> No
-                    </label>
                 </div>
-                <button type="submit" class="btn-next">Siguiente &rarr;</button>
-            </form>
-        </div>
-    </div>
-</body>
 
-</html>
+                <script>
+                    // Manejo de tabs de dignidades
+                    document.querySelectorAll('.dignity-tab').forEach(tab => {
+                        tab.addEventListener('click', function () {
+                            document.querySelectorAll('.dignity-tab').forEach(t => t.classList.remove('active'));
+                            this.classList.add('active');
+
+                            // Aquí se cargarían los candidatos de la dignidad seleccionada
+                            const dignity = this.getAttribute('data-dignity');
+                            console.log('Dignidad seleccionada:', dignity);
+                        });
+                    });
+
+                    // Solo un candidato puede ser seleccionado a la vez
+                    document.querySelectorAll('input[type="checkbox"][name="candidato"]').forEach(checkbox => {
+                        checkbox.addEventListener('change', function () {
+                            if (this.checked) {
+                                document.querySelectorAll('input[type="checkbox"][name="candidato"]').forEach(cb => {
+                                    if (cb !== this) {
+                                        cb.checked = false;
+                                    }
+                                });
+                            }
+                        });
+                    });
+
+                    function volver() {
+                        // Volver a la pantalla anterior
+                        window.history.back();
+                    }
+
+                    document.getElementById('candidatosForm').addEventListener('submit', function (e) {
+                        e.preventDefault();
+                        const candidatoSeleccionado = document.querySelector('input[type="checkbox"][name="candidato"]:checked');
+                        if (!candidatoSeleccionado) {
+                            alert('Por favor seleccione un candidato');
+                            return;
+                        }
+                        this.submit();
+                    });
+                </script>
+
+            </body>
+
+            </html>

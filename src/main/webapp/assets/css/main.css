@@ -21,3 +21,4 @@
 /* 5. VISTAS / PÁGINAS (Layouts específicos de tus archivos .jsp) */
 @import url('./pages/login.css');
 @import url('./pages/votacion.css');
+@import url('./pages/voto.css');
