@@ -1,0 +1,201 @@
+/* ==========================================================================
+   PAGES: VISTA DE RESUMEN DE ELECCIÓN
+   ========================================================================== */
+
+/* Contenedor principal desplazado por sidebar y header */
+.main-layout-container {
+    margin-left: 379px;
+    margin-top: 90px;
+    min-height: calc(100vh - 90px);
+    background-color: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.page-content {
+    flex: 1;
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Título de resumen */
+.resumen-title {
+    font-family: var(--font-primary);
+    font-size: 40px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 50px;
+}
+
+/* Tarjeta de resumen */
+.resumen-card {
+    border: 1px solid var(--color-secondary);
+    border-radius: 12px;
+    padding: 40px;
+    background-color: #FEFEFD;
+    margin-bottom: 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* Item de dignidad dentro de la tarjeta */
+.resumen-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 25px 0;
+    border-bottom: 1px solid #E8E8E8;
+}
+
+.resumen-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.resumen-item:first-child {
+    padding-top: 0;
+}
+
+/* Información de la dignidad (izquierda) */
+.resumen-item__info {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    flex: 1;
+}
+
+.resumen-item__logo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.resumen-item__details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.resumen-item__dignity {
+    font-family: var(--font-primary);
+    font-size: 18px;
+    font-weight: 700;
+    color: #000000;
+}
+
+.resumen-item__party {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 500;
+    color: #555555;
+}
+
+/* Botones de acción (derecha) */
+.resumen-item__actions {
+    display: flex;
+    gap: 15px;
+    flex-shrink: 0;
+}
+
+.resumen-btn {
+    padding: 12px 28px;
+    border: 2px solid var(--color-primary);
+    background-color: #FFFFFF;
+    color: var(--color-primary);
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.resumen-btn:hover {
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+}
+
+.resumen-btn--modificar {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.resumen-btn--eliminar {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+/* Botón de confirmación */
+.btn-confirm {
+    width: 100%;
+    padding: 24px;
+    background-color: var(--color-primary);
+    color: #FFFFFF;
+    border: none;
+    font-family: var(--font-primary);
+    font-size: 22px;
+    font-weight: 700;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-confirm:hover {
+    background-color: var(--color-primary-dark);
+}
+
+.btn-confirm:disabled {
+    background-color: #CCCCCC;
+    cursor: not-allowed;
+}
+
+/* Checkbox de revisión */
+.review-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-family: var(--font-primary);
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+}
+
+.review-checkbox {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+/* Botón flotante de ayuda */
+.btn-help-floating {
+    position: absolute;
+    bottom: 40px;
+    right: 40px;
+    width: 65px;
+    height: 65px;
+    background-color: var(--color-secondary);
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-help-floating img {
+    width: 35px;
+    height: 35px;
+}
+
+.btn-help-floating:hover {
+    background-color: #D5D7DB;
+}
