@@ -9,5 +9,5 @@ public interface IVotoDAO {
     boolean create(Voto voto);
 
     List<Voto> getByVotacion(int idVotacion);
-
+    List<Integer> getVotacionesVotadasByVotante(int idVotante);
 }

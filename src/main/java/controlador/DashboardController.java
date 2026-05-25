@@ -50,14 +50,14 @@ public class DashboardController extends HttpServlet{
 	    // Implementación de la Guarda [session == null]
 	    if (session == null || session.getAttribute("usuario") == null) {
 	        // Transición al estado Dashboard Inicial (Login)
-	        req.getRequestDispatcher("jsp/DashboardInicial.jsp").forward(req, resp);
+	        req.getRequestDispatcher("jsp/publicas/dashboard_inicial.jsp").forward(req, resp);
 	    } else {
 	        // Transición al estado Dashboard Principal (Si ya existe sesión)
-	        resp.sendRedirect("jsp/ListarVotantes.jsp");
+	        resp.sendRedirect("jsp/votante/lista_votantes.jsp");
 	    }
 	}
 
 	private void renderLogin(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		resp.sendRedirect("jsp/Login.jsp");
+		resp.sendRedirect("jsp/publicas/login.jsp");
 	}
 }
