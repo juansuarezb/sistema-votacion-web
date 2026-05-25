@@ -101,22 +101,23 @@
 
 <body>
 	<header>VOTOSEGURO</header>
-	<div class="container">
-		<div class="window-mock">
-			<div class="dots">ooo</div>
+	<form action="${pageContext.request.contextPath}/AutenticarController" method="post">
+
+		<input type="hidden" name="ruta" value="ingresar">
+
+		<div class="form-group">
+			<input type="text" name="correo" placeholder="Correo electrónico">
 		</div>
-		<div class="login-box">
-			<h1>Log In</h1>
-			<div class="form-group">
-				<input type="text" placeholder="Correo electrónico">
-			</div>
-			<div class="form-group">
-				<input type="password" placeholder="Contraseña">
-			</div>
-			<button class="btn-submit" onclick="window.location.href='../votante/lista_votaciones_activas.jsp'">Iniciar
-				sesión</button>
+
+		<div class="form-group">
+			<input type="password" name="contrasena" placeholder="Contraseña">
 		</div>
-	</div>
+
+		<button type="submit" class="btn-submit">
+			Iniciar sesión
+		</button>
+
+	</form>
 </body>
 
 </html>

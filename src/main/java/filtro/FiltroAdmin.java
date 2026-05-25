@@ -31,7 +31,7 @@ public class FiltroAdmin implements Filter {
         HttpSession sesion = req.getSession(false);
 
         if (sesion == null || !(sesion.getAttribute("autorizado") instanceof Administrador)) {
-            resp.sendRedirect(req.getContextPath() + "/jsp/errorLogin.jsp");
+            resp.sendRedirect(req.getContextPath() + "/jsp/error_login.jsp");
             return;
         }
 

@@ -159,16 +159,30 @@
     <div class="content">
         <div class="vote-box">
             <h2>Question 1.</h2>
-            <form action="confirmacion_voto.jsp">
+            <form action="${pageContext.request.contextPath}/EmitirVotoController" method="post">
+
+                <input type="hidden" name="ruta" value="confirmar">
+
+                <input type="hidden" name="idVotacion" value="${votacion.idVotacion}">
+
                 <div class="radio-group">
+
                     <label class="radio-label">
-                        <input type="radio" name="vote" value="yes"> Yes
+                        <input type="radio" name="opcion" value="SI">
+                        Sí
                     </label>
+
                     <label class="radio-label">
-                        <input type="radio" name="vote" value="no"> No
+                        <input type="radio" name="opcion" value="NO">
+                        No
                     </label>
+
                 </div>
-                <button type="submit" class="btn-next">Siguiente &rarr;</button>
+
+                <button type="submit" class="btn-next">
+                    Votar
+                </button>
+
             </form>
         </div>
     </div>

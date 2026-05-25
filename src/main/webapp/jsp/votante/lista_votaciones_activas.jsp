@@ -1,3 +1,5 @@
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -141,9 +143,29 @@
     </div>
 
     <div class="content">
-        <div class="message">
-            Check your Inbox to get the certification
-        </div>
+
+        <h2>Votaciones Activas</h2>
+
+        <c:choose>
+            <c:when test="${not empty votaciones}">
+                <h2>Votaciones Activas</h2>
+
+                <c:forEach var="v" items="${votaciones}">
+                    <div>
+                        <p>${v.titulo}</p>
+
+                        <a href="${pageContext.request.contextPath}/EmitirVotoController?ruta=votar&id=${v.idVotacion}">
+                            Ir a votar
+                        </a>
+                    </div>
+                </c:forEach>
+            </c:when>
+
+            <c:otherwise>
+                <h2>No tienes votaciones asignadas.</h2>
+            </c:otherwise>
+        </c:choose>
+
     </div>
 </body>
 

@@ -105,7 +105,7 @@ public class GestionarVotacionesController extends HttpServlet {
 
 		request.setAttribute("votaciones", votaciones);
 
-		request.getRequestDispatcher("jsp/ListarVotaciones.jsp").forward(request, response);
+		request.getRequestDispatcher("jsp/administrador/lista_votaciones.jsp").forward(request, response);
 	}
 
 	private void nuevo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -132,7 +132,7 @@ public class GestionarVotacionesController extends HttpServlet {
 
 				request.setAttribute("error", "La fecha de cierre debe ser mayor que la fecha de inicio.");
 
-				request.getRequestDispatcher("/jsp/error.jsp").forward(request, response);
+				request.getRequestDispatcher("jsp/publicas/error.jsp").forward(request, response);
 
 				return;
 			}
@@ -155,7 +155,7 @@ public class GestionarVotacionesController extends HttpServlet {
 
 				request.setAttribute("error", "Error al crear la votación.");
 
-				request.getRequestDispatcher("/jsp/error.jsp").forward(request, response);
+				request.getRequestDispatcher("jsp/publicas/error.jsp").forward(request, response);
 			}
 
 		} catch (Exception e) {
@@ -164,7 +164,7 @@ public class GestionarVotacionesController extends HttpServlet {
 
 			request.setAttribute("error", "Formato de fecha inválido.");
 
-			request.getRequestDispatcher("/jsp/error.jsp").forward(request, response);
+			request.getRequestDispatcher("jsp/publicas/error.jsp").forward(request, response);
 		}
 	}
 
@@ -176,7 +176,7 @@ public class GestionarVotacionesController extends HttpServlet {
 
 		request.setAttribute("votacion", votacion);
 
-		request.getRequestDispatcher("jsp/modificarVotacion.jsp").forward(request, response);
+		request.getRequestDispatcher("jsp/modificacion_votacion.jsp").forward(request, response);
 	}
 
 	private void guardarExistente(HttpServletRequest request, HttpServletResponse response)
@@ -259,7 +259,7 @@ public class GestionarVotacionesController extends HttpServlet {
 		request.setAttribute("votacion", votacion);
 		request.setAttribute("votantes", votantes);
 		request.setAttribute("idsAsignados", idsAsignados);
-		request.getRequestDispatcher("jsp/asignarVotantes.jsp").forward(request, response);
+		request.getRequestDispatcher("jsp/asignacion_votantes.jsp").forward(request, response);
 	}
 
 	private void guardarAsignacion(HttpServletRequest request, HttpServletResponse response)
