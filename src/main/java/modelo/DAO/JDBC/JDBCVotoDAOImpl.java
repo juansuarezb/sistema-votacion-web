@@ -30,6 +30,29 @@ public class JDBCVotoDAOImpl implements IVotoDAO {
 	}
 
 	@Override
+	public List<Integer> getVotacionesVotadasByVotante(int idVotante) {
+		List<Integer> lista = new ArrayList<>();
+		String SQL = """
+				    SELECT id_votacion
+				    FROM votacion_votante
+				    WHERE id_votante = ? AND ha_votado = TRUE
+				""";
+		try {
+			PreparedStatement pstmt = ConexionBD.getConexion().prepareStatement(SQL);
+			pstmt.setInt(1, idVotante);
+			ResultSet rs = pstmt.executeQuery();
+			while (rs.next()) {
+				lista.add(rs.getInt("id_votacion"));
+			}
+			ConexionBD.cerrar(rs);
+			ConexionBD.cerrar(pstmt);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return lista;
+	}
+
+	@Override
 	public List<Voto> getByVotacion(int idVotacion) {
 		List<Voto> lista = new ArrayList<>();
 		String SQL = """

@@ -76,12 +76,14 @@ public class EmitirVotoController extends HttpServlet {
     private void listar(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
         Votante votante = getVotanteFromSession(req, resp);
-        if (votante == null) {
-			return;
-		}
+        if (votante == null)
+            return;
+
+        // Sincronizar votaciones ya votadas desde BD
+        List<Integer> yaVotadas = votoDAO.getVotacionesVotadasByVotante(votante.getIdUsuario());
+        votante.setVotacionesVotadas(yaVotadas);
 
         List<Votacion> asignadas = votacionDAO.getVotacionesByVotante(votante.getIdUsuario());
-
         req.setAttribute("votaciones", asignadas);
         req.setAttribute("votante", votante);
         req.getRequestDispatcher("jsp/listarVotacionesActivas.jsp").forward(req, resp);
@@ -91,8 +93,8 @@ public class EmitirVotoController extends HttpServlet {
             throws ServletException, IOException {
         Votante votante = getVotanteFromSession(req, resp);
         if (votante == null) {
-			return;
-		}
+            return;
+        }
 
         int idVotacion = Integer.parseInt(req.getParameter("id"));
         Votacion votacion = votacionDAO.getById(idVotacion);
@@ -115,8 +117,8 @@ public class EmitirVotoController extends HttpServlet {
             throws ServletException, IOException {
         Votante votante = getVotanteFromSession(req, resp);
         if (votante == null) {
-			return;
-		}
+            return;
+        }
 
         int idVotacion = Integer.parseInt(req.getParameter("idVotacion"));
         String opcionStr = req.getParameter("opcion");
@@ -136,7 +138,7 @@ public class EmitirVotoController extends HttpServlet {
         if (resultado) {
             // Marcar en sesión que ya votó
             votante.marcarComoVotado(idVotacion);
-         // Notificar a todos los que están viendo resultados de esta votación
+            // Notificar a todos los que están viendo resultados de esta votación
             ResultadosWebSocket.notificarNuevoVoto(idVotacion);
             // Actualizar ha_votado en BD
             votacionDAO.marcarVotoEmitido(idVotacion, votante.getIdUsuario());
