@@ -45,6 +45,9 @@ Servers/
 build/
 bin/
 
+.idea/
+
+
 # Credenciales
 persistence.xml
 application.properties
@@ -53,3 +56,4 @@ application.properties
 # OS
 .DS_Store
 Thumbs.db
+
