@@ -1,0 +1,153 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: votoseguro-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "VotoSeguro2026!"
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+      - ./database/backups:/var/opt/mssql/backups
+    networks:
+      - votoseguro-network
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  db-restore:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: votoseguro-db-restore
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    volumes:
+      - ./database/restore:/scripts
+      - ./database/backups:/var/opt/mssql/backups
+    command: >
+      bash -c "
+      /opt/mssql-tools18/bin/sqlcmd
+      -S sqlserver,1433
+      -U sa
+      -P 'VotoSeguro2026!'
+      -C
+      -i /scripts/00-restore-votoseguro.sql
+      "
+    networks:
+      - votoseguro-network
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    container_name: votoseguro-keycloak
+    command: start-dev --import-realm
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+    ports:
+      - "8081:8080"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+      - ./keycloak/import:/opt/keycloak/data/import
+    networks:
+      - votoseguro-network
+
+  apigateway:
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    container_name: votoseguro-apigateway
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: "http://+:8080"
+    depends_on:
+      - keycloak
+      - voterservice
+      - referendumservice
+      - voteservice
+      - resultservice
+    networks:
+      - votoseguro-network
+
+  voterservice:
+    build:
+      context: .
+      dockerfile: Services/VoterService/Dockerfile
+    container_name: votoseguro-voterservice
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoterDb;User Id=usr_voter_service;Password=VoterService2026!@;TrustServerCertificate=True;"
+    depends_on:
+      db-restore:
+        condition: service_completed_successfully
+    networks:
+      - votoseguro-network
+
+  referendumservice:
+    build:
+      context: .
+      dockerfile: Services/ReferendumService/Dockerfile
+    container_name: votoseguro-referendumservice
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroReferendumDb;User Id=usr_referendum_service;Password=ReferendumService2026!@;TrustServerCertificate=True;"
+    depends_on:
+      db-restore:
+        condition: service_completed_successfully
+    networks:
+      - votoseguro-network
+
+  voteservice:
+    build:
+      context: .
+      dockerfile: Services/VoteService/Dockerfile
+    container_name: votoseguro-voteservice
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: "http://+:8080"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoteDb;User Id=usr_vote_service;Password=VoteService2026!@;TrustServerCertificate=True;"
+      Services__ReferendumService: "http://referendumservice:8080"
+    depends_on:
+      db-restore:
+        condition: service_completed_successfully
+      referendumservice:
+        condition: service_started
+    networks:
+      - votoseguro-network
+
+  resultservice:
+    build:
+      context: .
+      dockerfile: Services/ResultService/Dockerfile
+    container_name: votoseguro-resultservice
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Docker"
+      ASPNETCORE_URLS: "http://+:8080"
+      Services__VoteService: "http://voteservice:8080"
+    depends_on:
+      voteservice:
+        condition: service_started
+    networks:
+      - votoseguro-network
+
+volumes:
+  sqlserver_data:
+  keycloak_data:
+
+networks:
+  votoseguro-network:
+    driver: bridge

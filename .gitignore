@@ -1,5 +1,116 @@
-﻿################################################################################
-# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
-################################################################################
+﻿# ============================================================
+# .NET / Visual Studio
+# ============================================================
 
-/.vs
+[Bb]in/
+[Oo]bj/
+
+.vs/
+.vscode/
+.idea/
+
+*.user
+*.suo
+*.rsuser
+*.userosscache
+*.sln.docstates
+
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+
+# ============================================================
+# Build / Publish
+# ============================================================
+
+publish/
+out/
+artifacts/
+*.nupkg
+*.snupkg
+
+# ============================================================
+# Logs
+# ============================================================
+
+*.log
+logs/
+LogFiles/
+
+# ============================================================
+# Environment / local config
+# ============================================================
+
+.env
+.env.*
+!.env.example
+
+appsettings.Local.json
+appsettings.*.Local.json
+
+# ============================================================
+# Docker local files
+# ============================================================
+
+docker-compose.override.yml
+compose.override.yml
+
+docker-data/
+volumes/
+data/
+
+# ============================================================
+# SQL Server local files
+# ============================================================
+
+*.mdf
+*.ldf
+*.ndf
+*.trn
+
+# OJO:
+# Como es proyecto de prueba, SÍ permitimos subir backups .bak
+# para compartir el mismo estado con el equipo.
+!database/backups/*.bak
+
+# ============================================================
+# Keycloak
+# ============================================================
+
+keycloak/data/
+keycloak/export/
+
+# Como es proyecto de prueba, SÍ permitimos subir el realm exportado.
+!keycloak/import/votoseguro-realm.json
+
+# ============================================================
+# Frontend React / Node si luego se agrega
+# ============================================================
+
+node_modules/
+dist/
+build/
+coverage/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ============================================================
+# OS files
+# ============================================================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ============================================================
+# Temporary files
+# ============================================================
+
+*.tmp
+*.temp
+*.swp
+*.cache
