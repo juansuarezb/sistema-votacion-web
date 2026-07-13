@@ -1,0 +1,15 @@
+﻿C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\Controllers\VotantesController.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\Data\VoterDbContext.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\Models\Votante.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\Models\VotanteDtos.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\Program.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\obj\Debug\net10.0\VoterService.GlobalUsings.g.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\obj\Debug\net10.0\VoterService.AssemblyInfo.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\obj\Debug\net10.0\VoterService.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\appsettings.Development.json
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\appsettings.json
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\Dockerfile
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\init-db.sql
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\VoterService.http
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\VoterService\Properties\launchSettings.json

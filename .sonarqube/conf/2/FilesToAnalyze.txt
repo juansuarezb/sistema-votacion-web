@@ -1,0 +1,11 @@
+﻿C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\Controllers\WeatherForecastController.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\Program.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\WeatherForecast.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\obj\Debug\net10.0\AuditService.GlobalUsings.g.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\obj\Debug\net10.0\AuditService.AssemblyInfo.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\obj\Debug\net10.0\AuditService.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\appsettings.Development.json
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\appsettings.json
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\AuditService.http
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\Services\AuditService\Properties\launchSettings.json

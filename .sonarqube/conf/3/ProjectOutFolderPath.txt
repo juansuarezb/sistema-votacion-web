@@ -1,0 +1,1 @@
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\.sonarqube\out\3

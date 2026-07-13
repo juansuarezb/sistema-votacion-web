@@ -48,3 +48,14 @@ public record EligibilityResponse(
     bool PuedeVotar,
     string Mensaje
 );
+
+public record AssignedReferendumResponse(
+    int IdReferendum,
+    string Titulo,
+    string? Descripcion,
+    DateTime FechaInicio,
+    DateTime FechaCierre,
+    string Estado,
+    int TotalPreguntas,
+    int PreguntasPendientes
+);

@@ -17,7 +17,8 @@ public class ReferendumsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<ReferendumResponse>>> GetAllAsync(CancellationToken ct)
+    public async Task<ActionResult<IEnumerable<ReferendumResponse>>> GetAllAsync(
+        CancellationToken ct)
     {
         var referendums = await _context.Referendums
             .AsNoTracking()
@@ -35,23 +36,33 @@ public class ReferendumsController : ControllerBase
     }
 
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<ReferendumResponse>> GetByIdAsync(int id, CancellationToken ct)
+    public async Task<ActionResult<ReferendumResponse>> GetByIdAsync(
+        int id,
+        CancellationToken ct)
     {
-        var r = await _context.Referendums
+        var referendum = await _context.Referendums
             .AsNoTracking()
-            .FirstOrDefaultAsync(x => x.IdReferendum == id, ct);
+            .FirstOrDefaultAsync(
+                r => r.IdReferendum == id,
+                ct
+            );
 
-        if (r is null)
-            return NotFound(new { mensaje = "Referéndum no encontrado" });
+        if (referendum is null)
+        {
+            return NotFound(new
+            {
+                mensaje = "Referéndum no encontrado"
+            });
+        }
 
         return Ok(new ReferendumResponse(
-            r.IdReferendum,
-            r.Titulo,
-            r.Descripcion,
-            r.FechaInicio,
-            r.FechaCierre,
-            r.Estado,
-            r.FechaCreacion
+            referendum.IdReferendum,
+            referendum.Titulo,
+            referendum.Descripcion,
+            referendum.FechaInicio,
+            referendum.FechaCierre,
+            referendum.Estado,
+            referendum.FechaCreacion
         ));
     }
 
@@ -61,7 +72,12 @@ public class ReferendumsController : ControllerBase
         CancellationToken ct)
     {
         if (request.FechaCierre <= request.FechaInicio)
-            return BadRequest(new { error = "La fecha de cierre debe ser mayor a la fecha de inicio" });
+        {
+            return BadRequest(new
+            {
+                error = "La fecha de cierre debe ser mayor a la fecha de inicio"
+            });
+        }
 
         var referendum = new Referendum
         {
@@ -92,13 +108,24 @@ public class ReferendumsController : ControllerBase
         UpdateReferendumRequest request,
         CancellationToken ct)
     {
-        var referendum = await _context.Referendums.FindAsync(new object[] { id }, ct);
+        var referendum = await _context.Referendums
+            .FindAsync(new object[] { id }, ct);
 
         if (referendum is null)
-            return NotFound(new { mensaje = "Referéndum no encontrado" });
+        {
+            return NotFound(new
+            {
+                mensaje = "Referéndum no encontrado"
+            });
+        }
 
         if (request.FechaCierre <= request.FechaInicio)
-            return BadRequest(new { error = "La fecha de cierre debe ser mayor a la fecha de inicio" });
+        {
+            return BadRequest(new
+            {
+                error = "La fecha de cierre debe ser mayor a la fecha de inicio"
+            });
+        }
 
         referendum.Titulo = request.Titulo;
         referendum.Descripcion = request.Descripcion;
@@ -107,16 +134,25 @@ public class ReferendumsController : ControllerBase
         referendum.Estado = request.Estado;
 
         await _context.SaveChangesAsync(ct);
+
         return NoContent();
     }
 
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteAsync(int id, CancellationToken ct)
+    public async Task<IActionResult> DeleteAsync(
+        int id,
+        CancellationToken ct)
     {
-        var referendum = await _context.Referendums.FindAsync(new object[] { id }, ct);
+        var referendum = await _context.Referendums
+            .FindAsync(new object[] { id }, ct);
 
         if (referendum is null)
-            return NotFound(new { mensaje = "Referéndum no encontrado" });
+        {
+            return NotFound(new
+            {
+                mensaje = "Referéndum no encontrado"
+            });
+        }
 
         _context.Referendums.Remove(referendum);
         await _context.SaveChangesAsync(ct);
@@ -130,10 +166,19 @@ public class ReferendumsController : ControllerBase
         CreateQuestionRequest request,
         CancellationToken ct)
     {
-        var exists = await _context.Referendums.AnyAsync(r => r.IdReferendum == id, ct);
+        var referendumExists = await _context.Referendums
+            .AnyAsync(
+                r => r.IdReferendum == id,
+                ct
+            );
 
-        if (!exists)
-            return NotFound(new { mensaje = "Referéndum no encontrado" });
+        if (!referendumExists)
+        {
+            return NotFound(new
+            {
+                mensaje = "Referéndum no encontrado"
+            });
+        }
 
         var question = new ReferendumQuestion
         {
@@ -176,41 +221,67 @@ public class ReferendumsController : ControllerBase
     {
         var referendum = await _context.Referendums
             .Include(r => r.Preguntas)
-            .FirstOrDefaultAsync(r => r.IdReferendum == id, ct);
+            .FirstOrDefaultAsync(
+                r => r.IdReferendum == id,
+                ct
+            );
 
         if (referendum is null)
-            return NotFound(new { mensaje = "Referéndum no encontrado" });
+        {
+            return NotFound(new
+            {
+                mensaje = "Referéndum no encontrado"
+            });
+        }
 
         if (!referendum.Preguntas.Any())
-            return BadRequest(new { error = "El referéndum no tiene preguntas registradas" });
+        {
+            return BadRequest(new
+            {
+                error = "El referéndum no tiene preguntas registradas"
+            });
+        }
 
         foreach (var question in referendum.Preguntas)
         {
-            var exists = await _context.ReferendumQuestionVoters.AnyAsync(
-                x => x.IdReferendum == id &&
-                     x.IdQuestion == question.IdQuestion &&
-                     x.IdVotante == request.IdVotante,
-                ct);
+            var assignmentExists =
+                await _context.ReferendumQuestionVoters
+                    .AnyAsync(
+                        x =>
+                            x.IdReferendum == id &&
+                            x.IdQuestion == question.IdQuestion &&
+                            x.IdVotante == request.IdVotante,
+                        ct
+                    );
 
-            if (!exists)
+            if (assignmentExists)
             {
-                _context.ReferendumQuestionVoters.Add(new ReferendumQuestionVoter
+                continue;
+            }
+
+            _context.ReferendumQuestionVoters.Add(
+                new ReferendumQuestionVoter
                 {
                     IdReferendum = id,
                     IdQuestion = question.IdQuestion,
                     IdVotante = request.IdVotante,
                     HaVotado = false
-                });
-            }
+                }
+            );
         }
 
         await _context.SaveChangesAsync(ct);
 
-        return Ok(new { mensaje = "Votante asignado a todas las preguntas del referéndum" });
+        return Ok(new
+        {
+            mensaje = "Votante asignado a todas las preguntas del referéndum"
+        });
     }
 
     [HttpGet("{id:int}/voters")]
-    public async Task<IActionResult> GetAssignedVotersAsync(int id, CancellationToken ct)
+    public async Task<IActionResult> GetAssignedVotersAsync(
+        int id,
+        CancellationToken ct)
     {
         var voters = await _context.ReferendumQuestionVoters
             .AsNoTracking()
@@ -222,7 +293,98 @@ public class ReferendumsController : ControllerBase
         return Ok(voters);
     }
 
-    [HttpGet("{id:int}/questions/{idQuestion:int}/voters/{idVotante:int}/eligibility")]
+    /// <summary>
+    /// GET /api/referendums/voters/{idVotante}/assigned
+    /// Devuelve los referéndums activos asignados a un votante.
+    /// </summary>
+    [HttpGet("voters/{idVotante:int}/assigned")]
+    public async Task<ActionResult<IEnumerable<AssignedReferendumResponse>>>
+        GetAssignedReferendumsByVoterAsync(
+            int idVotante,
+            CancellationToken ct)
+    {
+        if (idVotante <= 0)
+        {
+            return BadRequest(new
+            {
+                error = "El identificador del votante no es válido."
+            });
+        }
+
+        var now = DateTime.UtcNow;
+
+        var assignedReferendumIds =
+            await _context.ReferendumQuestionVoters
+                .AsNoTracking()
+                .Where(x => x.IdVotante == idVotante)
+                .Select(x => x.IdReferendum)
+                .Distinct()
+                .ToListAsync(ct);
+
+        if (assignedReferendumIds.Count == 0)
+        {
+            return Ok(
+                Array.Empty<AssignedReferendumResponse>()
+            );
+        }
+
+        var referendums = await _context.Referendums
+            .AsNoTracking()
+            .Where(r =>
+                assignedReferendumIds.Contains(r.IdReferendum) &&
+                r.Estado == "ACTIVO" &&
+                r.FechaInicio <= now &&
+                r.FechaCierre >= now
+            )
+            .OrderBy(r => r.FechaCierre)
+            .ToListAsync(ct);
+
+        var response =
+            new List<AssignedReferendumResponse>();
+
+        foreach (var referendum in referendums)
+        {
+            var assignments =
+                await _context.ReferendumQuestionVoters
+                    .AsNoTracking()
+                    .Where(x =>
+                        x.IdReferendum ==
+                        referendum.IdReferendum &&
+                        x.IdVotante == idVotante
+                    )
+                    .ToListAsync(ct);
+
+            var totalPreguntas =
+                assignments.Count;
+
+            var preguntasPendientes =
+                assignments.Count(x => !x.HaVotado);
+
+            if (preguntasPendientes == 0)
+            {
+                continue;
+            }
+
+            response.Add(
+                new AssignedReferendumResponse(
+                    referendum.IdReferendum,
+                    referendum.Titulo,
+                    referendum.Descripcion,
+                    referendum.FechaInicio,
+                    referendum.FechaCierre,
+                    referendum.Estado,
+                    totalPreguntas,
+                    preguntasPendientes
+                )
+            );
+        }
+
+        return Ok(response);
+    }
+
+    [HttpGet(
+        "{id:int}/questions/{idQuestion:int}/voters/{idVotante:int}/eligibility"
+    )]
     public async Task<ActionResult<EligibilityResponse>> CheckEligibilityAsync(
         int id,
         int idQuestion,
@@ -231,24 +393,46 @@ public class ReferendumsController : ControllerBase
     {
         var referendum = await _context.Referendums
             .AsNoTracking()
-            .FirstOrDefaultAsync(r => r.IdReferendum == id, ct);
+            .FirstOrDefaultAsync(
+                r => r.IdReferendum == id,
+                ct
+            );
 
         if (referendum is null)
-            return NotFound(new { mensaje = "Referéndum no encontrado" });
+        {
+            return NotFound(new
+            {
+                mensaje = "Referéndum no encontrado"
+            });
+        }
 
-        var questionExists = await _context.ReferendumQuestions
-            .AnyAsync(q => q.IdReferendum == id && q.IdQuestion == idQuestion, ct);
+        var questionExists =
+            await _context.ReferendumQuestions
+                .AnyAsync(
+                    q =>
+                        q.IdReferendum == id &&
+                        q.IdQuestion == idQuestion,
+                    ct
+                );
 
         if (!questionExists)
-            return NotFound(new { mensaje = "Pregunta no encontrada para este referéndum" });
+        {
+            return NotFound(new
+            {
+                mensaje = "Pregunta no encontrada para este referéndum"
+            });
+        }
 
-        var assignment = await _context.ReferendumQuestionVoters
-            .AsNoTracking()
-            .FirstOrDefaultAsync(x =>
-                x.IdReferendum == id &&
-                x.IdQuestion == idQuestion &&
-                x.IdVotante == idVotante,
-                ct);
+        var assignment =
+            await _context.ReferendumQuestionVoters
+                .AsNoTracking()
+                .FirstOrDefaultAsync(
+                    x =>
+                        x.IdReferendum == id &&
+                        x.IdQuestion == idQuestion &&
+                        x.IdVotante == idVotante,
+                    ct
+                );
 
         if (assignment is null)
         {
@@ -278,7 +462,10 @@ public class ReferendumsController : ControllerBase
             ));
         }
 
-        if (now < referendum.FechaInicio || now > referendum.FechaCierre)
+        if (
+            now < referendum.FechaInicio ||
+            now > referendum.FechaCierre
+        )
         {
             return Ok(new EligibilityResponse(
                 id,
@@ -315,25 +502,40 @@ public class ReferendumsController : ControllerBase
         ));
     }
 
-    [HttpPatch("{id:int}/questions/{idQuestion:int}/voters/{idVotante:int}/mark-voted")]
+    [HttpPatch(
+        "{id:int}/questions/{idQuestion:int}/voters/{idVotante:int}/mark-voted"
+    )]
     public async Task<IActionResult> MarkVotedAsync(
         int id,
         int idQuestion,
         int idVotante,
         CancellationToken ct)
     {
-        var assignment = await _context.ReferendumQuestionVoters
-            .FirstOrDefaultAsync(x =>
-                x.IdReferendum == id &&
-                x.IdQuestion == idQuestion &&
-                x.IdVotante == idVotante,
-                ct);
+        var assignment =
+            await _context.ReferendumQuestionVoters
+                .FirstOrDefaultAsync(
+                    x =>
+                        x.IdReferendum == id &&
+                        x.IdQuestion == idQuestion &&
+                        x.IdVotante == idVotante,
+                    ct
+                );
 
         if (assignment is null)
-            return NotFound(new { mensaje = "Asignación no encontrada" });
+        {
+            return NotFound(new
+            {
+                mensaje = "Asignación no encontrada"
+            });
+        }
 
         if (assignment.HaVotado)
-            return Conflict(new { error = "El votante ya respondió esta pregunta" });
+        {
+            return Conflict(new
+            {
+                error = "El votante ya respondió esta pregunta"
+            });
+        }
 
         assignment.HaVotado = true;
         assignment.FechaVoto = DateTime.UtcNow;

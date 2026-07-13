@@ -3,8 +3,8 @@ services:
     image: mcr.microsoft.com/mssql/server:2022-latest
     container_name: votoseguro-sqlserver
     environment:
-      ACCEPT_EULA: "Y"
-      MSSQL_SA_PASSWORD: "VotoSeguro2026!"
+      ACCEPT_EULA: "${ACCEPT_EULA}"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
     ports:
       - "1433:1433"
     volumes:
@@ -13,7 +13,11 @@ services:
     networks:
       - votoseguro-network
     healthcheck:
-      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"
+        ]
       interval: 10s
       timeout: 5s
       retries: 20
@@ -24,52 +28,40 @@ services:
     depends_on:
       sqlserver:
         condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
     volumes:
-      - ./database/restore:/scripts
+      - ./database/restore:/scripts:ro
       - ./database/backups:/var/opt/mssql/backups
     command: >
       bash -c "
       /opt/mssql-tools18/bin/sqlcmd
       -S sqlserver,1433
       -U sa
-      -P 'VotoSeguro2026!'
+      -P \"$$MSSQL_SA_PASSWORD\"
       -C
+      -b
       -i /scripts/00-restore-votoseguro.sql
       "
     networks:
       - votoseguro-network
+    restart: "no"
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
     container_name: votoseguro-keycloak
     command: start-dev --import-realm
     environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: admin
-      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: "${KC_BOOTSTRAP_ADMIN_USERNAME}"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
+      KC_HOSTNAME: "${KC_HOSTNAME}"
+      KC_PROXY_HEADERS: "xforwarded"
+      KC_HTTP_ENABLED: "true"
     ports:
       - "8081:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
-      - ./keycloak/import:/opt/keycloak/data/import
-    networks:
-      - votoseguro-network
-
-  apigateway:
-    build:
-      context: .
-      dockerfile: ApiGateway/Dockerfile
-    container_name: votoseguro-apigateway
-    ports:
-      - "8080:8080"
-    environment:
-      ASPNETCORE_ENVIRONMENT: "Docker"
-      ASPNETCORE_URLS: "http://+:8080"
-    depends_on:
-      - keycloak
-      - voterservice
-      - referendumservice
-      - voteservice
-      - resultservice
+      - ./keycloak/import:/opt/keycloak/data/import:ro
     networks:
       - votoseguro-network
 
@@ -81,9 +73,9 @@ services:
     expose:
       - "8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Docker"
-      ASPNETCORE_URLS: "http://+:8080"
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoterDb;User Id=usr_voter_service;Password=VoterService2026!@;TrustServerCertificate=True;"
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoterDb;User Id=usr_voter_service;Password=${VOTER_DB_PASSWORD};TrustServerCertificate=True;"
     depends_on:
       db-restore:
         condition: service_completed_successfully
@@ -98,9 +90,9 @@ services:
     expose:
       - "8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Docker"
-      ASPNETCORE_URLS: "http://+:8080"
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroReferendumDb;User Id=usr_referendum_service;Password=ReferendumService2026!@;TrustServerCertificate=True;"
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroReferendumDb;User Id=usr_referendum_service;Password=${REFERENDUM_DB_PASSWORD};TrustServerCertificate=True;"
     depends_on:
       db-restore:
         condition: service_completed_successfully
@@ -115,10 +107,10 @@ services:
     expose:
       - "8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Docker"
-      ASPNETCORE_URLS: "http://+:8080"
-      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoteDb;User Id=usr_vote_service;Password=VoteService2026!@;TrustServerCertificate=True;"
-      Services__ReferendumService: "http://referendumservice:8080"
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoteDb;User Id=usr_vote_service;Password=${VOTE_DB_PASSWORD};TrustServerCertificate=True;"
+      Services__ReferendumService: "${REFERENDUM_SERVICE_URL}"
     depends_on:
       db-restore:
         condition: service_completed_successfully
@@ -135,11 +127,62 @@ services:
     expose:
       - "8080"
     environment:
-      ASPNETCORE_ENVIRONMENT: "Docker"
-      ASPNETCORE_URLS: "http://+:8080"
-      Services__VoteService: "http://voteservice:8080"
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+      Services__VoteService: "${VOTE_SERVICE_URL}"
     depends_on:
       voteservice:
+        condition: service_started
+    networks:
+      - votoseguro-network
+
+  authservice:
+    build:
+      context: .
+      dockerfile: Services/AuthService/Dockerfile
+    container_name: votoseguro-authservice
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+
+      Keycloak__BaseUrl: "${KEYCLOAK_INTERNAL_URL}"
+      Keycloak__Realm: "${KEYCLOAK_REALM}"
+      Keycloak__ClientId: "${KEYCLOAK_AUTH_CLIENT_ID}"
+      Keycloak__ClientSecret: "${KEYCLOAK_AUTH_CLIENT_SECRET}"
+
+      Services__VoterServiceUrl: "http://voterservice:8080"
+    depends_on:
+      keycloak:
+        condition: service_started
+      voterservice:
+        condition: service_started
+    networks:
+      - votoseguro-network
+
+  apigateway:
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    container_name: votoseguro-apigateway
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+    depends_on:
+      keycloak:
+        condition: service_started
+      voterservice:
+        condition: service_started
+      referendumservice:
+        condition: service_started
+      voteservice:
+        condition: service_started
+      resultservice:
+        condition: service_started
+      authservice:
         condition: service_started
     networks:
       - votoseguro-network

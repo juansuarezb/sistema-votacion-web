@@ -1,0 +1,11 @@
+﻿C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\Program.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\obj\Debug\net10.0\ApiGateway.GlobalUsings.g.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\obj\Debug\net10.0\.NETCoreApp,Version=v10.0.AssemblyAttributes.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\obj\Debug\net10.0\ApiGateway.AssemblyInfo.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\obj\Debug\net10.0\ApiGateway.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\appsettings.Development.json
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\appsettings.json
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\.env.example
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\ApiGateway.http
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\Dockerfile
+C:\Users\Paul\Desktop\VotoSeguro-Microservices\ApiGateway\Properties\launchSettings.json

@@ -12,7 +12,11 @@ services:
     networks:
       - votoseguro-network
     healthcheck:
-      test: ["CMD-SHELL", "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"]
+      test:
+        [
+          "CMD-SHELL",
+          "timeout 1 bash -c '</dev/tcp/localhost/1433' || exit 1"
+        ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -20,39 +24,21 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.0
     container_name: votoseguro-keycloak
-    command: start-dev --import-realm
+    command:     
+      - start-dev
+      - --proxy-headers=xforwarded
+      - --hostname-strict=false
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: "${KC_BOOTSTRAP_ADMIN_USERNAME}"
       KC_BOOTSTRAP_ADMIN_PASSWORD: "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
+      KC_HOSTNAME: "${KC_HOSTNAME}"
+      KC_PROXY_HEADERS: ${KC_PROXY_HEADERS}
+      KC_HTTP_ENABLED: ${KC_HOSTNAME_STRICT}
     ports:
       - "8081:8080"
     volumes:
       - keycloak_data:/opt/keycloak/data
       - ./keycloak/import:/opt/keycloak/data/import
-    networks:
-      - votoseguro-network
-
-  apigateway:
-    build:
-      context: .
-      dockerfile: ApiGateway/Dockerfile
-    container_name: votoseguro-apigateway
-    ports:
-      - "8080:8080"
-    environment:
-      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
-      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
-    depends_on:
-      keycloak:
-        condition: service_started
-      voterservice:
-        condition: service_started
-      referendumservice:
-        condition: service_started
-      voteservice:
-        condition: service_started
-      resultservice:
-        condition: service_started
     networks:
       - votoseguro-network
 
@@ -123,6 +109,57 @@ services:
       Services__VoteService: "${VOTE_SERVICE_URL}"
     depends_on:
       voteservice:
+        condition: service_started
+    networks:
+      - votoseguro-network
+
+  authservice:
+    build:
+      context: .
+      dockerfile: Services/AuthService/Dockerfile
+    container_name: votoseguro-authservice
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+
+      Keycloak__BaseUrl: "${KEYCLOAK_INTERNAL_URL}"
+      Keycloak__Realm: "${KEYCLOAK_REALM}"
+      Keycloak__ClientId: "${KEYCLOAK_AUTH_CLIENT_ID}"
+      Keycloak__ClientSecret: "${KEYCLOAK_AUTH_CLIENT_SECRET}"
+
+      Services__VoterServiceUrl: "http://voterservice:8080"
+    depends_on:
+      keycloak:
+        condition: service_started
+      voterservice:
+        condition: service_started
+    networks:
+      - votoseguro-network
+
+  apigateway:
+    build:
+      context: .
+      dockerfile: ApiGateway/Dockerfile
+    container_name: votoseguro-apigateway
+    ports:
+      - "8080:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+    depends_on:
+      keycloak:
+        condition: service_started
+      voterservice:
+        condition: service_started
+      referendumservice:
+        condition: service_started
+      voteservice:
+        condition: service_started
+      resultservice:
+        condition: service_started
+      authservice:
         condition: service_started
     networks:
       - votoseguro-network

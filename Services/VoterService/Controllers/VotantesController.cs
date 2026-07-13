@@ -61,6 +61,48 @@ public class VotantesController : ControllerBase
     }
 
     /// <summary>
+    /// GET /api/votantes/by-keycloak/{keycloakId}
+    /// Obtener el perfil del votante mediante el sub de Keycloak.
+    /// </summary>
+    [HttpGet("by-keycloak/{keycloakId}")]
+    public async Task<ActionResult<VotanteResponse>> GetByKeycloakIdAsync(
+        string keycloakId,
+        CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(keycloakId))
+        {
+            return BadRequest(new
+            {
+                error = "El KeycloakId es obligatorio."
+            });
+        }
+
+        var votante = await _context.Votantes
+            .AsNoTracking()
+            .FirstOrDefaultAsync(
+                v => v.KeycloakId == keycloakId,
+                ct
+            );
+
+        if (votante is null)
+        {
+            return NotFound(new
+            {
+                mensaje = "No existe un perfil de votante asociado al usuario autenticado."
+            });
+        }
+
+        return Ok(new VotanteResponse(
+            votante.IdVotante,
+            votante.KeycloakId,
+            votante.Nombre,
+            votante.Cedula,
+            votante.CorreoElectronico,
+            votante.FechaRegistro
+        ));
+    }
+
+    /// <summary>
     /// POST /api/votantes - Crear nuevo votante
     /// </summary>
     [HttpPost]
@@ -114,7 +156,7 @@ public class VotantesController : ControllerBase
 
         // Validar que no haya duplicado en cédula o email (si cambian)
         var duplicado = await _context.Votantes.AnyAsync(
-            v => v.IdVotante != id && 
+            v => v.IdVotante != id &&
                 (v.Cedula == request.Cedula || v.CorreoElectronico == request.CorreoElectronico),
             ct);
 

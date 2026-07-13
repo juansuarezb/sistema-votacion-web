@@ -114,3 +114,7 @@ desktop.ini
 *.temp
 *.swp
 *.cache
+
+# SonarQube local
+.env.sonar
+.scannerwork/
