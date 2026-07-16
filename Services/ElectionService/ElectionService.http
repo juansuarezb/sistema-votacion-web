@@ -1,6 +1,0 @@
-@ElectionService_HostAddress = http://localhost:5018
-
-GET {{ElectionService_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

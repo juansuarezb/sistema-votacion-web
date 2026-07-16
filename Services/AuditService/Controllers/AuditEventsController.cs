@@ -69,9 +69,8 @@ public sealed class AuditEventsController : ControllerBase
 
         var response = ToResponse(auditEvent);
 
-        return CreatedAtAction(
-            nameof(GetByIdAsync),
-            new { id = auditEvent.IdAuditEvent },
+        return StatusCode(
+            StatusCodes.Status201Created,
             response
         );
     }

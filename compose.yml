@@ -41,7 +41,22 @@ services:
       - ./keycloak/import:/opt/keycloak/data/import
     networks:
       - votoseguro-network
-
+  auditservice:
+    build:
+      context: .
+      dockerfile: Services/AuditService/Dockerfile
+    container_name: votoseguro-auditservice
+    expose:
+      - "8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
+      ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroAuditDb;User Id=usr_audit_service;Password=${AUDIT_DB_PASSWORD};TrustServerCertificate=True;"
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    networks:
+      - votoseguro-network
   voterservice:
     build:
       context: .
@@ -50,12 +65,15 @@ services:
     expose:
       - "8080"
     environment:
+      Services__AuditService: "http://auditservice:8080"
       ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoterDb;User Id=usr_voter_service;Password=${VOTER_DB_PASSWORD};TrustServerCertificate=True;"
     depends_on:
       sqlserver:
         condition: service_healthy
+      auditservice:
+        condition: service_started
     networks:
       - votoseguro-network
 
@@ -70,9 +88,12 @@ services:
       ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroReferendumDb;User Id=usr_referendum_service;Password=${REFERENDUM_DB_PASSWORD};TrustServerCertificate=True;"
+      Services__AuditService: "http://auditservice:8080"
     depends_on:
       sqlserver:
         condition: service_healthy
+      auditservice:
+        condition: service_started
     networks:
       - votoseguro-network
 
@@ -80,22 +101,33 @@ services:
     build:
       context: .
       dockerfile: Services/VoteService/Dockerfile
+
     container_name: votoseguro-voteservice
+
     expose:
       - "8080"
+
     environment:
       ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoteDb;User Id=usr_vote_service;Password=${VOTE_DB_PASSWORD};TrustServerCertificate=True;"
-      Services__ReferendumService: "${REFERENDUM_SERVICE_URL}"
+
+      Services__ReferendumService: "http://referendumservice:8080"
+      Services__AuditService: "http://auditservice:8080"
+
     depends_on:
       sqlserver:
         condition: service_healthy
+
       referendumservice:
         condition: service_started
+
+      auditservice:
+        condition: service_started
+
     networks:
       - votoseguro-network
-
   resultservice:
     build:
       context: .
@@ -127,13 +159,16 @@ services:
       Keycloak__BaseUrl: "${KEYCLOAK_INTERNAL_URL}"
       Keycloak__Realm: "${KEYCLOAK_REALM}"
       Keycloak__ClientId: "${KEYCLOAK_AUTH_CLIENT_ID}"
-      Keycloak__ClientSecret: "${KEYCLOAK_AUTH_CLIENT_SECRET}"
+      Keycloak__ClientSecret: "${KEYCLOAK_AUTH_SERVICE_SECRET}"
 
       Services__VoterServiceUrl: "http://voterservice:8080"
+      Services__AuditServiceUrl: "http://auditservice:8080"
     depends_on:
       keycloak:
         condition: service_started
       voterservice:
+        condition: service_started
+      auditservice:
         condition: service_started
     networks:
       - votoseguro-network
@@ -160,6 +195,8 @@ services:
       resultservice:
         condition: service_started
       authservice:
+        condition: service_started
+      auditservice:
         condition: service_started
     networks:
       - votoseguro-network
