@@ -2,32 +2,19 @@ using System.Net.Http.Json;
 using AuthService.Models;
 
 namespace AuthService.Services;
-
-/// <summary>
 /// Encapsula el envío de eventos funcionales desde AuthService hacia
 /// AuditService.
-/// </summary>
-/// <remarks>
 /// La auditoría se considera una operación secundaria. La indisponibilidad de
 /// AuditService no debe invalidar una operación de identidad completada.
-/// </remarks>
+
 public sealed class AuditClient
 {
     private readonly HttpClient _httpClient;
     private readonly ILogger<AuditClient> _logger;
 
-    /// <summary>
-    /// Inicializa una nueva instancia de <see cref="AuditClient"/>.
-    /// </summary>
-    /// <param name="httpClient">
+    /// Inicializa una nueva instancia de AuditClient
     /// Cliente HTTP configurado con la dirección interna de AuditService.
-    /// </param>
-    /// <param name="logger">
-    /// Servicio utilizado para registrar fallos de auditoría.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Se produce cuando una dependencia es <see langword="null"/>.
-    /// </exception>
+    /// logger Servicio utilizado para registrar fallos de auditoría.
     public AuditClient(
         HttpClient httpClient,
         ILogger<AuditClient> logger)
