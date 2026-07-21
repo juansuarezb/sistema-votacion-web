@@ -9,6 +9,7 @@ services:
       - "1433:1433"
     volumes:
       - sqlserver_data:/var/opt/mssql
+      - ./database/backups:/var/opt/mssql/backups:ro
     networks:
       - votoseguro-network
     healthcheck:
@@ -21,26 +22,56 @@ services:
       timeout: 5s
       retries: 10
 
-  keycloak:
-    image: quay.io/keycloak/keycloak:26.0
-    container_name: votoseguro-keycloak
-    command:     
-      - start-dev
-      - --proxy-headers=xforwarded
-      - --hostname-strict=false
+  db-restore:
+    image: mcr.microsoft.com/mssql-tools
+    container_name: votoseguro-db-restore
+    depends_on:
+      sqlserver:
+        condition: service_healthy
     environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: "${KC_BOOTSTRAP_ADMIN_USERNAME}"
-      KC_BOOTSTRAP_ADMIN_PASSWORD: "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
-      KC_HOSTNAME: "${KC_HOSTNAME}"
-      KC_PROXY_HEADERS: ${KC_PROXY_HEADERS}
-      KC_HTTP_ENABLED: ${KC_HOSTNAME_STRICT}
-    ports:
-      - "8081:8080"
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD}"
     volumes:
-      - keycloak_data:/opt/keycloak/data
-      - ./keycloak/import:/opt/keycloak/data/import
+      - ./database/restore:/scripts:ro
+    command: >
+      sh -c "
+      /opt/mssql-tools/bin/sqlcmd
+      -S sqlserver,1433
+      -U sa
+      -P \"$$MSSQL_SA_PASSWORD\"
+      -C
+      -b
+      -i /scripts/00-restore-votoseguro.sql
+      "
     networks:
       - votoseguro-network
+
+  keycloak:
+      image: quay.io/keycloak/keycloak:26.0
+      container_name: votoseguro-keycloak
+      command: start-dev --health-enabled=true
+      environment:
+        KC_BOOTSTRAP_ADMIN_USERNAME: "${KC_BOOTSTRAP_ADMIN_USERNAME}"
+        KC_BOOTSTRAP_ADMIN_PASSWORD: "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
+        KC_HOSTNAME_URL: "http://localhost:8081"
+        KC_HOSTNAME_STRICT: "false"
+        KC_HTTP_ENABLED: "true"
+      ports:
+        - "8081:8080"
+      volumes:
+        - keycloak_data:/opt/keycloak/data
+        - ./keycloak/import:/opt/keycloak/data/import
+      depends_on:
+        db-restore:
+          condition: service_completed_successfully
+      healthcheck:
+        test: ["CMD-SHELL", "bash -c 'exec 3<>/dev/tcp/127.0.0.1/9000 && echo -e \"GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n\" >&3 && cat <&3 | grep -q \"200 OK\"'"]
+        interval: 10s
+        timeout: 5s
+        retries: 10
+        start_period: 30s
+      networks:
+        - votoseguro-network
+
   auditservice:
     build:
       context: .
@@ -53,10 +84,11 @@ services:
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroAuditDb;User Id=usr_audit_service;Password=${AUDIT_DB_PASSWORD};TrustServerCertificate=True;"
     depends_on:
-      sqlserver:
-        condition: service_healthy
+      db-restore:
+        condition: service_completed_successfully
     networks:
       - votoseguro-network
+
   voterservice:
     build:
       context: .
@@ -70,8 +102,8 @@ services:
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoterDb;User Id=usr_voter_service;Password=${VOTER_DB_PASSWORD};TrustServerCertificate=True;"
     depends_on:
-      sqlserver:
-        condition: service_healthy
+      db-restore:
+        condition: service_completed_successfully
       auditservice:
         condition: service_started
     networks:
@@ -90,8 +122,8 @@ services:
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroReferendumDb;User Id=usr_referendum_service;Password=${REFERENDUM_DB_PASSWORD};TrustServerCertificate=True;"
       Services__AuditService: "http://auditservice:8080"
     depends_on:
-      sqlserver:
-        condition: service_healthy
+      db-restore:
+        condition: service_completed_successfully
       auditservice:
         condition: service_started
     networks:
@@ -101,33 +133,25 @@ services:
     build:
       context: .
       dockerfile: Services/VoteService/Dockerfile
-
     container_name: votoseguro-voteservice
-
     expose:
       - "8080"
-
     environment:
       ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
-
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=VotoSeguroVoteDb;User Id=usr_vote_service;Password=${VOTE_DB_PASSWORD};TrustServerCertificate=True;"
-
       Services__ReferendumService: "http://referendumservice:8080"
       Services__AuditService: "http://auditservice:8080"
-
     depends_on:
-      sqlserver:
-        condition: service_healthy
-
+      db-restore:
+        condition: service_completed_successfully
       referendumservice:
         condition: service_started
-
       auditservice:
         condition: service_started
-
     networks:
       - votoseguro-network
+
   resultservice:
     build:
       context: .
@@ -138,7 +162,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
-      Services__VoteService: "${VOTE_SERVICE_URL}"
+      Services__VoteService: "http://voteservice:8080"
     depends_on:
       voteservice:
         condition: service_started
@@ -155,17 +179,15 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
-
       Keycloak__BaseUrl: "${KEYCLOAK_INTERNAL_URL}"
       Keycloak__Realm: "${KEYCLOAK_REALM}"
       Keycloak__ClientId: "${KEYCLOAK_AUTH_CLIENT_ID}"
       Keycloak__ClientSecret: "${KEYCLOAK_AUTH_SERVICE_SECRET}"
-
       Services__VoterServiceUrl: "http://voterservice:8080"
       Services__AuditServiceUrl: "http://auditservice:8080"
     depends_on:
       keycloak:
-        condition: service_started
+        condition: service_healthy
       voterservice:
         condition: service_started
       auditservice:
@@ -183,9 +205,11 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: "${ASPNETCORE_ENVIRONMENT}"
       ASPNETCORE_URLS: "${ASPNETCORE_URLS}"
+      Authentication__MetadataAddress: "http://keycloak:8080/realms/votoseguro/.well-known/openid-configuration"
+      Authentication__ValidIssuer: "http://localhost:8081/realms/votoseguro"
     depends_on:
       keycloak:
-        condition: service_started
+        condition: service_healthy
       voterservice:
         condition: service_started
       referendumservice:
@@ -198,6 +222,21 @@ services:
         condition: service_started
       auditservice:
         condition: service_started
+    networks:
+      - votoseguro-network
+
+  frontend:
+    build:
+      context: ../sistema-votacion-web-frontend
+      args:
+        - VITE_API_URL=http://localhost:8080
+        - VITE_KEYCLOAK_URL=http://localhost:8081
+      dockerfile: Dockerfile
+    container_name: votoseguro-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - apigateway
     networks:
       - votoseguro-network
 
