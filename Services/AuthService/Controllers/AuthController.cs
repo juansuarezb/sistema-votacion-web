@@ -4,15 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AuthService.Controllers;
 
-/// <summary>
-/// Expone las operaciones HTTP relacionadas con el registro y la eliminación
-/// de identidades administradas mediante Keycloak y VoterService.
-/// </summary>
-/// <remarks>
-/// Este controlador coordina operaciones distribuidas entre Keycloak y
-/// VoterService. Cuando la creación del perfil electoral falla después de
-/// crear la identidad, ejecuta una eliminación compensatoria en Keycloak.
-/// </remarks>
+
+/* Expone las operaciones HTTP relacionadas con el registro y la eliminación
+ de identidades administradas mediante Keycloak y VoterService.*/
+
+/* Este controlador coordina operaciones distribuidas entre Keycloak y
+VoterService. Cuando la creación del perfil electoral falla después de
+crear la identidad, ejecuta una eliminación compensatoria en Keycloak.*/
+
 [ApiController]
 [Route("api/[controller]")]
 public sealed class AuthController : ControllerBase
@@ -22,9 +21,9 @@ public sealed class AuthController : ControllerBase
     private readonly AuditClient _auditClient;
     private readonly ILogger<AuthController> _logger;
 
-    /// <summary>
+
     /// Inicializa una nueva instancia de <see cref="AuthController"/>.
-    /// </summary>
+    
     /// <param name="keycloakAdminClient">
     /// Cliente utilizado para administrar identidades en Keycloak.
     /// </param>
@@ -57,10 +56,10 @@ public sealed class AuthController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
+  
     /// Registra una nueva identidad administrativa en Keycloak y le asigna
     /// el rol <c>ADMIN</c>.
-    /// </summary>
+  
     /// <param name="request">
     /// Datos requeridos para crear la cuenta administrativa.
     /// </param>
