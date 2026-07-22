@@ -230,7 +230,7 @@ services:
 
   frontend:
     build:
-      context: .
+      context: ./sistema-votacion-web-frontend
       dockerfile: Dockerfile
       args:
         VITE_API_URL: "http://localhost:8080"
