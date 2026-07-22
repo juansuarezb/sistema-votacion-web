@@ -454,7 +454,7 @@ public sealed class AuthController : ControllerBase
                 IpAddress:
                     HttpContext.Connection.RemoteIpAddress?.ToString()
             ),
-            
+            ct
         );
     }
 }

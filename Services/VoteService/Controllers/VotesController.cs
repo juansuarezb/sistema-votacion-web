@@ -6,18 +6,8 @@ using VoteService.Services;
 
 namespace VoteService.Controllers;
 
-/// <summary>
-/// Expone las operaciones HTTP para registrar votos, consultar votos
-/// almacenados y obtener resultados agregados por referéndum.
-/// </summary>
-/// <remarks>
-/// La elegibilidad y el control de participación se delegan a
-/// ReferendumService.
-///
-/// VoteService almacena el contenido del voto sin persistir directamente el
-/// identificador del votante, con el objetivo de reducir la asociación entre
-/// identidad y selección.
-/// </remarks>
+// Expone las operaciones HTTP para registrar votos, consultar votos
+// almacenados y obtener resultados agregados por referéndum.
 [ApiController]
 [Route("api/[controller]")]
 public sealed class VotesController : ControllerBase
@@ -28,23 +18,8 @@ public sealed class VotesController : ControllerBase
     private readonly ReferendumClient _referendumClient;
     private readonly AuditClient _auditClient;
 
-    /// <summary>
-    /// Inicializa una nueva instancia de <see cref="VotesController"/>.
-    /// </summary>
-    /// <param name="context">
-    /// Contexto utilizado para almacenar y consultar votos.
-    /// </param>
-    /// <param name="referendumClient">
-    /// Cliente utilizado para validar elegibilidad y actualizar el estado de
-    /// participación.
-    /// </param>
-    /// <param name="auditClient">
-    /// Cliente utilizado para registrar eventos funcionales en AuditService.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Se produce cuando alguna dependencia es
-    /// <see langword="null"/>.
-    /// </exception>
+   
+    // Inicializa una nueva instancia de <see cref="VotesController"/>.
     public VotesController(
         VoteDbContext context,
         ReferendumClient referendumClient,
@@ -59,15 +34,8 @@ public sealed class VotesController : ControllerBase
         _auditClient = auditClient;
     }
 
-    /// <summary>
-    /// Obtiene todos los votos registrados.
-    /// </summary>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// HTTP 200 con la colección de votos registrados.
-    /// </returns>
+  
+    // Obtiene todos los votos registrados.
     [HttpGet]
     [ProducesResponseType(
         typeof(IEnumerable<VoteResponse>),
@@ -83,18 +51,8 @@ public sealed class VotesController : ControllerBase
         return Ok(votes.Select(ToResponse));
     }
 
-    /// <summary>
-    /// Obtiene un voto mediante su identificador interno.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador interno del voto.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// HTTP 200 con el voto encontrado o 404 cuando no existe.
-    /// </returns>
+    
+    // Obtiene un voto mediante su identificador interno.
     [HttpGet("{id:int}")]
     [ProducesResponseType(
         typeof(VoteResponse),
@@ -123,18 +81,8 @@ public sealed class VotesController : ControllerBase
         return Ok(ToResponse(vote));
     }
 
-    /// <summary>
-    /// Obtiene un resumen agregado de votos por pregunta para un referéndum.
-    /// </summary>
-    /// <param name="idReferendum">
-    /// Identificador del referéndum.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// HTTP 200 con el conteo por tipo de voto y pregunta.
-    /// </returns>
+  
+    // Obtiene un resumen agregado de votos por pregunta para un referéndum.
     [HttpGet("referendums/{idReferendum:int}/summary")]
     [ProducesResponseType(
         typeof(ReferendumSummaryResponse),
@@ -181,29 +129,9 @@ public sealed class VotesController : ControllerBase
         );
     }
 
-    /// <summary>
-    /// Registra un voto después de validar el tipo de voto y comprobar la
-    /// elegibilidad del votante mediante ReferendumService.
-    /// </summary>
-    /// <param name="request">
-    /// Identificadores del referéndum, pregunta y votante, junto con el tipo
-    /// de voto seleccionado.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// HTTP 200 con el voto registrado; 400 cuando el tipo de voto es
-    /// inválido; 409 cuando el votante no puede votar; 502 cuando no se puede
-    /// consultar elegibilidad; o 500 cuando el voto se almacena pero no se
-    /// actualiza la asignación.
-    /// </returns>
-    /// <exception cref="HttpRequestException">
-    /// Se produce cuando falla la comunicación con ReferendumService.
-    /// </exception>
-    /// <exception cref="DbUpdateException">
-    /// Se produce cuando SQL Server rechaza la inserción.
-    /// </exception>
+    
+    // Registra un voto después de validar el tipo de voto y comprobar la
+    // elegibilidad del votante mediante ReferendumService.
     [HttpPost]
     [ProducesResponseType(
         typeof(VoteResponse),
@@ -359,18 +287,8 @@ public sealed class VotesController : ControllerBase
         return Ok(ToResponse(vote));
     }
 
-    /// <summary>
-    /// Obtiene todos los votos asociados a un referéndum.
-    /// </summary>
-    /// <param name="idReferendum">
-    /// Identificador del referéndum.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// HTTP 200 con los votos encontrados.
-    /// </returns>
+    
+    // Obtiene todos los votos asociados a un referéndum.s votos encontrados.
     [HttpGet("referendums/{idReferendum:int}")]
     [ProducesResponseType(
         typeof(IEnumerable<VoteResponse>),
@@ -391,19 +309,8 @@ public sealed class VotesController : ControllerBase
         return Ok(votes.Select(ToResponse));
     }
 
-    /// <summary>
-    /// Convierte una entidad persistida en el DTO expuesto por la API.
-    /// </summary>
-    /// <param name="vote">
-    /// Entidad de voto que debe convertirse.
-    /// </param>
-    /// <returns>
-    /// Una instancia de <see cref="VoteResponse"/>.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Se produce cuando <paramref name="vote"/> es
-    /// <see langword="null"/>.
-    /// </exception>
+  
+    // Convierte una entidad persistida en el DTO expuesto por la API.
     private static VoteResponse ToResponse(Vote vote)
     {
         ArgumentNullException.ThrowIfNull(vote);

@@ -5,39 +5,27 @@ using Microsoft.EntityFrameworkCore;
 
 namespace AuditService.Controllers;
 
-/// <summary>
-/// Expone operaciones para registrar y consultar eventos de auditoría.
-/// </summary>
+
+// Expone operaciones para registrar y consultar eventos de auditoría.
+
 [ApiController]
 [Route("api/audit/events")]
 public sealed class AuditEventsController : ControllerBase
 {
     private readonly AuditDbContext _context;
 
-    /// <summary>
-    /// Inicializa el controlador de auditoría.
-    /// </summary>
-    /// <param name="context">
-    /// Contexto de persistencia de eventos.
-    /// </param>
+
+    // Inicializa el controlador de auditoría.
+   
     public AuditEventsController(AuditDbContext context)
     {
         ArgumentNullException.ThrowIfNull(context);
         _context = context;
     }
 
-    /// <summary>
-    /// Registra un nuevo evento de auditoría.
-    /// </summary>
-    /// <param name="request">
-    /// Datos del evento que debe almacenarse.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// HTTP 201 con el evento registrado.
-    /// </returns>
+   
+    // Registra un nuevo evento de auditoría.
+  
     [HttpPost]
     [ProducesResponseType(
         typeof(AuditEventResponse),
@@ -75,18 +63,9 @@ public sealed class AuditEventsController : ControllerBase
         );
     }
 
-    /// <summary>
-    /// Obtiene los eventos de auditoría más recientes.
-    /// </summary>
-    /// <param name="limit">
-    /// Cantidad máxima de eventos que deben devolverse.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// HTTP 200 con los eventos ordenados desde el más reciente.
-    /// </returns>
+   
+    // Obtiene los eventos de auditoría más recientes.
+   
     [HttpGet]
     [ProducesResponseType(
         typeof(IEnumerable<AuditEventResponse>),
@@ -107,18 +86,9 @@ public sealed class AuditEventsController : ControllerBase
         return Ok(events.Select(ToResponse));
     }
 
-    /// <summary>
-    /// Obtiene un evento de auditoría por identificador.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador del evento.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// HTTP 200 si existe o 404 si no fue encontrado.
-    /// </returns>
+    
+    // Obtiene un evento de auditoría por identificador.
+    
     [HttpGet("{id:long}")]
     [ProducesResponseType(
         typeof(AuditEventResponse),
@@ -146,15 +116,8 @@ public sealed class AuditEventsController : ControllerBase
         return Ok(ToResponse(auditEvent));
     }
 
-    /// <summary>
-    /// Convierte una entidad de auditoría en su representación pública.
-    /// </summary>
-    /// <param name="auditEvent">
-    /// Entidad que debe convertirse.
-    /// </param>
-    /// <returns>
-    /// DTO del evento.
-    /// </returns>
+  
+    // Convierte una entidad de auditoría en su representación pública.
     private static AuditEventResponse ToResponse(
         AuditEvent auditEvent)
     {

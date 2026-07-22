@@ -6,16 +6,10 @@ using VoterService.Services;
 
 namespace VoterService.Controllers;
 
-/// <summary>
-/// Expone las operaciones HTTP necesarias para consultar y administrar
-/// los perfiles electorales de los votantes.
-/// </summary>
-/// <remarks>
-/// Cada perfil electoral se relaciona lógicamente con una identidad de
-/// Keycloak mediante la propiedad <see cref="Votante.KeycloakId"/>.
-/// No existe una clave foránea física porque Keycloak y VoterService
-/// mantienen almacenamientos independientes.
-/// </remarks>
+
+// Expone las operaciones HTTP necesarias para consultar y administrar
+// los perfiles electorales de los votantes.
+
 [ApiController]
 [Route("api/[controller]")]
 public sealed class VotantesController : ControllerBase
@@ -23,19 +17,8 @@ public sealed class VotantesController : ControllerBase
     private readonly VoterDbContext _context;
     private readonly AuditClient _auditClient;
 
-    /// <summary>
-    /// Inicializa una nueva instancia de <see cref="VotantesController"/>.
-    /// </summary>
-    /// <param name="context">
-    /// Contexto utilizado para administrar los perfiles electorales.
-    /// </param>
-    /// <param name="auditClient">
-    /// Cliente utilizado para registrar eventos funcionales en AuditService.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Se produce cuando alguna dependencia es
-    /// <see langword="null"/>.
-    /// </exception>
+  
+    //Inicializa una nueva instancia de <see cref="VotantesController"/>.
     public VotantesController(
         VoterDbContext context,
         AuditClient auditClient)
@@ -47,20 +30,8 @@ public sealed class VotantesController : ControllerBase
         _auditClient = auditClient;
     }
 
-    /// <summary>
-    /// Obtiene todos los perfiles electorales registrados.
-    /// </summary>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 que contiene la colección de votantes
-    /// registrados. La colección puede estar vacía.
-    /// </returns>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+   
+    // Obtiene todos los perfiles electorales registrados.
     [HttpGet]
     [ProducesResponseType(
         typeof(IEnumerable<VotanteResponse>),
@@ -87,23 +58,9 @@ public sealed class VotantesController : ControllerBase
         return Ok(response);
     }
 
-    /// <summary>
-    /// Obtiene un perfil electoral mediante su identificador interno.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador interno del votante en VoterService.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con el perfil encontrado, o 404 cuando no existe
-    /// un votante asociado al identificador proporcionado.
-    /// </returns>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+   
+    // Obtiene un perfil electoral mediante su identificador interno.
+
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(VotanteResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -129,25 +86,10 @@ public sealed class VotantesController : ControllerBase
         return Ok(ToResponse(votante));
     }
 
-    /// <summary>
-    /// Obtiene el perfil electoral asociado al identificador de una identidad
-    /// autenticada en Keycloak.
-    /// </summary>
-    /// <param name="keycloakId">
-    /// Identificador contenido en el claim <c>sub</c> del token JWT emitido
-    /// por Keycloak.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con el perfil electoral encontrado; 400 cuando
-    /// el identificador está vacío; o 404 cuando no existe un perfil asociado.
-    /// </returns>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+   
+    // Obtiene el perfil electoral asociado al identificador de una identidad
+    // autenticada en Keycloak.
+  
     [HttpGet("by-keycloak/{keycloakId}")]
     [ProducesResponseType(typeof(VotanteResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -183,26 +125,8 @@ public sealed class VotantesController : ControllerBase
         return Ok(ToResponse(votante));
     }
 
-    /// <summary>
-    /// Crea un nuevo perfil electoral asociado a una identidad de Keycloak.
-    /// </summary>
-    /// <param name="request">
-    /// Datos necesarios para crear el perfil electoral.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con el perfil creado, o 409 cuando ya existe
-    /// otro votante con la misma identidad, cédula o correo electrónico.
-    /// </returns>
-    /// <exception cref="DbUpdateException">
-    /// Se produce si SQL Server rechaza la inserción.
-    /// </exception>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+  
+    // Crea un nuevo perfil electoral asociado a una identidad de Keycloak.
     [HttpPost]
     [ProducesResponseType(typeof(VotanteResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
@@ -248,30 +172,8 @@ public sealed class VotantesController : ControllerBase
         return Ok(ToResponse(votante));
     }
 
-    /// <summary>
-    /// Actualiza los datos personales de un perfil electoral existente.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador interno del votante que debe actualizarse.
-    /// </param>
-    /// <param name="request">
-    /// Nuevos datos personales del perfil electoral.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 204 cuando la actualización se completa; 404 cuando
-    /// el votante no existe; o 409 cuando la cédula o el correo ya están
-    /// asociados a otro perfil.
-    /// </returns>
-    /// <exception cref="DbUpdateException">
-    /// Se produce si SQL Server rechaza la actualización.
-    /// </exception>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+  
+    // Actualiza los datos personales de un perfil electoral existente.
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -342,26 +244,8 @@ public sealed class VotantesController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Elimina un perfil electoral de la base de datos de VoterService.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador interno del perfil electoral que debe eliminarse.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 204 cuando el perfil se elimina o 404 cuando el
-    /// votante no existe.
-    /// </returns>
-    /// <exception cref="DbUpdateException">
-    /// Se produce si SQL Server rechaza la eliminación.
-    /// </exception>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+    // Elimina un perfil electoral de la base de datos de VoterService.
+ 
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -391,20 +275,8 @@ public sealed class VotantesController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Convierte una entidad persistida en el DTO expuesto por la API.
-    /// </summary>
-    /// <param name="votante">
-    /// Entidad de dominio que debe convertirse.
-    /// </param>
-    /// <returns>
-    /// Una instancia de <see cref="VotanteResponse"/> con los datos públicos
-    /// del perfil electoral.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Se produce cuando <paramref name="votante"/> es
-    /// <see langword="null"/>.
-    /// </exception>
+
+// Convierte una entidad persistida en el DTO expuesto por la API.
     private static VotanteResponse ToResponse(
         Votante votante)
     {
@@ -420,36 +292,8 @@ public sealed class VotantesController : ControllerBase
         );
     }
 
-    /// <summary>
-    /// Construye y envía un evento funcional hacia AuditService.
-    /// </summary>
-    /// <param name="action">
-    /// Acción funcional realizada.
-    /// </param>
-    /// <param name="entityType">
-    /// Tipo de entidad afectada.
-    /// </param>
-    /// <param name="entityId">
-    /// Identificador de la entidad afectada.
-    /// </param>
-    /// <param name="httpMethod">
-    /// Método HTTP asociado con la operación.
-    /// </param>
-    /// <param name="path">
-    /// Ruta HTTP procesada.
-    /// </param>
-    /// <param name="statusCode">
-    /// Código HTTP resultante.
-    /// </param>
-    /// <param name="description">
-    /// Descripción funcional del evento.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación.
-    /// </param>
-    /// <returns>
-    /// Una tarea que representa el intento de registro en AuditService.
-    /// </returns>
+  
+    // Construye y envía un evento funcional hacia AuditService.
     private async Task WriteAuditEventAsync(
         string action,
         string entityType,

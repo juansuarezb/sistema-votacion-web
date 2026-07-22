@@ -5,10 +5,9 @@ using ReferendumService.Models;
 using ReferendumService.Services;
 namespace ReferendumService.Controllers;
 
-/// <summary>
-/// Expone las operaciones HTTP para administrar referéndums, preguntas,
-/// asignaciones de votantes y validaciones de elegibilidad.
-/// </summary>
+
+// Expone las operaciones HTTP para administrar referéndums, preguntas,
+
 [ApiController]
 [Route("api/[controller]")]
 public sealed class ReferendumsController : ControllerBase
@@ -16,19 +15,9 @@ public sealed class ReferendumsController : ControllerBase
     private readonly ReferendumDbContext _context;
     private readonly AuditClient _auditClient;
 
-    /// <summary>
-    /// Inicializa una nueva instancia de
-    /// <see cref="ReferendumsController"/>.
-    /// </summary>
-    /// <param name="context">
-    /// Contexto utilizado para administrar referéndums y asignaciones.
-    /// </param>
-    /// <param name="auditClient">
-    /// Cliente utilizado para registrar eventos de auditoría.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Se produce cuando una dependencia es <see langword="null"/>.
-    /// </exception>
+   
+    // Inicializa una nueva instancia de ReferendumsController
+  
     public ReferendumsController(
         ReferendumDbContext context,
         AuditClient auditClient)
@@ -40,20 +29,8 @@ public sealed class ReferendumsController : ControllerBase
         _auditClient = auditClient;
     }
 
-    /// <summary>
-    /// Obtiene todos los referéndums registrados.
-    /// </summary>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con la colección de referéndums registrados.
-    /// La colección puede estar vacía.
-    /// </returns>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+
+    // Obtiene todos los referéndums registrados.
     [HttpGet]
     [ProducesResponseType(
         typeof(IEnumerable<ReferendumResponse>),
@@ -69,23 +46,8 @@ public sealed class ReferendumsController : ControllerBase
         return Ok(referendums.Select(ToResponse));
     }
 
-    /// <summary>
-    /// Obtiene un referéndum mediante su identificador.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador interno del referéndum.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con el referéndum encontrado, o 404 cuando
-    /// no existe.
-    /// </returns>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+
+    // Obtiene un referéndum mediante su identificador.
     [HttpGet("{id:int}")]
     [ProducesResponseType(typeof(ReferendumResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -111,39 +73,15 @@ public sealed class ReferendumsController : ControllerBase
         return Ok(ToResponse(referendum));
     }
 
-    /// <summary>
-    /// Crea un nuevo referéndum en estado inicial
-    /// <c>BORRADOR</c>.
-    /// </summary>
-    /// <param name="request">
-    /// Datos requeridos para crear el referéndum.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con el referéndum creado, o 400 cuando el rango
-    /// de fechas es inválido.
-    /// </returns>
-    /// <exception cref="DbUpdateException">
-    /// Se produce cuando SQL Server rechaza la inserción.
-    /// </exception>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+
+    // Crea un nuevo referéndum en estado inicial BORRADOR
+
     [HttpPost]
     [ProducesResponseType(typeof(ReferendumResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-    /// <summary>
-    /// Crea un nuevo referéndum en estado inicial <c>BORRADOR</c>.
-    /// </summary>
-    /// <param name="request">Datos del nuevo referéndum.</param>
-    /// <param name="ct">Token de cancelación.</param>
-    /// <returns>
-    /// HTTP 200 con el referéndum creado o 400 cuando las fechas son inválidas.
-    /// </returns>
+
+    // Crea un nuevo referéndum en estado inicial <c>BORRADOR</c>.
     [HttpPost]
     [ProducesResponseType(typeof(ReferendumResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -189,15 +127,8 @@ public sealed class ReferendumsController : ControllerBase
 
 
 
-    /// <summary>
-    /// Actualiza la información y el estado de un referéndum.
-    /// </summary>
-    /// <param name="id">Identificador del referéndum.</param>
-    /// <param name="request">Nuevos valores.</param>
-    /// <param name="ct">Token de cancelación.</param>
-    /// <returns>
-    /// HTTP 204, 400 si las fechas son inválidas o 404 si no existe.
-    /// </returns>
+
+    // Actualiza la información y el estado de un referéndum.
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -272,14 +203,8 @@ public sealed class ReferendumsController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Elimina un referéndum y sus datos dependientes.
-    /// </summary>
-    /// <param name="id">Identificador del referéndum.</param>
-    /// <param name="ct">Token de cancelación.</param>
-    /// <returns>
-    /// HTTP 204 cuando se elimina o 404 cuando no existe.
-    /// </returns>
+  
+    // Elimina un referéndum y sus datos dependientes.
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -319,16 +244,8 @@ public sealed class ReferendumsController : ControllerBase
 
         return NoContent();
     }
-    /// <summary>
-    /// Agrega una pregunta a un referéndum existente.
-    /// </summary>
-    /// <param name="id">Identificador del referéndum.</param>
-    /// <param name="request">Texto de la pregunta.</param>
-    /// <param name="ct">Token de cancelación.</param>
-    /// <returns>
-    /// HTTP 200 con la pregunta creada, 400 si el texto está vacío o 404 si el
-    /// referéndum no existe.
-    /// </returns>
+  
+    // Agrega una pregunta a un referéndum existente.
     [HttpPost("{id:int}/questions")]
     [ProducesResponseType(typeof(QuestionResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -389,14 +306,8 @@ public sealed class ReferendumsController : ControllerBase
         ));
     }
 
-    /// <summary>
-    /// Actualiza el texto de una pregunta existente en un referéndum.
-    /// </summary>
-    /// <param name="id">Identificador del referéndum.</param>
-    /// <param name="idQuestion">Identificador de la pregunta.</param>
-    /// <param name="request">Nuevo texto de la pregunta.</param>
-    /// <param name="ct">Token de cancelación.</param>
-    /// <returns>HTTP 204 si es exitoso, 400 si el texto es inválido, 404 si no existe.</returns>
+
+    // Actualiza el texto de una pregunta existente en un referéndum.
     [HttpPut("{id:int}/questions/{idQuestion:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -437,13 +348,8 @@ public sealed class ReferendumsController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Elimina una pregunta de un referéndum existente.
-    /// </summary>
-    /// <param name="id">Identificador del referéndum.</param>
-    /// <param name="idQuestion">Identificador de la pregunta.</param>
-    /// <param name="ct">Token de cancelación.</param>
-    /// <returns>HTTP 204 si es exitoso, 404 si no existe.</returns>
+  
+    // Elimina una pregunta de un referéndum existente.
     [HttpDelete("{id:int}/questions/{idQuestion:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -486,9 +392,8 @@ public sealed class ReferendumsController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Agrega un candidato a una pregunta.
-    /// </summary>
+
+    // Agrega un candidato a una pregunta.
     [HttpPost("{id:int}/questions/{idQuestion:int}/candidates")]
     [ProducesResponseType(typeof(CandidateResponse), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -525,9 +430,8 @@ public sealed class ReferendumsController : ControllerBase
         return Ok(new CandidateResponse(candidate.IdCandidate, candidate.IdQuestion, candidate.Nombre, candidate.ImagenUrl));
     }
 
-    /// <summary>
-    /// Actualiza un candidato existente.
-    /// </summary>
+ 
+    // Actualiza un candidato existente.
     [HttpPut("{id:int}/questions/{idQuestion:int}/candidates/{idCandidate:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -560,9 +464,8 @@ public sealed class ReferendumsController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Elimina un candidato de una pregunta.
-    /// </summary>
+   
+    // Elimina un candidato de una pregunta.
     [HttpDelete("{id:int}/questions/{idQuestion:int}/candidates/{idCandidate:int}")]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -588,23 +491,8 @@ public sealed class ReferendumsController : ControllerBase
         return NoContent();
     }
 
-    /// <summary>
-    /// Obtiene las preguntas registradas para un referéndum.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador del referéndum.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con las preguntas encontradas. La colección
-    /// puede estar vacía.
-    /// </returns>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación es cancelada mediante
-    /// <paramref name="ct"/>.
-    /// </exception>
+  
+    // Obtiene las preguntas registradas para un referéndum.
     [HttpGet("{id:int}/questions")]
     [ProducesResponseType(
         typeof(IEnumerable<QuestionResponse>),
@@ -628,16 +516,8 @@ public sealed class ReferendumsController : ControllerBase
         )));
     }
 
-    /// <summary>
-    /// Asigna un votante a todas las preguntas de un referéndum.
-    /// </summary>
-    /// <param name="id">Identificador del referéndum.</param>
-    /// <param name="request">Identificador del votante.</param>
-    /// <param name="ct">Token de cancelación.</param>
-    /// <returns>
-    /// HTTP 200 cuando se asigna, 400 para datos inválidos, 404 si no existe el
-    /// referéndum o 409 cuando el votante ya fue asignado.
-    /// </returns>
+
+    // Asigna un votante a todas las preguntas de un referéndum.
     [HttpPost("{id:int}/voters")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -753,19 +633,8 @@ public sealed class ReferendumsController : ControllerBase
     }
 
 
-    /// <summary>
-    /// Obtiene todas las asignaciones registradas para un referéndum.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador del referéndum.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con las asignaciones ordenadas por votante y
-    /// pregunta.
-    /// </returns>
+
+    // Obtiene todas las asignaciones registradas para un referéndum.
     [HttpGet("{id:int}/voters")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAssignedVotersAsync(
@@ -782,20 +651,8 @@ public sealed class ReferendumsController : ControllerBase
         return Ok(voters);
     }
 
-    /// <summary>
-    /// Obtiene los referéndums activos que tienen preguntas pendientes para
-    /// un votante determinado.
-    /// </summary>
-    /// <param name="idVotante">
-    /// Identificador interno del perfil electoral.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con los referéndums disponibles o 400 cuando el
-    /// identificador del votante no es válido.
-    /// </returns>
+    //Obtiene los referéndums activos que tienen preguntas pendientes para un votante determinado.
+
     [HttpGet("voters/{idVotante:int}/assigned")]
     [ProducesResponseType(
         typeof(IEnumerable<AssignedReferendumResponse>),
@@ -887,25 +744,8 @@ public sealed class ReferendumsController : ControllerBase
         return Ok(response);
     }
 
-    /// <summary>
-    /// Evalúa si un votante puede responder una pregunta de un referéndum.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador del referéndum.
-    /// </param>
-    /// <param name="idQuestion">
-    /// Identificador de la pregunta.
-    /// </param>
-    /// <param name="idVotante">
-    /// Identificador interno del votante.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con el estado de elegibilidad o 404 cuando el
-    /// referéndum o la pregunta no existen.
-    /// </returns>
+   
+    // Evalúa si un votante puede responder una pregunta de un referéndum.
     [HttpGet(
         "{id:int}/questions/{idQuestion:int}/voters/{idVotante:int}/eligibility"
     )]
@@ -1025,28 +865,8 @@ public sealed class ReferendumsController : ControllerBase
         ));
     }
 
-    /// <summary>
-    /// Marca una asignación como respondida y registra la fecha del voto.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador del referéndum.
-    /// </param>
-    /// <param name="idQuestion">
-    /// Identificador de la pregunta respondida.
-    /// </param>
-    /// <param name="idVotante">
-    /// Identificador interno del votante.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 204 cuando se actualiza correctamente, 404 cuando
-    /// no existe la asignación o 409 cuando ya había sido respondida.
-    /// </returns>
-    /// <exception cref="DbUpdateException">
-    /// Se produce cuando SQL Server rechaza la actualización.
-    /// </exception>
+   
+    // Marca una asignación como respondida y registra la fecha del voto.
     [HttpPatch(
         "{id:int}/questions/{idQuestion:int}/voters/{idVotante:int}/mark-voted"
     )]
@@ -1097,19 +917,8 @@ public sealed class ReferendumsController : ControllerBase
         // optimista o una actualización condicional en la base de datos.
     }
 
-    /// <summary>
-    /// Convierte una entidad de referéndum en el DTO expuesto por la API.
-    /// </summary>
-    /// <param name="referendum">
-    /// Entidad que debe convertirse.
-    /// </param>
-    /// <returns>
-    /// Una instancia de <see cref="ReferendumResponse"/>.
-    /// </returns>
-    /// <exception cref="ArgumentNullException">
-    /// Se produce cuando <paramref name="referendum"/> es
-    /// <see langword="null"/>.
-    /// </exception>
+  
+    // Convierte una entidad de referéndum en el DTO expuesto por la API.
     private static ReferendumResponse ToResponse(
         Referendum referendum)
     {
@@ -1126,23 +935,9 @@ public sealed class ReferendumsController : ControllerBase
             referendum.FechaCreacion
         );
     }
-    /// <summary>
-    /// Obtiene el estado de participación de los votantes asignados a un
-    /// referéndum.
-    /// </summary>
-    /// <param name="id">
-    /// Identificador del referéndum.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con el estado agrupado por votante o 404 cuando el
-    /// referéndum no existe.
-    /// </returns>
-    /// <exception cref="OperationCanceledException">
-    /// Se produce si la operación se cancela mediante <paramref name="ct"/>.
-    /// </exception>
+  
+    // Obtiene el estado de participación de los votantes asignados a un referéndum.
+
     [HttpGet("{id:int}/voters/status")]
     [ProducesResponseType(
         typeof(IEnumerable<VoterAssignmentStatusResponse>),
@@ -1215,19 +1010,8 @@ public sealed class ReferendumsController : ControllerBase
 
         return Ok(response);
     }
-    /// <summary>
-    /// Construye y envía un evento funcional hacia AuditService.
-    /// </summary>
-    /// <param name="action">Acción funcional realizada.</param>
-    /// <param name="entityType">Tipo de entidad afectada.</param>
-    /// <param name="entityId">Identificador de la entidad.</param>
-    /// <param name="httpMethod">Método HTTP asociado.</param>
-    /// <param name="path">Ruta HTTP procesada.</param>
-    /// <param name="statusCode">Código HTTP resultante.</param>
-    /// <param name="description">Descripción del evento.</param>
-    /// <param name="ct">Token de cancelación.</param>
-    /// <returns>Una tarea que representa el intento de auditoría.</returns>
-    private async Task WriteAuditEventAsync(
+    // Construye y envía un evento funcional hacia AuditService.
+       private async Task WriteAuditEventAsync(
         string action,
         string entityType,
         string? entityId,
