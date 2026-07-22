@@ -29,6 +29,12 @@ public sealed class Referendum
     public string? Descripcion { get; set; }
 
     /// <summary>
+    /// Obtiene o establece la URL opcional de una imagen descriptiva.
+    /// </summary>
+    [MaxLength(1000)]
+    public string? ImagenUrl { get; set; }
+
+    /// <summary>
     /// Obtiene o establece la fecha UTC desde la cual se permite votar.
     /// </summary>
     public DateTime FechaInicio { get; set; }

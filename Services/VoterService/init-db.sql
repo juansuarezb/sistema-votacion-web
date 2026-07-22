@@ -20,6 +20,7 @@ GO
 CREATE TABLE Votantes (
     IdVotante INT IDENTITY(1,1) PRIMARY KEY,
     KeycloakId NVARCHAR(255) NOT NULL UNIQUE,
+    AdminId NVARCHAR(255) NULL,
     Nombre NVARCHAR(100) NOT NULL,
     Cedula VARCHAR(10) NOT NULL UNIQUE,
     CorreoElectronico VARCHAR(100) NOT NULL UNIQUE,
@@ -35,6 +36,7 @@ GO
 CREATE INDEX IX_Votantes_Cedula ON Votantes(Cedula);
 CREATE INDEX IX_Votantes_CorreoElectronico ON Votantes(CorreoElectronico);
 CREATE INDEX IX_Votantes_KeycloakId ON Votantes(KeycloakId);
+CREATE INDEX IX_Votantes_AdminId ON Votantes(AdminId);
 
 GO
 

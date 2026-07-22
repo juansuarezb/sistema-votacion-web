@@ -69,9 +69,16 @@ public sealed class VotantesController : ControllerBase
     public async Task<ActionResult<IEnumerable<VotanteResponse>>> GetAllAsync(
         CancellationToken ct)
     {
-        var votantes = await _context.Votantes
-            .AsNoTracking()
-            .ToListAsync(ct);
+        var adminId = User.FindFirst("sub")?.Value;
+
+        var query = _context.Votantes.AsNoTracking();
+
+        if (!string.IsNullOrWhiteSpace(adminId))
+        {
+            query = query.Where(v => v.AdminId == adminId);
+        }
+
+        var votantes = await query.ToListAsync(ct);
 
         var response = votantes
             .Select(ToResponse)
@@ -204,6 +211,7 @@ public sealed class VotantesController : ControllerBase
         CancellationToken ct)
     {
         var keycloakId = request.KeycloakId.Trim();
+        var adminId = request.AdminId?.Trim();
         var nombre = request.Nombre.Trim();
         var cedula = request.Cedula.Trim();
         var correoElectronico = request.CorreoElectronico.Trim();
@@ -228,6 +236,7 @@ public sealed class VotantesController : ControllerBase
         var votante = new Votante
         {
             KeycloakId = keycloakId,
+            AdminId = adminId,
             Nombre = nombre,
             Cedula = cedula,
             CorreoElectronico = correoElectronico

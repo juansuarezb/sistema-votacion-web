@@ -22,6 +22,9 @@ public sealed record CreateVotanteRequest(
     [MaxLength(255)]
     string KeycloakId,
 
+    [MaxLength(255)]
+    string? AdminId,
+
     [Required]
     [StringLength(100, MinimumLength = 2)]
     string Nombre,

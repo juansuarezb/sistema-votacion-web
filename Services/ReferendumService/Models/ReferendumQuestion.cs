@@ -31,4 +31,9 @@ public sealed class ReferendumQuestion
     /// Obtiene o establece el referéndum al que pertenece la pregunta.
     /// </summary>
     public Referendum? Referendum { get; set; }
+
+    /// <summary>
+    /// Obtiene o establece los candidatos asociados a la pregunta.
+    /// </summary>
+    public ICollection<ReferendumQuestionCandidate> Candidatos { get; set; } = new List<ReferendumQuestionCandidate>();
 }

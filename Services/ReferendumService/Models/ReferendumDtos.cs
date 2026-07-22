@@ -10,6 +10,7 @@ namespace ReferendumService.Models;
 public sealed record CreateReferendumRequest(
     string Titulo,
     string? Descripcion,
+    string? ImagenUrl,
     DateTime FechaInicio,
     DateTime FechaCierre
 );
@@ -25,6 +26,7 @@ public sealed record CreateReferendumRequest(
 public sealed record UpdateReferendumRequest(
     string Titulo,
     string? Descripcion,
+    string? ImagenUrl,
     DateTime FechaInicio,
     DateTime FechaCierre,
     string Estado
@@ -37,6 +39,7 @@ public sealed record ReferendumResponse(
     int IdReferendum,
     string Titulo,
     string? Descripcion,
+    string? ImagenUrl,
     DateTime FechaInicio,
     DateTime FechaCierre,
     string Estado,
@@ -52,12 +55,39 @@ public sealed record CreateQuestionRequest(
 );
 
 /// <summary>
+/// Representa la solicitud de actualización de una pregunta.
+/// </summary>
+/// <param name="Texto">Nuevo contenido textual de la pregunta.</param>
+public sealed record UpdateQuestionRequest(
+    string Texto
+);
+
+/// <summary>
+/// Representa la solicitud de creación de un candidato.
+/// </summary>
+public sealed record CreateCandidateRequest(
+    string Nombre,
+    string? ImagenUrl
+);
+
+/// <summary>
+/// Representa un candidato devuelto por la API.
+/// </summary>
+public sealed record CandidateResponse(
+    int IdCandidate,
+    int IdQuestion,
+    string Nombre,
+    string? ImagenUrl
+);
+
+/// <summary>
 /// Representa una pregunta devuelta por la API.
 /// </summary>
 public sealed record QuestionResponse(
     int IdQuestion,
     int IdReferendum,
-    string Texto
+    string Texto,
+    IEnumerable<CandidateResponse> Candidatos
 );
 
 /// <summary>
@@ -90,6 +120,7 @@ public sealed record AssignedReferendumResponse(
     int IdReferendum,
     string Titulo,
     string? Descripcion,
+    string? ImagenUrl,
     DateTime FechaInicio,
     DateTime FechaCierre,
     string Estado,
