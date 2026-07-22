@@ -4,10 +4,8 @@ using ResultService.Services;
 
 namespace ResultService.Controllers;
 
-/// <summary>
-/// Expone las operaciones HTTP utilizadas para consultar resultados
-/// agregados de los referéndums.
-/// </summary>
+
+// Expone las operaciones HTTP utilizadas para consultar resultados
 [ApiController]
 [Route("api/[controller]")]
 public sealed class ResultsController : ControllerBase
@@ -15,20 +13,9 @@ public sealed class ResultsController : ControllerBase
     private readonly VoteClient _voteClient;
     private readonly ILogger<ResultsController> _logger;
 
-    /// <summary>
-    /// Inicializa una nueva instancia de
-    /// <see cref="ResultsController"/>.
-    /// </summary>
-    /// <param name="voteClient">
-    /// Cliente encargado de consultar los votos agregados en VoteService.
-    /// </param>
-    /// <param name="logger">
-    /// Servicio utilizado para registrar errores y actividad relevante.
-    /// </param>
-    /// <exception cref="ArgumentNullException">
-    /// Se produce cuando alguna dependencia es
-    /// <see langword="null"/>.
-    /// </exception>
+  
+    // Inicializa una nueva instancia de "ResultsController"
+
     public ResultsController(
         VoteClient voteClient,
         ILogger<ResultsController> logger)
@@ -40,21 +27,10 @@ public sealed class ResultsController : ControllerBase
         _logger = logger;
     }
 
-    /// <summary>
-    /// Obtiene los resultados agregados de un referéndum y calcula los
-    /// porcentajes correspondientes a cada tipo de voto.
-    /// </summary>
-    /// <param name="idReferendum">
-    /// Identificador del referéndum cuyos resultados deben consultarse.
-    /// </param>
-    /// <param name="ct">
-    /// Token utilizado para cancelar la operación asíncrona.
-    /// </param>
-    /// <returns>
-    /// Un resultado HTTP 200 con los resultados; 400 si el identificador es
-    /// inválido; 502 si VoteService devuelve una respuesta inválida; o 503
-    /// si no es posible establecer comunicación con VoteService.
-    /// </returns>
+ 
+    // Obtiene los resultados agregados de un referéndum y calcula los
+    //porcentajes correspondientes a cada tipo de voto.
+
     [HttpGet("referendums/{idReferendum:int}")]
     [ProducesResponseType(
         typeof(ReferendumResultResponse),
@@ -152,16 +128,9 @@ public sealed class ResultsController : ControllerBase
         }
     }
 
-    /// <summary>
-    /// Convierte el resumen de una pregunta devuelto por VoteService en el
-    /// resultado expuesto por ResultService.
-    /// </summary>
-    /// <param name="summary">
-    /// Resumen de votos correspondiente a una pregunta.
-    /// </param>
-    /// <returns>
-    /// Una respuesta con cantidades y porcentajes por tipo de voto.
-    /// </returns>
+  
+    // Convierte el resumen de una pregunta devuelto por VoteService en el
+    // resultado expuesto por ResultService.
     private static QuestionResultResponse ToQuestionResult(
         QuestionSummaryFromVoteService summary)
     {
@@ -181,19 +150,8 @@ public sealed class ResultsController : ControllerBase
         );
     }
 
-    /// <summary>
-    /// Calcula el porcentaje que representa una cantidad dentro de un total.
-    /// </summary>
-    /// <param name="value">
-    /// Cantidad parcial que debe convertirse en porcentaje.
-    /// </param>
-    /// <param name="total">
-    /// Cantidad total utilizada como base del cálculo.
-    /// </param>
-    /// <returns>
-    /// El porcentaje redondeado a dos decimales, o cero cuando el total no
-    /// contiene votos.
-    /// </returns>
+   
+    // Calcula el porcentaje que representa una cantidad dentro de un total.
     private static decimal CalculatePercentage(
         int value,
         int total)
