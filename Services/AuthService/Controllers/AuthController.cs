@@ -22,9 +22,9 @@ public sealed class AuthController : ControllerBase
     private readonly ILogger<AuthController> _logger;
 
 
+
     // Inicializa una nueva instancia de AuthController"
-    
-    
+
     public AuthController(
         KeycloakAdminClient keycloakAdminClient,
         VoterServiceClient voterServiceClient,
@@ -44,9 +44,9 @@ public sealed class AuthController : ControllerBase
 
   
     // Registra una nueva identidad administrativa en Keycloak y le asigna
-    // el rol ADMIN<
+    // el rol ADMIN
   
-    [HttpPost("register-admin")]
+[HttpPost("register-admin")]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
@@ -135,6 +135,7 @@ public sealed class AuthController : ControllerBase
             );
         }
     }
+
 
 
     // Elimina de forma coordinada la identidad del votante en Keycloak y su
@@ -256,8 +257,8 @@ public sealed class AuthController : ControllerBase
         // el perfil electoral puede quedar huérfano.
     }
 
-    
-    // Registra un nuevo votante creando su identidad en Keycloak y su perfil
+
+    //Registra un nuevo votante creando su identidad en Keycloak y su perfil
     // electoral en VoterService.
 
     [HttpPost("register-voter")]
@@ -376,7 +377,7 @@ public sealed class AuthController : ControllerBase
 
     
     // Intenta eliminar una identidad creada parcialmente durante el registro.
- 
+
     private async Task TryDeleteCompensatingUserAsync(
         string? keycloakUserId)
     {
@@ -417,8 +418,8 @@ public sealed class AuthController : ControllerBase
     }
 
     
-    // Construye y envía un evento funcional hacia AuditService.
-    
+
+    //Construye y envía un evento funcional hacia AuditService.
     private async Task WriteAuditEventAsync(
         string action,
         string entityType,
