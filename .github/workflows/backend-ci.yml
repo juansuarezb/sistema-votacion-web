@@ -1,15 +1,21 @@
-name: Backend CI
+name: Backend CI/CD
 
 on:
   push:
-    branches: [ "main", "master", "develop" ]
+    branches: [ "main", "master" ]
   pull_request:
     branches: [ "main", "master", "develop" ]
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
+env:
+  REGISTRY: ghcr.io
 
+jobs:
+  # ==========================================
+  # FASE 1: CI (Integración Continua)
+  # Construye el código para verificar que compile
+  # ==========================================
+  ci-build:
+    runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
@@ -17,14 +23,61 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Cambia esto si usas otra versión
+        dotnet-version: '8.0.x'
 
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build
+    - name: Build Solution
       run: dotnet build --no-restore --configuration Release
 
-    # Descomenta este paso si tienes un proyecto de pruebas (Tests)
-    # - name: Test
-    #   run: dotnet test --no-build --verbosity normal --configuration Release
+
+  # ==========================================
+  # FASE 2: CD (Despliegue Continuo)
+  # Crea las imágenes Docker y las publica
+  # ==========================================
+  cd-docker-publish:
+    needs: ci-build # Obliga a que pase el CI primero
+    # Solo ejecuta la publicación cuando se hace un "merge" a la rama main (no en Pull Requests)
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    runs-on: ubuntu-latest
+    
+    # Permisos para escribir en GitHub Container Registry
+    permissions:
+      contents: read
+      packages: write
+      
+    # ¡Truco Avanzado DevOps! Matriz para construir todos los microservicios en paralelo
+    strategy:
+      fail-fast: false
+      matrix:
+        service: 
+          - { name: "apigateway", file: "ApiGateway/Dockerfile" }
+          - { name: "voterservice", file: "Services/VoterService/Dockerfile" }
+          - { name: "referendumservice", file: "Services/ReferendumService/Dockerfile" }
+          - { name: "voteservice", file: "Services/VoteService/Dockerfile" }
+          - { name: "resultservice", file: "Services/ResultService/Dockerfile" }
+          - { name: "auditservice", file: "Services/AuditService/Dockerfile" }
+          - { name: "authservice", file: "Services/AuthService/Dockerfile" }
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Log in to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Downcase Repo Name (GHCR requere minúsculas)
+      run: echo "REPO_LOWERCASE=${GITHUB_REPOSITORY,,}" >> $GITHUB_ENV
+
+    - name: Build & Push ${{ matrix.service.name }}
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ${{ matrix.service.file }}
+        push: true
+        tags: ${{ env.REGISTRY }}/${{ env.REPO_LOWERCASE }}-${{ matrix.service.name }}:latest
