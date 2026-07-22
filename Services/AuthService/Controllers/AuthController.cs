@@ -327,9 +327,12 @@ public sealed class AuthController : ControllerBase
                     ct
                 );
 
+            var authenticatedUserId = User.FindFirst("sub")?.Value;
+
             var voterProfileRequest =
                 new CreateVoterProfileRequest(
                     keycloakUserId,
+                    authenticatedUserId,
                     request.Nombre.Trim(),
                     request.Cedula.Trim(),
                     request.CorreoElectronico.Trim()

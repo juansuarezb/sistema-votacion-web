@@ -29,6 +29,13 @@ public sealed class Votante
     public string KeycloakId { get; set; } = string.Empty;
 
     /// <summary>
+    /// Obtiene o establece el UUID de la identidad del administrador (en Keycloak) que creó a este votante.
+    /// Permite el aislamiento de datos (multitenancy por administrador).
+    /// </summary>
+    [MaxLength(255)]
+    public string? AdminId { get; set; }
+
+    /// <summary>
     /// Obtiene o establece el nombre completo del votante.
     /// </summary>
     [Required]

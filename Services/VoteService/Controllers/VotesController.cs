@@ -22,13 +22,7 @@ namespace VoteService.Controllers;
 [Route("api/[controller]")]
 public sealed class VotesController : ControllerBase
 {
-    private static readonly string[] TiposPermitidos =
-    [
-        "SI",
-        "NO",
-        "BLANCO",
-        "NULO"
-    ];
+
 
     private readonly VoteDbContext _context;
     private readonly ReferendumClient _referendumClient;
@@ -236,15 +230,6 @@ public sealed class VotesController : ControllerBase
         var tipoVoto = request.TipoVoto
             .Trim()
             .ToUpperInvariant();
-
-        if (!TiposPermitidos.Contains(tipoVoto))
-        {
-            return BadRequest(new
-            {
-                error =
-                    "Tipo de voto inválido. Valores permitidos: SI, NO, BLANCO, NULO"
-            });
-        }
 
         var eligibility =
             await _referendumClient.CheckEligibilityAsync(
