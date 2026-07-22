@@ -1,0 +1,3 @@
+[submodule "sistema-votacion-web-frontend"]
+	path = sistema-votacion-web-frontend
+	url = https://github.com/juansuarezb/sistema-votacion-web-frontend.git
