@@ -18,6 +18,7 @@ namespace AuthService.Models;
 /// </param>
 public sealed record CreateVoterProfileRequest(
     string KeycloakId,
+    string? AdminId,
     string Nombre,
     string Cedula,
     string CorreoElectronico

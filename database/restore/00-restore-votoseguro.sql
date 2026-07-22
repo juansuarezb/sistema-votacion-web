@@ -56,6 +56,20 @@ GO
 
 USE VotoSeguroReferendumDb;
 GO
+
+IF NOT EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[referendum].[ReferendumQuestionCandidates]') AND type in (N'U'))
+BEGIN
+    CREATE TABLE [referendum].[ReferendumQuestionCandidates](
+        [IdCandidate] [int] IDENTITY(1,1) NOT NULL,
+        [IdQuestion] [int] NOT NULL,
+        [Nombre] [nvarchar](200) NOT NULL,
+        [ImagenUrl] [nvarchar](1000) NULL,
+        CONSTRAINT [PK_ReferendumQuestionCandidates] PRIMARY KEY CLUSTERED ([IdCandidate] ASC),
+        CONSTRAINT [FK_ReferendumQuestionCandidates_ReferendumQuestions_IdQuestion] FOREIGN KEY([IdQuestion]) REFERENCES [referendum].[ReferendumQuestions] ([IdQuestion]) ON DELETE CASCADE
+    );
+END
+GO
+
 ALTER USER usr_referendum_service WITH LOGIN = usr_referendum_service;
 GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA::referendum TO usr_referendum_service;
 GO

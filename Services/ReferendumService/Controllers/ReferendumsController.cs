@@ -163,6 +163,7 @@ public sealed class ReferendumsController : ControllerBase
         {
             Titulo = request.Titulo.Trim(),
             Descripcion = request.Descripcion?.Trim(),
+            ImagenUrl = request.ImagenUrl?.Trim(),
             FechaInicio = request.FechaInicio,
             FechaCierre = request.FechaCierre,
             Estado = "BORRADOR"
@@ -249,6 +250,7 @@ public sealed class ReferendumsController : ControllerBase
 
         referendum.Titulo = request.Titulo.Trim();
         referendum.Descripcion = request.Descripcion?.Trim();
+        referendum.ImagenUrl = request.ImagenUrl?.Trim();
         referendum.FechaInicio = request.FechaInicio;
         referendum.FechaCierre = request.FechaCierre;
         referendum.Estado = estadoNormalizado;
@@ -382,8 +384,208 @@ public sealed class ReferendumsController : ControllerBase
         return Ok(new QuestionResponse(
             question.IdQuestion,
             question.IdReferendum,
-            question.Texto
+            question.Texto,
+            Enumerable.Empty<CandidateResponse>()
         ));
+    }
+
+    /// <summary>
+    /// Actualiza el texto de una pregunta existente en un referéndum.
+    /// </summary>
+    /// <param name="id">Identificador del referéndum.</param>
+    /// <param name="idQuestion">Identificador de la pregunta.</param>
+    /// <param name="request">Nuevo texto de la pregunta.</param>
+    /// <param name="ct">Token de cancelación.</param>
+    /// <returns>HTTP 204 si es exitoso, 400 si el texto es inválido, 404 si no existe.</returns>
+    [HttpPut("{id:int}/questions/{idQuestion:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateQuestionAsync(
+        int id,
+        int idQuestion,
+        UpdateQuestionRequest request,
+        CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(request.Texto))
+        {
+            return BadRequest(new { error = "El texto de la pregunta es obligatorio." });
+        }
+
+        var question = await _context.ReferendumQuestions
+            .FirstOrDefaultAsync(q => q.IdReferendum == id && q.IdQuestion == idQuestion, ct);
+
+        if (question is null)
+        {
+            return NotFound(new { mensaje = "Pregunta no encontrada en este referéndum." });
+        }
+
+        question.Texto = request.Texto.Trim();
+        await _context.SaveChangesAsync(ct);
+
+        await WriteAuditEventAsync(
+            action: "QUESTION_UPDATED",
+            entityType: "ReferendumQuestion",
+            entityId: question.IdQuestion.ToString(),
+            httpMethod: HttpMethods.Put,
+            path: $"/api/referendums/{id}/questions/{idQuestion}",
+            statusCode: StatusCodes.Status204NoContent,
+            description: $"Se actualizó el texto de la pregunta {question.IdQuestion} del referéndum {id}.",
+            ct
+        );
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Elimina una pregunta de un referéndum existente.
+    /// </summary>
+    /// <param name="id">Identificador del referéndum.</param>
+    /// <param name="idQuestion">Identificador de la pregunta.</param>
+    /// <param name="ct">Token de cancelación.</param>
+    /// <returns>HTTP 204 si es exitoso, 404 si no existe.</returns>
+    [HttpDelete("{id:int}/questions/{idQuestion:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteQuestionAsync(
+        int id,
+        int idQuestion,
+        CancellationToken ct)
+    {
+        var question = await _context.ReferendumQuestions
+            .FirstOrDefaultAsync(q => q.IdReferendum == id && q.IdQuestion == idQuestion, ct);
+
+        if (question is null)
+        {
+            return NotFound(new { mensaje = "Pregunta no encontrada en este referéndum." });
+        }
+
+        var voters = await _context.ReferendumQuestionVoters
+            .Where(v => v.IdReferendum == id && v.IdQuestion == idQuestion)
+            .ToListAsync(ct);
+
+        if (voters.Any())
+        {
+            _context.ReferendumQuestionVoters.RemoveRange(voters);
+        }
+
+        _context.ReferendumQuestions.Remove(question);
+        await _context.SaveChangesAsync(ct);
+
+        await WriteAuditEventAsync(
+            action: "QUESTION_DELETED",
+            entityType: "ReferendumQuestion",
+            entityId: idQuestion.ToString(),
+            httpMethod: HttpMethods.Delete,
+            path: $"/api/referendums/{id}/questions/{idQuestion}",
+            statusCode: StatusCodes.Status204NoContent,
+            description: $"Se eliminó la pregunta {idQuestion} del referéndum {id}.",
+            ct
+        );
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Agrega un candidato a una pregunta.
+    /// </summary>
+    [HttpPost("{id:int}/questions/{idQuestion:int}/candidates")]
+    [ProducesResponseType(typeof(CandidateResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<CandidateResponse>> AddCandidateAsync(
+        int id,
+        int idQuestion,
+        CreateCandidateRequest request,
+        CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(request.Nombre))
+            return BadRequest(new { error = "El nombre del candidato es obligatorio." });
+
+        var question = await _context.ReferendumQuestions
+            .FirstOrDefaultAsync(q => q.IdReferendum == id && q.IdQuestion == idQuestion, ct);
+
+        if (question is null)
+            return NotFound(new { mensaje = "Pregunta no encontrada." });
+
+        var candidate = new ReferendumQuestionCandidate
+        {
+            IdQuestion = idQuestion,
+            Nombre = request.Nombre.Trim(),
+            ImagenUrl = request.ImagenUrl?.Trim()
+        };
+
+        _context.ReferendumQuestionCandidates.Add(candidate);
+        await _context.SaveChangesAsync(ct);
+
+        await WriteAuditEventAsync("CANDIDATE_CREATED", "ReferendumQuestionCandidate", candidate.IdCandidate.ToString(),
+            HttpMethods.Post, $"/api/referendums/{id}/questions/{idQuestion}/candidates", StatusCodes.Status200OK,
+            $"Candidato {candidate.IdCandidate} agregado a la pregunta {idQuestion}.", ct);
+
+        return Ok(new CandidateResponse(candidate.IdCandidate, candidate.IdQuestion, candidate.Nombre, candidate.ImagenUrl));
+    }
+
+    /// <summary>
+    /// Actualiza un candidato existente.
+    /// </summary>
+    [HttpPut("{id:int}/questions/{idQuestion:int}/candidates/{idCandidate:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UpdateCandidateAsync(
+        int id,
+        int idQuestion,
+        int idCandidate,
+        CreateCandidateRequest request,
+        CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(request.Nombre))
+            return BadRequest(new { error = "El nombre del candidato es obligatorio." });
+
+        var candidate = await _context.ReferendumQuestionCandidates
+            .FirstOrDefaultAsync(c => c.IdQuestion == idQuestion && c.IdCandidate == idCandidate, ct);
+
+        if (candidate is null)
+            return NotFound(new { mensaje = "Candidato no encontrado." });
+
+        candidate.Nombre = request.Nombre.Trim();
+        candidate.ImagenUrl = request.ImagenUrl?.Trim();
+
+        await _context.SaveChangesAsync(ct);
+
+        await WriteAuditEventAsync("CANDIDATE_UPDATED", "ReferendumQuestionCandidate", idCandidate.ToString(),
+            HttpMethods.Put, $"/api/referendums/{id}/questions/{idQuestion}/candidates/{idCandidate}", StatusCodes.Status204NoContent,
+            $"Candidato {idCandidate} actualizado en la pregunta {idQuestion}.", ct);
+
+        return NoContent();
+    }
+
+    /// <summary>
+    /// Elimina un candidato de una pregunta.
+    /// </summary>
+    [HttpDelete("{id:int}/questions/{idQuestion:int}/candidates/{idCandidate:int}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> DeleteCandidateAsync(
+        int id,
+        int idQuestion,
+        int idCandidate,
+        CancellationToken ct)
+    {
+        var candidate = await _context.ReferendumQuestionCandidates
+            .FirstOrDefaultAsync(c => c.IdQuestion == idQuestion && c.IdCandidate == idCandidate, ct);
+
+        if (candidate is null)
+            return NotFound(new { mensaje = "Candidato no encontrado." });
+
+        _context.ReferendumQuestionCandidates.Remove(candidate);
+        await _context.SaveChangesAsync(ct);
+
+        await WriteAuditEventAsync("CANDIDATE_DELETED", "ReferendumQuestionCandidate", idCandidate.ToString(),
+            HttpMethods.Delete, $"/api/referendums/{id}/questions/{idQuestion}/candidates/{idCandidate}", StatusCodes.Status204NoContent,
+            $"Candidato {idCandidate} eliminado de la pregunta {idQuestion}.", ct);
+
+        return NoContent();
     }
 
     /// <summary>
@@ -413,6 +615,7 @@ public sealed class ReferendumsController : ControllerBase
         CancellationToken ct)
     {
         var questions = await _context.ReferendumQuestions
+            .Include(q => q.Candidatos)
             .AsNoTracking()
             .Where(question => question.IdReferendum == id)
             .ToListAsync(ct);
@@ -420,7 +623,8 @@ public sealed class ReferendumsController : ControllerBase
         return Ok(questions.Select(question => new QuestionResponse(
             question.IdQuestion,
             question.IdReferendum,
-            question.Texto
+            question.Texto,
+            question.Candidatos.Select(c => new CandidateResponse(c.IdCandidate, c.IdQuestion, c.Nombre, c.ImagenUrl))
         )));
     }
 
@@ -659,16 +863,15 @@ public sealed class ReferendumsController : ControllerBase
             var preguntasPendientes =
                 assignments.Count(assignment => !assignment.HaVotado);
 
-            if (preguntasPendientes == 0)
-            {
-                continue;
-            }
+            // Se eliminó la validación (preguntasPendientes == 0) para permitir mostrar
+            // las votaciones completadas en el historial del frontend.
 
             response.Add(
                 new AssignedReferendumResponse(
                     referendum.IdReferendum,
                     referendum.Titulo,
                     referendum.Descripcion,
+                    referendum.ImagenUrl,
                     referendum.FechaInicio,
                     referendum.FechaCierre,
                     referendum.Estado,
@@ -916,6 +1119,7 @@ public sealed class ReferendumsController : ControllerBase
             referendum.IdReferendum,
             referendum.Titulo,
             referendum.Descripcion,
+            referendum.ImagenUrl,
             referendum.FechaInicio,
             referendum.FechaCierre,
             referendum.Estado,

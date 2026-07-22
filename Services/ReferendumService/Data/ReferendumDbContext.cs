@@ -35,6 +35,12 @@ public sealed class ReferendumDbContext : DbContext
         Set<ReferendumQuestion>();
 
     /// <summary>
+    /// Obtiene el conjunto de candidatos asociados a las preguntas.
+    /// </summary>
+    public DbSet<ReferendumQuestionCandidate> ReferendumQuestionCandidates =>
+        Set<ReferendumQuestionCandidate>();
+
+    /// <summary>
     /// Obtiene el conjunto de asignaciones entre preguntas y votantes.
     /// </summary>
     public DbSet<ReferendumQuestionVoter> ReferendumQuestionVoters =>
@@ -100,6 +106,18 @@ public sealed class ReferendumDbContext : DbContext
             entity.HasOne(question => question.Referendum)
                 .WithMany(referendum => referendum.Preguntas)
                 .HasForeignKey(question => question.IdReferendum)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ReferendumQuestionCandidate>(entity =>
+        {
+            entity.ToTable("ReferendumQuestionCandidates", "referendum");
+            entity.HasKey(candidate => candidate.IdCandidate);
+            entity.Property(candidate => candidate.Nombre).HasMaxLength(200).IsRequired();
+            entity.Property(candidate => candidate.ImagenUrl).HasMaxLength(1000);
+            entity.HasOne(candidate => candidate.Question)
+                .WithMany(question => question.Candidatos)
+                .HasForeignKey(candidate => candidate.IdQuestion)
                 .OnDelete(DeleteBehavior.Cascade);
         });
 
